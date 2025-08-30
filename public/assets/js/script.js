@@ -3,12 +3,62 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("EventEase ready");
 });
 
-//Here we will add script.js code for hamburger click
+// Example: mobile nav toggle or other dynamic features
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("EventEase ready");
+});
 
- function toggleMenu() {
-    document.getElementById('navMenu').classList.toggle('show');
-    document.getElementById('loginSection').classList.toggle('show');
+// Modern Sidebar Toggle Functions
+function toggleSidebar() {
+  const sidebar = document.getElementById('mobileSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const hamburger = document.querySelector('.mobile-hamburger');
+  
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+  hamburger.classList.toggle('active');
+  
+  // Prevent body scroll when sidebar is open
+  if (sidebar.classList.contains('active')) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
   }
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('mobileSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const hamburger = document.querySelector('.mobile-hamburger');
+  
+  sidebar.classList.remove('active');
+  overlay.classList.remove('active');
+  hamburger.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close sidebar when clicking on a link (except logout)
+document.addEventListener('DOMContentLoaded', function() {
+  const sidebarLinks = document.querySelectorAll('.sidebar-link:not(.logout-link)');
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      // Add a small delay to allow navigation to start
+      setTimeout(closeSidebar, 100);
+    });
+  });
+});
+
+// Close sidebar on window resize if screen becomes large
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) {
+    closeSidebar();
+  }
+});
+
+// Legacy function for backward compatibility (keeping it just in case)
+function toggleMenu() {
+  toggleSidebar();
+}
 
 
 

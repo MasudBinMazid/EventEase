@@ -1,4 +1,29 @@
+/* Mobile Responsive Styles */
 @media (max-width: 768px) {
+  /* Header adjustments */
+  header {
+    padding: 15px 20px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  /* Sidebar responsive adjustments */
+  .mobile-sidebar {
+    width: 300px;
+    max-width: 85vw;
+  }
+
+  .sidebar-header {
+    padding: 15px 20px;
+  }
+
+  .sidebar-logo {
+    font-size: 18px;
+  }
+
+  /* Content layout adjustments */
   nav, .login-section {
     flex-direction: column;
     align-items: center;
@@ -6,6 +31,61 @@
 
   .stats, .event-list, .gallery-grid, .blog-list {
     flex-direction: column;
+  }
+
+  /* Ensure main content is properly spaced */
+  main {
+    padding-top: 20px;
+  }
+
+  /* Footer responsive adjustments */
+  .site-footer {
+    padding: 30px 15px 10px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .mobile-sidebar {
+    width: 280px;
+    max-width: 90vw;
+  }
+  
+  .sidebar-profile {
+    padding: 0 15px 15px;
+  }
+  
+  .sidebar-link {
+    padding: 12px 15px;
+  }
+  
+  .sidebar-link:hover {
+    padding-left: 20px;
+  }
+  
+  header {
+    padding: 12px 15px;
+  }
+  
+  .logo {
+    font-size: 18px;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .desktop-nav a {
+    margin: 0 10px;
+    font-size: 14px;
+  }
+  
+  .desktop-login-section {
+    gap: 8px;
+  }
+  
+  .desktop-login-section button {
+    padding: 5px 10px;
+    font-size: 14px;
   }
 }
 
