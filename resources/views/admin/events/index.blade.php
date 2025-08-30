@@ -134,7 +134,7 @@
       <div class="page-head">
         <div>
           <h2 class="page-title">Events</h2>
-          <p class="help">Create, edit, and manage events.</p>
+          <p class="help">Create, edit, and manage events. Events marked as "Featured" will appear in the "Upcoming Events" section on the home page.</p>
         </div>
         <a class="btn btn-primary" href="{{ route('admin.events.create') }}">
           <span class="ico" aria-hidden="true">
@@ -160,6 +160,7 @@
                 <th>When</th>
                 <th>Location</th>
                 <th>Cap.</th>
+                <th title="Featured on Home Page">Home</th>
                 <th class="col-actions" style="text-align:right">Actions</th>
               </tr>
             </thead>
@@ -187,6 +188,13 @@
                     <svg class="ico" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M5 20h14a1 1 0 0 0 1-1v-8H4v8a1 1 0 0 0 1 1Z" stroke="currentColor" stroke-width="1.6"/></svg>
                     {{ $e->capacity }}
                   </span>
+                </td>
+                <td data-label="Home">
+                  @if($e->featured_on_home)
+                    <span style="color: #16a34a; font-weight: 700;">✓ Featured</span>
+                  @else
+                    <span style="color: #6b7280;">—</span>
+                  @endif
                 </td>
                 <td class="col-actions" data-label="Actions" style="text-align:right">
                   <div class="row-actions" style="display:inline-flex; gap:8px;">

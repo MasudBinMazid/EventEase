@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventRequestController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
@@ -31,7 +32,7 @@ use App\Http\Controllers\Admin\PaymentReceivedController;
 | Navbar / static pages
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn () => view('home'));
+Route::get('/', [HomeController::class, 'index']);
 Route::get('/gallery', fn () => view('gallery'));
 Route::get('/contact', fn () => view('contact'));
 

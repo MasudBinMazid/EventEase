@@ -10,7 +10,7 @@ class EventAdminController extends Controller
 {
     public function index()
     {
-        $events = Event::select('id','title','location','starts_at','ends_at','capacity')
+        $events = Event::select('id','title','location','starts_at','ends_at','capacity','featured_on_home')
                        ->orderByDesc('starts_at')
                        ->get();
 
@@ -35,6 +35,7 @@ class EventAdminController extends Controller
             'price'            => 'nullable|numeric|min:0',
             'purchase_option'  => 'required|in:both,pay_now,pay_later',
             'banner'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'featured_on_home' => 'nullable|boolean',
         ]);
 
         // Ensure folder exists
@@ -55,9 +56,10 @@ class EventAdminController extends Controller
 
         // Overwrite the file field with the final path
         $payload = array_merge($data, [
-            'banner'     => $bannerPath,
-            'created_by' => auth()->id(),
-            'status'     => 'approved',
+            'banner'           => $bannerPath,
+            'created_by'       => auth()->id(),
+            'status'           => 'approved',
+            'featured_on_home' => $r->boolean('featured_on_home'),
         ]);
 
         Event::create($payload);
@@ -86,6 +88,7 @@ class EventAdminController extends Controller
             'purchase_option'  => 'required|in:both,pay_now,pay_later',
             'remove_banner'    => 'nullable|boolean',
             'banner'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'featured_on_home' => 'nullable|boolean',
         ]);
 
         $uploadDir = public_path('uploads/events');
@@ -117,7 +120,10 @@ class EventAdminController extends Controller
         }
 
         // Overwrite the file field with the final path
-        $payload = array_merge($data, ['banner' => $bannerPath]);
+        $payload = array_merge($data, [
+            'banner'           => $bannerPath,
+            'featured_on_home' => $r->boolean('featured_on_home'),
+        ]);
 
         $event->update($payload);
 

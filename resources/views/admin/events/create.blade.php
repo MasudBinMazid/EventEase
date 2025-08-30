@@ -173,6 +173,15 @@
           @error('banner') <div class="error">{{ $message }}</div> @enderror
         </div>
 
+        <div class="field">
+          <label class="label" style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" name="featured_on_home" value="1" {{ old('featured_on_home') ? 'checked' : '' }}>
+            Feature on Home Page
+          </label>
+          <div class="hint">Check this to display the event in the "Upcoming Events" section on the home page.</div>
+          @error('featured_on_home') <div class="error">{{ $message }}</div> @enderror
+        </div>
+
         <div class="actions">
           <button type="submit" class="btn btn-primary">
             <span class="ico" aria-hidden="true">

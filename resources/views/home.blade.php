@@ -131,29 +131,44 @@
 <section class="upcoming-events">
   <h2>Explore Upcoming Events</h2>
   <div class="event-cards">
-    <a href="https://eventease.com/tech-summit" class="event-card" target="_blank">
-      <img src="{{ asset('assets/images/card1.png') }}" alt="Tech Summit">
-      <div class="card-info">
-        <h3>Tech Summit 2025</h3>
-        <p>August 21 • Convention Center</p>
-      </div>
-    </a>
+    @forelse($featuredEvents as $event)
+      <a href="{{ route('events.show', $event) }}" class="event-card" target="_blank">
+        @if($event->banner)
+          <img src="{{ asset(ltrim($event->banner, '/')) }}" alt="{{ $event->title }}">
+        @else
+          <img src="{{ asset('assets/images/card1.png') }}" alt="{{ $event->title }}">
+        @endif
+        <div class="card-info">
+          <h3>{{ $event->title }}</h3>
+          <p>{{ $event->starts_at->format('F j') }} • {{ $event->location ?: $event->venue }}</p>
+        </div>
+      </a>
+    @empty
+      {{-- Fallback to static events if no featured events are available --}}
+      <a href="https://eventease.com/tech-summit" class="event-card" target="_blank">
+        <img src="{{ asset('assets/images/card1.png') }}" alt="Tech Summit">
+        <div class="card-info">
+          <h3>Tech Summit 2025</h3>
+          <p>August 21 • Convention Center</p>
+        </div>
+      </a>
 
-    <a href="http://127.0.0.1:8000/events/2" class="event-card" target="_blank">
-      <img src="{{ asset('assets/images/card2.png') }}" alt="Music Fest">
-      <div class="card-info">
-        <h3>Music Fest Live</h3>
-        <p>September 9 • DIU Auditorium</p>
-      </div>
-    </a>
+      <a href="http://127.0.0.1:8000/events/2" class="event-card" target="_blank">
+        <img src="{{ asset('assets/images/card2.png') }}" alt="Music Fest">
+        <div class="card-info">
+          <h3>Music Fest Live</h3>
+          <p>September 9 • DIU Auditorium</p>
+        </div>
+      </a>
 
-    <a href="https://eventease.com/startup-fair" class="event-card" target="_blank">
-      <img src="{{ asset('assets/images/card3.png') }}" alt="Startup Fair">
-      <div class="card-info">
-        <h3>Startup Fair</h3>
-        <p>September 25 • Knowledge</p>
-      </div>
-    </a>
+      <a href="https://eventease.com/startup-fair" class="event-card" target="_blank">
+        <img src="{{ asset('assets/images/card3.png') }}" alt="Startup Fair">
+        <div class="card-info">
+          <h3>Startup Fair</h3>
+          <p>September 25 • Knowledge</p>
+        </div>
+      </a>
+    @endforelse
   </div>
 </section>
 
