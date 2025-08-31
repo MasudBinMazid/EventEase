@@ -6,174 +6,584 @@
   <!-- Inline design tokens + components (scoped) -->
   <style>
 :root {
-  /* Backgrounds */
-  --bg: #ffffff;                /* pure white background */
-  --card: #f9fafb;              /* card surface (neutral light gray) */
-  --surface: #f3f4f6;           /* subtle section background */
+  /* Professional Modern Color Palette */
+  --bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --card: rgba(255, 255, 255, 0.85);
+  --surface: rgba(255, 255, 255, 0.7);
   
-  /* Borders / shadows */
-  --border: #e5e7eb;            /* soft gray border (tailwind gray-200) */
-  --shadow: 0 4px 16px rgba(0,0,0,0.06);
-  --radius: 12px;
-  --glass: blur(8px) saturate(120%);
+  /* Subtle borders and elegant shadows */
+  --border: rgba(0, 0, 0, 0.08);
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.12);
+  --radius: 16px;
+  --glass: blur(20px) saturate(120%);
+  --glass-strong: blur(25px) saturate(140%);
 
-  /* Text */
-  --text: #111827;              /* strong dark gray (almost black) */
-  --muted: #6b7280;             /* medium gray for muted text */
+  /* Clean Typography Colors */
+  --text: #2d3748;
+  --text-secondary: #4a5568;
+  --muted: #718096;
 
-  /* Standard brand accents */
-  --accent: #2563eb;            /* blue-600 */
-  --accent-hover: #1d4ed8;      /* darker blue */
-  --accent-2: #16a34a;          /* green-600 */
-  --accent-3: #d97706;          /* amber-600 */
-  --danger: #dc2626;            /* red-600 */
+  /* Harmonious Accent Colors */
+  --accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --accent-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  --accent-3: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  --warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  --danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  
+  /* Additional Soft Colors */
+  --primary: #6366f1;
+  --primary-light: #a5b4fc;
+  --secondary: #64748b;
+  --accent-soft: #e0e7ff;
 }
 
     .dash-shell{
-      --gap: 1.25rem;
-      padding: clamp(16px, 2.2vw, 28px);
-      background: radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,0.20), transparent 60%),
-                  radial-gradient(1200px 600px at 110% 20%, rgba(52,211,153,0.18), transparent 60%),
-                  var(--bg);
-      min-height: calc(100dvh - 80px);
+      --gap: 1.5rem;
+      padding: clamp(20px, 3vw, 40px);
+      background: var(--bg);
+      min-height: 100vh;
       color: var(--text);
+      position: relative;
+    }
+    
+    .dash-shell::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1), transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08), transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.06), transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .dash-shell > * {
+      position: relative;
+      z-index: 1;
     }
     .dash-topbar{
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 1rem; margin-bottom: var(--gap);
-      padding: 14px 16px;
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      gap: 1.5rem; 
+      margin-bottom: var(--gap);
+      padding: 20px 24px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      background: var(--card);
       backdrop-filter: var(--glass);
       box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    
+    .dash-topbar:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
     }
     .dash-welcome{
-      font-size: clamp(1.25rem, 2.5vw, 1.6rem);
-      font-weight: 700;
-      letter-spacing: 0.2px;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+    
     .brand-accent{
-      background: linear-gradient(90deg, var(--accent), #9b8bff 40%, #a0f0cf 100%);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+      -webkit-background-clip: text; 
+      background-clip: text; 
+      color: transparent;
+      animation: shimmer 4s ease-in-out infinite alternate;
+      font-weight: 900;
+    }
+    
+    @keyframes shimmer {
+      0% { filter: hue-rotate(0deg) brightness(1); }
+      50% { filter: hue-rotate(15deg) brightness(1.1); }
+      100% { filter: hue-rotate(0deg) brightness(1); }
     }
     .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
-      padding: 10px 14px; border-radius: 999px; font-weight: 600; text-decoration:none;
-      transition: transform .15s ease, box-shadow .15s ease, background .2s ease, color .2s ease;
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: .6rem;
+      padding: 12px 20px; 
+      border-radius: 12px; 
+      font-weight: 600; 
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid var(--border);
       backdrop-filter: var(--glass);
       white-space: nowrap;
+      position: relative;
+      overflow: hidden;
     }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
     .btn.solid{
-      background: linear-gradient(180deg, var(--accent), #5b3dff);
-      color: white; border-color: rgba(255,255,255,0.12);
-      box-shadow: 0 8px 20px rgba(124,92,255,0.35);
+      background: var(--accent);
+      color: white; 
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
     }
+    
     .btn.ghost{
-      background: rgba(255,255,255,0.04); color: var(--text);
+      background: var(--card); 
+      color: var(--text);
+      border-color: var(--border);
     }
-    .btn:hover{ transform: translateY(-1px) scale(1.01); }
-    .btn:active{ transform: translateY(0); }
+    
+    .btn:hover{ 
+      transform: translateY(-3px) scale(1.05); 
+      box-shadow: var(--shadow-hover);
+    }
+    
+    .btn.solid:hover {
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+    }
+    
+    .btn:active{ 
+      transform: translateY(-1px) scale(1.02); 
+    }
 
     .dash-grid{
-      display: grid; gap: var(--gap);
-      grid-template-columns: 320px 1fr;
+      display: grid; 
+      gap: var(--gap);
+      grid-template-columns: 360px 1fr;
     }
+    
+    @media (max-width: 1200px){
+      .dash-grid{ grid-template-columns: 320px 1fr; }
+    }
+    
     @media (max-width: 980px){
       .dash-grid{ grid-template-columns: 1fr; }
     }
 
-    /* Card */
+    /* Enhanced Cards */
     .profile-card, .tickets-panel{
       border: 1px solid var(--border);
-      border-radius: calc(var(--radius) + 4px);
-      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border-radius: var(--radius);
+      background: var(--card);
       backdrop-filter: var(--glass);
       box-shadow: var(--shadow);
-      overflow: clip;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
     }
-    .profile-card{ padding: 18px; }
-    .tickets-panel{ padding: 0; }
+    
+    .profile-card::before, .tickets-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .profile-card:hover::before, .tickets-panel:hover::before {
+      opacity: 1;
+    }
+    
+    .profile-card:hover, .tickets-panel:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+    
+    .profile-card{ 
+      padding: 24px; 
+    }
+    
+    .tickets-panel{ 
+      padding: 0; 
+    }
 
-    /* Avatar */
-    .avatar{ width: 88px; height: 88px; border-radius: 50%; overflow: hidden; margin-bottom: 12px; border: 2px solid rgba(255,255,255,0.1);}
-    .avatar img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* Enhanced Avatar */
+    .avatar{ 
+      width: 100px; 
+      height: 100px; 
+      border-radius: 50%; 
+      overflow: hidden; 
+      margin-bottom: 16px; 
+      border: 3px solid rgba(255,255,255,0.3);
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    
+    .avatar:hover {
+      transform: scale(1.05);
+      border-color: rgba(255,255,255,0.5);
+    }
+    
+    .avatar img{ 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      display: block; 
+    }
+    
     .avatar-fallback{
-      width: 88px; height: 88px; border-radius: 50%;
-      display:grid; place-items:center; font-weight:800; font-size: 1.5rem;
-      background: linear-gradient(135deg, rgba(124,92,255,0.35), rgba(52,211,153,0.35));
-      color: #fff; margin-bottom: 12px; box-shadow: inset 0 0 40px rgba(0,0,0,0.25);
-      border: 2px solid rgba(255,255,255,0.12);
+      width: 100px; 
+      height: 100px; 
+      border-radius: 50%;
+      display: grid; 
+      place-items: center; 
+      font-weight: 800; 
+      font-size: 2rem;
+      background: var(--accent);
+      color: #fff; 
+      margin-bottom: 16px; 
+      box-shadow: var(--shadow);
+      border: 3px solid rgba(99, 102, 241, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .avatar-fallback:hover {
+      transform: scale(1.05);
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
     }
 
-    .profile-meta{ display: grid; gap: 8px; margin: 10px 0 16px; }
-    .meta-line{ display:flex; align-items:center; justify-content:space-between; gap: 10px; padding: 10px 12px; border:1px dashed var(--border); border-radius: 12px; background: rgba(255,255,255,0.03); }
-    .meta-label{ color: var(--muted); font-size: .9rem; }
-    .meta-value{ font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+    .profile-meta{ 
+      display: grid; 
+      gap: 12px; 
+      margin: 16px 0 20px; 
+    }
+    
+    .meta-line{ 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      gap: 12px; 
+      padding: 12px 16px; 
+      border: 1px solid var(--border); 
+      border-radius: var(--radius); 
+      background: rgba(255,255,255,0.1); 
+      transition: all 0.3s ease;
+    }
+    
+    .meta-line:hover {
+      background: rgba(99, 102, 241, 0.08);
+      transform: translateX(4px);
+      border-color: rgba(99, 102, 241, 0.15);
+    }
+    
+    .meta-label{ 
+      color: var(--muted); 
+      font-size: .9rem; 
+      font-weight: 500;
+    }
+    
+    .meta-value{ 
+      font-weight: 600; 
+      overflow: hidden; 
+      text-overflow: ellipsis;
+      color: var(--text);
+    }
 
     .profile-btn{
-      display:inline-flex; align-items:center; gap:.5rem;
-      padding: 10px 14px; border-radius: 12px; text-decoration: none; font-weight: 600;
-      background: rgba(255,255,255,0.04); border:1px solid var(--border); color: var(--text);
-      transition: all .2s ease;
+      display: inline-flex; 
+      align-items: center; 
+      gap: .6rem;
+      padding: 12px 16px; 
+      border-radius: var(--radius); 
+      text-decoration: none; 
+      font-weight: 600;
+      background: var(--card); 
+      border: 1px solid var(--border); 
+      color: var(--text);
+      transition: all 0.3s ease;
+      width: 100%;
+      justify-content: center;
     }
-    .profile-btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,0.06); }
+    
+    .profile-btn:hover{ 
+      transform: translateY(-2px); 
+      background: rgba(99, 102, 241, 0.08);
+      box-shadow: var(--shadow);
+      border-color: rgba(99, 102, 241, 0.2);
+    }
 
-    /* Tickets */
-    .tickets-head{ padding: 16px 18px; border-bottom: 1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:1rem; }
-    .tickets-title{ font-size: 1.1rem; font-weight: 700; letter-spacing: .2px; }
-    .tickets-list{ list-style: none; margin: 0; padding: 8px; display:grid; gap: 12px; }
-    .ticket-card{
-      display:grid; gap: 12px; grid-template-columns: 1fr auto;
-      padding: 14px; border:1px solid var(--border); border-radius: 14px;
-      background: rgba(255,255,255,0.035);
-      transition: transform .15s ease, background .2s ease, border-color .2s ease;
+    /* Enhanced Tickets Section */
+    .tickets-head{ 
+      padding: 20px 24px; 
+      border-bottom: 1px solid var(--border); 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      gap: 1rem;
+      background: rgba(255,255,255,0.05);
     }
-    .ticket-card:hover{ transform: translateY(-2px); background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.14);}
-    .ticket-main{ display:grid; gap: 10px; }
-    .t-line{ display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
-    .t-label{ color: var(--muted); width: 84px; font-size:.9rem; }
-    .t-value{ font-weight: 600; letter-spacing: .15px; }
+    
+    .tickets-title{ 
+      font-size: 1.2rem; 
+      font-weight: 700; 
+      letter-spacing: -0.3px;
+      background: var(--accent);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .tickets-list{ 
+      list-style: none; 
+      margin: 0; 
+      padding: 16px; 
+      display: grid; 
+      gap: 16px; 
+    }
+    
+    .ticket-card{
+      display: grid; 
+      gap: 16px; 
+      grid-template-columns: 1fr auto;
+      padding: 20px; 
+      border: 1px solid var(--border); 
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: var(--glass);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ticket-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .ticket-card:hover::before {
+      transform: scaleY(1);
+    }
+    
+    .ticket-card:hover{ 
+      transform: translateY(-3px); 
+      background: rgba(99, 102, 241, 0.05); 
+      border-color: rgba(99, 102, 241, 0.15);
+      box-shadow: var(--shadow);
+    }
+    
+    .ticket-main{ 
+      display: grid; 
+      gap: 12px; 
+    }
+    
+    .t-line{ 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      flex-wrap: wrap; 
+    }
+    
+    .t-label{ 
+      color: var(--muted); 
+      width: 90px; 
+      font-size: .9rem;
+      font-weight: 500;
+    }
+    
+    .t-value{ 
+      font-weight: 600; 
+      letter-spacing: 0.1px;
+      color: var(--text);
+    }
 
     .t-status{
-      padding: 4px 10px; border-radius: 999px; font-size: .8rem; letter-spacing:.2px;
-      border:1px solid var(--border); background: rgba(255,255,255,0.04);
+      padding: 6px 12px; 
+      border-radius: 20px; 
+      font-size: .8rem; 
+      letter-spacing: 0.2px;
+      border: 1px solid var(--border); 
+      background: rgba(255,255,255,0.1);
+      font-weight: 600;
+      backdrop-filter: var(--glass);
     }
-    /* Status color helpers */
-    .status-paid{ background: linear-gradient(180deg, rgba(52,211,153,0.18), rgba(52,211,153,0.08)); border-color: rgba(52,211,153,0.35);}
-    .status-pending{ background: linear-gradient(180deg, rgba(245,158,11,0.18), rgba(245,158,11,0.08)); border-color: rgba(245,158,11,0.35);}
-    .status-failed,.status-cancelled{ background: linear-gradient(180deg, rgba(239,68,68,0.18), rgba(239,68,68,0.08)); border-color: rgba(239,68,68,0.35);}
+    
+    /* Enhanced Status Colors */
+    .status-paid{ 
+      background: var(--success); 
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+    }
+    
+    .status-pending{ 
+      background: var(--warning); 
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
+    }
+    
+    .status-failed, .status-cancelled{ 
+      background: var(--danger); 
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
+    }
 
-    .ticket-actions{ display:flex; align-items:center; gap:10px; }
+    .ticket-actions{ 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      flex-direction: column;
+    }
+    
+    @media (min-width: 640px) {
+      .ticket-actions {
+        flex-direction: row;
+      }
+    }
+    
     .tickets-empty{
-      padding: 20px; text-align:center; color: var(--muted);
-      border:1px dashed var(--border); border-radius: 14px; background: rgba(255,255,255,0.03);
+      padding: 30px; 
+      text-align: center; 
+      color: var(--muted);
+      border: 2px dashed var(--border); 
+      border-radius: var(--radius); 
+      background: rgba(99, 102, 241, 0.03);
+      font-size: 1.1rem;
     }
 
-    /* Subsection headings */
+    /* Enhanced Subsection headings */
     .subhead{
-      font-weight: 700; font-size: 1rem; color: var(--text);
-      display:flex; align-items:center; gap:.6rem; margin-bottom: .5rem;
+      font-weight: 700; 
+      font-size: 1.1rem; 
+      color: var(--text);
+      display: flex; 
+      align-items: center; 
+      gap: .8rem; 
+      margin-bottom: 1rem;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
     }
 
-    /* Footer card reuse (Your Event Requests) */
-    .section-card{ margin-top: 1.5rem; padding: 16px; }
+    /* Enhanced Footer card */
+    .section-card{ 
+      margin-top: 2rem; 
+      padding: 24px; 
+    }
+    
+    /* Additional animations and effects */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    /* Pulse effect for status indicators */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .status-paid, .status-pending, .status-failed, .status-cancelled {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    /* Smooth scrolling */
+    * {
+      scroll-behavior: smooth;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+    
+    /* Loading states */
+    .loading {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
   </style>
 @endsection
 
 @section('content')
 <section class="dash-shell">
-  <!-- Top bar -->
+  <!-- Top bar with enhanced interaction -->
   <div class="dash-topbar" role="banner">
     <h2 class="dash-welcome">
-      Welcome, <span class="brand-accent">{{ $user->name }}</span>
+      Welcome back, <span class="brand-accent">{{ $user->name }}</span> 👋
     </h2>
-    <a href="{{ route('events.request.create') }}" class="btn solid">
-      <!-- plus icon -->
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-      Request a New Event
-    </a>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <div class="floating">
+        <a href="{{ route('events.request.create') }}" class="btn solid">
+          <!-- plus icon with enhanced styling -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          Request Event
+        </a>
+      </div>
+      <button class="btn ghost" onclick="toggleNotifications()" title="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
   <div class="dash-grid">
@@ -320,4 +730,95 @@
     </ul>
   </aside>
 </section>
+
+<script>
+  // Enhanced Dashboard Interactions
+  function toggleNotifications() {
+    // Simple notification toggle for demo
+    const btn = event.target.closest('button');
+    btn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      btn.style.transform = '';
+      alert('🔔 Notifications feature coming soon!');
+    }, 150);
+  }
+
+  // Add loading states to buttons
+  document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        // Add loading animation except for profile manage button
+        if (!this.href || this.href.includes('profile.edit')) return;
+        
+        const originalContent = this.innerHTML;
+        this.classList.add('loading');
+        this.style.pointerEvents = 'none';
+        
+        // Simulate loading state for visual feedback
+        setTimeout(() => {
+          this.classList.remove('loading');
+          this.style.pointerEvents = '';
+        }, 800);
+      });
+    });
+
+    // Add smooth scroll behavior for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add intersection observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe cards for slide-in animations
+    document.querySelectorAll('.profile-card, .tickets-panel, .ticket-card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(card);
+    });
+
+    // Add subtle parallax effect to background
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const bg = document.querySelector('.dash-shell::before');
+      if (bg) {
+        document.querySelector('.dash-shell').style.backgroundPosition = `center ${scrolled * 0.5}px`;
+      }
+    });
+
+    // Add hover sound effects (optional)
+    const addHoverSounds = false; // Set to true if you want sound effects
+    if (addHoverSounds) {
+      document.querySelectorAll('.btn, .ticket-card, .meta-line').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          // You can add subtle audio feedback here
+          // new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmkgAkWfzsyyhC8MLKaC7N2FNwgZaKHh5KdVE').play();
+        });
+      });
+    }
+  });
+</script>
 @endsection
