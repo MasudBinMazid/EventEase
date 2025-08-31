@@ -1,10 +1,10 @@
 /* ===== Professional EventEase Theme ===== */
 :root{
   --bg: #f1f5f9;                    /* --primary-light */
-  --panel: var(--white)fff;                 /* --white */
+  --panel: #ffffff;                 /* --white */
   --muted: #64748b;                 /* --text-light */
   --text: #0f172a;                  /* --text-dark */
-  --border: #e2e8f0;                /* --border-light */
+  --border: var(--border-light);                /* --border-light */
   --ring: #93c5fd;                  /* blue-300 */
   --grad-a: #3b82f6;                /* --accent-blue */
   --grad-b: #f59e0b;                /* --accent-orange */
@@ -24,9 +24,9 @@
   --text-dark: #0f172a;
   --text-medium: #374151;
   --text-light: #64748b;
-  --white: var(--white)fff;
-  --border-light: #e2e8f0;
-  --border-medium: #d1d5db;
+  --white: #ffffff;
+  --border-light: var(--border-light);
+  --border-medium: var(--border-medium);
   --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
   --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
 }
@@ -118,7 +118,7 @@ html,body{
 }
 .avatar-fallback{
   display: grid; place-items: center;
-  background: linear-gradient(135deg, #e2e8f0, var(--primary-light));
+  background: linear-gradient(135deg, var(--border-light), var(--primary-light));
   color: var(--muted);
   font-weight: 800;
   font-size: 40px;
@@ -201,7 +201,7 @@ html,body{
 .ticket-card:hover{
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(2,6,23,.12);
-  border-color: #d1d5db;
+  border-color: var(--border-medium);
 }
 
 .ticket-main{
@@ -233,7 +233,7 @@ html,body{
   font-weight: 800;
   font-size: .82rem;
   margin-left: 4px;
-  background: #eef2ff;
+  background: var(--primary-light);
   color: var(--accent);
 }
 
@@ -258,7 +258,7 @@ html,body{
   color: var(--text);
 }
 .btn.ghost:hover{
-  background: var(--primary-light); border-color:#d1d5db; transform: translateY(-2px);
+  background: var(--primary-light); border-color:var(--border-medium); transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(2,6,23,.10);
 }
 .btn.solid{

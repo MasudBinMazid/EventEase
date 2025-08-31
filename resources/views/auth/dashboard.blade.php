@@ -8,32 +8,32 @@
 :root {
   /* Professional EventEase Color Palette */
   --bg: linear-gradient(135deg, var(--primary-light) 0%, #c3cfe2 100%);
-  --card: rgba(255, 255, 255, 0.85);
-  --surface: rgba(255, 255, 255, 0.7);
+  --card: rgba(255, 255, 255, 0.95);
+  --surface: rgba(255, 255, 255, 0.85);
   
-  /* Subtle borders and elegant shadows */
-  --border: rgba(0, 0, 0, 0.08);
-  --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.12);
+  /* EventEase Professional Borders and Shadows */
+  --border: rgba(30, 58, 138, 0.1);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.2);
   --radius: 16px;
   --glass: blur(20px) saturate(120%);
   --glass-strong: blur(25px) saturate(140%);
 
-  /* Clean Typography Colors */
-  --text: #2d3748;
-  --text-secondary: #4a5568;
-  --muted: #718096;
+  /* EventEase Typography Colors */
+  --text: #0f172a;
+  --text-secondary: #374151;
+  --muted: #64748b;
 
-  /* Harmonious Accent Colors */
-  --accent: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  --accent-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  --accent-3: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  --success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  /* EventEase Accent Colors */
+  --accent: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  --accent-2: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%);
+  --accent-3: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
+  --success: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
   --warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
   --danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
   
-  /* Additional Soft Colors */
-  --primary: #6366f1;
+  /* Additional EventEase Colors */
+  --primary: #1e3a8a;
   --primary-light: #a5b4fc;
   --secondary: #64748b;
   --accent-soft: #e0e7ff;
@@ -91,10 +91,11 @@
       font-weight: 800;
       letter-spacing: -0.5px;
       text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      color: var(--text) !important; /* EventEase dark text color for visibility */
     }
     
     .brand-accent{
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1e293b 100%);
       -webkit-background-clip: text; 
       background-clip: text; 
       color: transparent;
