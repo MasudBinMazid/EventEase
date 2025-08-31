@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>@yield('title','Admin') • EventEase Admin</title>
   @stack('head')
+  @yield('extra-css')
   <style>
     :root{
       --bg:#f6f7fb;            /* off-white page bg */
@@ -88,7 +89,7 @@
     .btn-logout:focus{outline:3px solid var(--ring); outline-offset:2px}
 
     /* Page */
-    main.page{min-height:70vh; padding:2rem 0; animation:fadeIn .35s ease}
+    main.page{min-height:70vh; padding:0; animation:fadeIn .35s ease}
     @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
 
     /* Footer (centered) */
@@ -138,10 +139,10 @@
 <nav class="nav" id="primaryNav">
   <a href="{{ route('admin.users.index') }}"    class="nav-link {{ request()->routeIs('admin.users.*') ? 'is-active' : '' }}">Users</a>
   <a href="{{ route('admin.events.index') }}"   class="nav-link {{ request()->routeIs('admin.events.*') ? 'is-active' : '' }}">Events</a>
-  <a href="{{ route('admin.requests.index') }}" class="nav-link {{ request()->routeIs('admin.requests.*') ? 'is-active' : '' }}">Requests</a>
+  <a href="{{ route('admin.requests.index') }}" class="nav-link {{ request()->routeIs('admin.requests.*') ? 'is-active' : '' }}">Event Requests</a>
   <a href="{{ route('admin.blogs.index') }}"    class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'is-active' : '' }}">Blogs</a>
   <a href="{{ route('admin.messages.index') }}" class="nav-link {{ request()->routeIs('admin.messages.*') ? 'is-active' : '' }}">Messages</a>
-  <a href="{{ route('admin.stats.index') }}"    class="nav-link {{ request()->routeIs('admin.stats.*') ? 'is-active' : '' }}">Stats</a>
+
 
   {{-- NEW: Payment Received --}}
   <a href="{{ route('admin.payments.index') }}" class="nav-link {{ request()->routeIs('admin.payments.*') ? 'is-active' : '' }}">Payment Received</a>
@@ -156,7 +157,7 @@
   </div>
 </header>
 
-<main class="wrap page">
+<main class="page">
   @yield('content')
 </main>
 
