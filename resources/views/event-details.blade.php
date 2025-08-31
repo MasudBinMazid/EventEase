@@ -2,6 +2,10 @@
 
 @section('title', $event->title)
 
+@section('extra-css')
+  <link rel="stylesheet" href="{{ asset('assets/css/event-details.css') }}">
+@endsection
+
 @section('content')
 <div class="max-w-4xl mx-auto px-4 py-8">
   <a href="{{ route('events.index') }}">&larr; Back to Events</a>

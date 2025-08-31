@@ -1,0 +1,86 @@
+/* Event Details Page Styles */
+
+/* CSS Variables for Consistency */
+:root {
+  --primary-navy: #1e3a8a;
+  --primary-dark: #1e293b;
+  --primary-light: #f1f5f9;
+  --accent-blue: #3b82f6;
+  --accent-orange: #f59e0b;
+  --text-dark: #0f172a;
+  --text-medium: #374151;
+  --text-light: #64748b;
+  --white: #ffffff;
+  --border-light: #e2e8f0;
+  --border-medium: #d1d5db;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+}
+
+/* Override Tailwind with professional colors */
+.max-w-4xl {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  margin-top: 20px;
+  padding: 30px;
+}
+
+/* Back Button */
+.max-w-4xl a:first-child {
+  color: var(--accent-blue) !important;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.max-w-4xl a:first-child:hover {
+  color: var(--primary-navy) !important;
+}
+
+/* Event Title */
+.text-3xl {
+  color: var(--text-dark) !important;
+}
+
+/* Event Banner */
+.max-w-4xl img {
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Event Description */
+.max-w-4xl p {
+  color: var(--text-medium) !important;
+  line-height: 1.6;
+}
+
+/* Event Meta Info */
+.max-w-4xl strong {
+  color: var(--text-dark) !important;
+}
+
+/* Buy Ticket Button Enhancement */
+.max-w-4xl .btn,
+.max-w-4xl button[type="submit"] {
+  background: var(--gradient-accent) !important;
+  color: white !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.max-w-4xl .btn:hover,
+.max-w-4xl button[type="submit"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
+}

@@ -1,6 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Buy Ticket')
 
+@section('extra-css')
+  <link rel="stylesheet" href="{{ asset('assets/css/events-buy.css') }}">
+@endsection
+
 @section('content')
 <div class="max-w-xl mx-auto px-4 py-8">
   <h2 class="text-2xl font-bold">Buy Ticket — {{ $event->title }}</h2>

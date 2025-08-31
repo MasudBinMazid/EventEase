@@ -1,0 +1,102 @@
+/* Events Buy Page Styles */
+
+/* CSS Variables for Consistency */
+:root {
+  --primary-navy: #1e3a8a;
+  --primary-dark: #1e293b;
+  --primary-light: #f1f5f9;
+  --accent-blue: #3b82f6;
+  --accent-orange: #f59e0b;
+  --text-dark: #0f172a;
+  --text-medium: #374151;
+  --text-light: #64748b;
+  --white: #ffffff;
+  --border-light: #e2e8f0;
+  --border-medium: #d1d5db;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+  --error-bg: #fee2e2;
+  --error-text: #dc2626;
+}
+
+/* Buy Ticket Form Container */
+.max-w-xl {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  margin-top: 20px;
+  padding: 30px;
+  border: 1px solid var(--border-light);
+}
+
+/* Form Title */
+.text-2xl {
+  color: var(--text-dark) !important;
+  margin-bottom: 20px !important;
+}
+
+/* Form Labels */
+.max-w-xl label {
+  color: var(--text-dark) !important;
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+  display: block !important;
+}
+
+/* Form Inputs */
+.max-w-xl input,
+.max-w-xl select {
+  width: 100% !important;
+  padding: 12px 16px !important;
+  border: 2px solid var(--border-light) !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  color: var(--text-dark) !important;
+  background: var(--white) !important;
+  transition: all 0.3s ease !important;
+}
+
+.max-w-xl input:focus,
+.max-w-xl select:focus {
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  outline: none !important;
+}
+
+/* Error Messages */
+.max-w-xl div[style*="color:red"] {
+  color: var(--error-text) !important;
+  background: var(--error-bg) !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  margin-top: 4px !important;
+  font-size: 12px !important;
+}
+
+/* Submit Button */
+.max-w-xl button[type="submit"] {
+  background: var(--gradient-accent) !important;
+  color: white !important;
+  border: none !important;
+  padding: 14px 28px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  width: 100% !important;
+  margin-top: 20px !important;
+}
+
+.max-w-xl button[type="submit"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* Form Sections */
+.max-w-xl div[style*="margin-bottom"] {
+  margin-bottom: 20px !important;
+}

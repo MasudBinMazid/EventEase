@@ -6,8 +6,8 @@
   <!-- Inline design tokens + components (scoped) -->
   <style>
 :root {
-  /* Professional Modern Color Palette */
-  --bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  /* Professional EventEase Color Palette */
+  --bg: linear-gradient(135deg, var(--primary-light) 0%, #c3cfe2 100%);
   --card: rgba(255, 255, 255, 0.85);
   --surface: rgba(255, 255, 255, 0.7);
   
