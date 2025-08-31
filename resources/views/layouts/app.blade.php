@@ -47,7 +47,10 @@
 <body class="bg-gray-50 text-gray-900">
 
   <header class="site-header">
-    <a href="{{ url('/') }}" class="logo"><span>EventEase</span></a>
+    <a href="{{ url('/') }}" class="logo">
+      <img src="{{ asset('assets/images/eventease-logo.png') }}" alt="EventEase" class="logo-image">
+      <span class="logo-text">EventEase</span>
+    </a>
 
     <!-- Desktop Navigation -->
     <nav class="desktop-nav">
@@ -96,7 +99,8 @@
   <div class="mobile-sidebar" id="mobileSidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">
-        <span>📅 EventEase</span>
+        <img src="{{ asset('assets/images/eventease-logo.png') }}" alt="EventEase" class="sidebar-logo-image">
+        <span class="sidebar-logo-text">EventEase</span>
       </div>
       <button class="sidebar-close" onclick="closeSidebar()">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
