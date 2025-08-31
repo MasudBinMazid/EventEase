@@ -65,16 +65,18 @@
 
 .search-bar .search-icon {
   position: absolute;
-  left: 15px;
+  left: 22px; /* Moved icon slightly more to the right */
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-light);
   font-size: 1.1rem;
+  pointer-events: none; /* Prevent icon from blocking input clicks */
+  z-index: 1; /* Ensure icon stays above input background */
 }
 
 .search-input {
   width: 100%;
-  padding: 12px 45px 12px 20px;
+  padding: 12px 45px 12px 60px; /* Increased left padding even more for desktop */
   border: 2px solid var(--border-light);
   border-radius: 25px;
   font-size: 14px;
@@ -509,13 +511,14 @@
   }
   
   .search-bar input {
-    padding: 10px 10px 10px 35px;
+    padding: 10px 10px 10px 40px; /* Increased left padding for mobile */
     border-radius: 20px;
   }
   
   .search-bar .search-icon {
-    left: 12px;
+    left: 15px; /* Adjusted icon position for mobile */
     font-size: 1rem;
+    pointer-events: none; /* Prevent icon from blocking input clicks */
   }
   
   .filter-tabs {
