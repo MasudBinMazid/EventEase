@@ -10,7 +10,7 @@ class EventController extends Controller
     public function index()
     {
         $events = Event::where('status', 'approved')
-            ->orderByDesc('starts_at')
+            ->orderBy('starts_at', 'asc')
             ->paginate(9);
 
         return view('events.index', compact('events'));
@@ -24,6 +24,10 @@ class EventController extends Controller
                 abort(404);
             }
         }
+        
+        // Load the creator relationship
+        $event->load('creator');
+        
         return view('events.show', compact('event'));
     }
 }

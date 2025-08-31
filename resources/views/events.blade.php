@@ -9,77 +9,136 @@
 
 @section('content')
 
-<!-- Banner Section -->
-
-<section class="hero-banner">
-  <div class="hero-container">
-    
-    <!-- Left: Image Slider -->
-    <div class="hero-slider">
-      <img src="{{ asset('assets/images/banner1.jpg') }}" class="slide active" alt="Event Banner 1">
-      <img src="{{ asset('assets/images/banner2.jpg') }}" class="slide" alt="Event Banner 2">
-      <img src="{{ asset('assets/images/banner3.jpg') }}" class="slide" alt="Event Banner 3">
-    </div>
-
-    <!-- Right: Text Content -->
-    <div class="hero-text">
-      <h1>Grow Your Network & Build Your Skills with Our<br> Events!</h1>
-     
-    </div>
-
+<!-- Header Section -->
+<section class="events-header">
+  <div class="events-header-content">
+    <h1>Discover Amazing Events</h1>
+    <p>Join exciting events happening around you</p>
   </div>
 </section>
 
-
-<!-- Filter/Search -->
-
-<section class="filter-search-wrapper">
-  <div class="filter-options">
-    <label><input type="radio" name="eventStatus" value="all" checked> All</label>
-    <label><input type="radio" name="eventStatus" value="ongoing"> Live</label>
-    <label><input type="radio" name="eventStatus" value="upcoming"> Upcoming</label>
+<!-- Search Section -->
+<section class="search-section">
+  <div class="search-container">
+    <div class="search-bar">
+      <i class="bi bi-search search-icon"></i>
+      <input type="text" id="searchInput" placeholder="Search events by name, location, or description...">
+    </div>
+    
+    <div class="filter-tabs">
+      <label class="filter-tab active">
+        <input type="radio" name="eventStatus" value="all" checked>
+        <span>All Events</span>
+      </label>
+      <label class="filter-tab">
+        <input type="radio" name="eventStatus" value="upcoming">
+        <span>Upcoming</span>
+      </label>
+      <label class="filter-tab">
+        <input type="radio" name="eventStatus" value="past">
+        <span>Past Events</span>
+      </label>
+    </div>
   </div>
-  
- <div class="search-box">
-  <button id="searchBtn"><i class="bi bi-sliders"></i></button>
-  <input type="text" id="searchInput" placeholder="Search Events..">
-  <i class="bi bi-search search-icon" id="triggerSearch" style="cursor:pointer;"></i>
-</div>
-
 </section>
 
 <!-- Event Cards -->
-<section class="event-cards">
-  @forelse($events as $event)
-    <div class="event-card" data-status="upcoming">
-      <div class="card-header purple-gradient">
-        <h3>{{ $event->title }}</h3>
-        <span class="badge upcoming">{{ now()->lt($event->starts_at) ? 'upcoming' : 'ongoing' }}</span>
-      </div>
-      <div class="card-body">
-        <p><i class="bi bi-calendar"></i>
-           {{ optional($event->starts_at)->format('d/m/Y \a\t H:i') }}
-        </p>
-        <p><i class="bi bi-geo-alt"></i> {{ $event->location }}</p>
-        <p><i class="bi bi-people"></i> {{ $event->capacity ?? '—' }}</p>
-        <p><i class="bi bi-currency-dollar"></i> {{ number_format($event->price,2) }}</p>
-        @if($event->description)
-          <p class="description">{{ \Illuminate\Support\Str::limit(strip_tags($event->description), 140) }}</p>
-        @endif
-
-        <div class="btn-group">
-          <a class="btn view" href="{{ route('events.show', $event) }}"><i class="bi bi-eye"></i> View Details</a>
-          <a class="btn register" href="{{ route('events.buy', $event) }}"><i class="bi bi-box-arrow-in-right"></i> Buy</a>
+<section class="events-grid">
+  <div class="events-container">
+    @forelse($events as $event)
+      @php
+        $isUpcoming = now()->lt($event->starts_at);
+        $isPast = now()->gt($event->starts_at);
+        $eventStatus = $isPast ? 'past' : 'upcoming';
+      @endphp
+      
+      <div class="event-card" data-status="{{ $eventStatus }}">
+        <!-- Event Banner -->
+        <div class="event-banner">
+          @if($event->banner_url)
+            <img src="{{ $event->banner_url }}" alt="{{ $event->title }}" class="event-image">
+          @else
+            <div class="event-placeholder">
+              <i class="bi bi-calendar-event"></i>
+            </div>
+          @endif
+          
+          <!-- Event Status Badge -->
+          <div class="event-status-badge {{ $eventStatus }}">
+            @if($isPast)
+              <i class="bi bi-clock-history"></i> Past Event
+            @else
+              <i class="bi bi-calendar-check"></i> Upcoming
+            @endif
+          </div>
+        </div>
+        
+        <!-- Event Content -->
+        <div class="event-content">
+          <h3 class="event-title">{{ $event->title }}</h3>
+          
+          <div class="event-details">
+            <div class="event-detail">
+              <i class="bi bi-calendar3"></i>
+              <span>{{ $event->starts_at->format('M d, Y • h:i A') }}</span>
+            </div>
+            
+            <div class="event-detail">
+              <i class="bi bi-geo-alt"></i>
+              <span>{{ $event->location }}</span>
+            </div>
+            
+            <div class="event-detail price">
+              <i class="bi bi-tag"></i>
+              <span class="price-amount">
+                @if($event->price > 0)
+                  ${{ number_format($event->price, 2) }}
+                @else
+                  Free
+                @endif
+              </span>
+            </div>
+          </div>
+          
+          @if($event->description)
+            <p class="event-description">
+              {{ \Illuminate\Support\Str::limit(strip_tags($event->description), 100) }}
+            </p>
+          @endif
+          
+          <!-- Action Buttons -->
+          <div class="event-actions">
+            <a href="{{ route('events.show', $event) }}" class="btn btn-outline">
+              <i class="bi bi-eye"></i> View Details
+            </a>
+            
+            @if($isUpcoming)
+              <form action="{{ route('tickets.start', $event) }}" method="POST" style="display: inline; flex: 1;">
+                @csrf
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                  <i class="bi bi-ticket"></i> 
+                  @if($event->price > 0) Buy Ticket @else Get Ticket @endif
+                </button>
+              </form>
+            @endif
+          </div>
         </div>
       </div>
-    </div>
-  @empty
-    <p>No events yet.</p>
-  @endforelse
-
-  <div style="margin-top:16px;">
-    {{ $events->links() }}
+    @empty
+      <div class="no-events">
+        <i class="bi bi-calendar-x"></i>
+        <h3>No Events Found</h3>
+        <p>There are currently no events available. Check back later!</p>
+      </div>
+    @endforelse
   </div>
+  
+  <!-- Pagination -->
+  @if($events->hasPages())
+    <div class="pagination-wrapper">
+      {{ $events->links() }}
+    </div>
+  @endif
 </section>
 
 @endsection

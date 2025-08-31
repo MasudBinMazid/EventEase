@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
 protected $fillable = [
-  'title','description','location','venue','starts_at','ends_at','capacity',
-  'price','purchase_option','banner','created_by','status','approved_by','approved_at','featured_on_home',
+  'title','description','location','starts_at','ends_at','capacity',
+  'price','banner_path','created_by','status','approved_by','approved_at','featured_on_home',
 ];
 
 
@@ -32,7 +32,7 @@ protected $fillable = [
     // Optional: always get a usable URL for banner
     public function getBannerUrlAttribute(): ?string
     {
-        return $this->banner ? asset(ltrim($this->banner, '/')) : null;
+        return $this->banner_path ? asset(ltrim($this->banner_path, '/')) : null;
     }
 
     // Scope for featured events on home page

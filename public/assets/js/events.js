@@ -1,140 +1,206 @@
-// js for banner slider
+// Events Page JavaScript
 
-// Hero Slider Script
-let slideIndex = 0;
-const heroSlides = document.querySelectorAll('.hero-slider .slide');
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all functionality
+    initializeFilterTabs();
+    initializeSearch();
+    initializeCardAnimations();
+});
 
-function rotateHeroSlides() {
-  heroSlides.forEach(slide => slide.classList.remove('active'));
-  heroSlides[slideIndex].classList.add('active');
-  slideIndex = (slideIndex + 1) % heroSlides.length;
+// Filter Tab Functionality
+function initializeFilterTabs() {
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const filterRadios = document.querySelectorAll('input[name="eventStatus"]');
+    
+    filterTabs.forEach((tab, index) => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs
+            filterTabs.forEach(t => t.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Check the corresponding radio button
+            if (filterRadios[index]) {
+                filterRadios[index].checked = true;
+            }
+            
+            // Apply filter
+            filterEvents();
+        });
+    });
+    
+    // Also listen to radio button changes (for accessibility)
+    filterRadios.forEach((radio, index) => {
+        radio.addEventListener('change', function() {
+            // Update active tab
+            filterTabs.forEach(tab => tab.classList.remove('active'));
+            if (filterTabs[index]) {
+                filterTabs[index].classList.add('active');
+            }
+            
+            filterEvents();
+        });
+    });
 }
 
-setInterval(rotateHeroSlides, 3000); // Change every 3 seconds
-rotateHeroSlides(); // Show first slide
-
-// javascript for filter option
-
-document.addEventListener('DOMContentLoaded', () => {
-  const filterRadios = document.querySelectorAll('input[name="eventStatus"]');
-  const cards = document.querySelectorAll('.event-card');
-
-  filterRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      const selected = radio.value;
-
-      cards.forEach(card => {
-        const status = card.getAttribute('data-status');
-
-        if (selected === 'all' || selected === status) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
+// Search Functionality
+function initializeSearch() {
+    const searchInput = document.getElementById('searchInput');
+    
+    // Debounce function for better performance
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    // Real-time search with debounce
+    const debouncedSearch = debounce(filterEvents, 300);
+    searchInput.addEventListener('input', debouncedSearch);
+    
+    // Search on Enter key
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            filterEvents();
         }
-      });
     });
-  });
-});
+    
+    // Clear search when input is empty
+    searchInput.addEventListener('keyup', function() {
+        if (this.value === '') {
+            filterEvents();
+        }
+    });
+}
 
-
-//javascript for search filtering
-document.addEventListener('DOMContentLoaded', () => {
-  const filterRadios = document.querySelectorAll('input[name="eventStatus"]');
-  const cards = document.querySelectorAll('.event-card');
-  const searchBtn = document.getElementById('triggerSearch');
-  const searchInput = document.getElementById('searchInput');
-
-  function filterEvents() {
+// Main Filter Function
+function filterEvents() {
     const selectedStatus = document.querySelector('input[name="eventStatus"]:checked').value;
-    const keyword = searchInput.value.toLowerCase();
-
-    cards.forEach(card => {
-      const status = card.getAttribute('data-status');
-      const textContent = card.textContent.toLowerCase();
-
-      const matchStatus = (selectedStatus === 'all' || selectedStatus === status);
-      const matchKeyword = textContent.includes(keyword);
-
-      card.style.display = (matchStatus && matchKeyword) ? 'block' : 'none';
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    const eventCards = document.querySelectorAll('.event-card');
+    
+    let visibleCount = 0;
+    
+    eventCards.forEach(card => {
+        const cardStatus = card.getAttribute('data-status');
+        const cardText = card.textContent.toLowerCase();
+        
+        // Check status filter
+        const statusMatch = selectedStatus === 'all' || selectedStatus === cardStatus;
+        
+        // Check search term
+        const searchMatch = searchTerm === '' || cardText.includes(searchTerm);
+        
+        // Show/hide card
+        if (statusMatch && searchMatch) {
+            showCard(card);
+            visibleCount++;
+        } else {
+            hideCard(card);
+        }
     });
-  }
+    
+    // Show no results message if needed
+    handleNoResults(visibleCount);
+}
 
-  filterRadios.forEach(radio => {
-    radio.addEventListener('change', filterEvents);
-  });
+// Card Animation Functions
+function showCard(card) {
+    card.classList.remove('hidden');
+    card.style.display = 'block';
+    
+    // Animate in
+    setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+    }, 10);
+}
 
-// Search button click
+function hideCard(card) {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(-20px)';
+    
+    setTimeout(() => {
+        card.classList.add('hidden');
+        card.style.display = 'none';
+    }, 300);
+}
 
-  searchBtn.addEventListener('click', filterEvents);
-
-  // Trigger on pressing Enter key
-
-  searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault(); 
-      filterEvents();
+// Handle No Results State
+function handleNoResults(visibleCount) {
+    let noResultsDiv = document.querySelector('.no-results-message');
+    
+    if (visibleCount === 0) {
+        if (!noResultsDiv) {
+            noResultsDiv = document.createElement('div');
+            noResultsDiv.className = 'no-results-message';
+            noResultsDiv.innerHTML = `
+                <div class="no-events">
+                    <i class="bi bi-search"></i>
+                    <h3>No Events Found</h3>
+                    <p>No events match your current search criteria. Try adjusting your filters or search terms.</p>
+                </div>
+            `;
+            
+            const eventsContainer = document.querySelector('.events-container');
+            eventsContainer.appendChild(noResultsDiv);
+        }
+        noResultsDiv.style.display = 'block';
+    } else {
+        if (noResultsDiv) {
+            noResultsDiv.style.display = 'none';
+        }
     }
-  });
-});
+}
 
-
-
-
-
-
-
-// real time filtering by debounce function
-
-document.addEventListener('DOMContentLoaded', () => {
-  const filterRadios = document.querySelectorAll('input[name="eventStatus"]');
-  const cards = document.querySelectorAll('.event-card');
-  const searchBtn = document.getElementById('triggerSearch');
-  const searchInput = document.getElementById('searchInput');
-
-  // Debounce function
-  function debounce(fn, delay) {
-    let timeout;
-    return function () {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => fn.apply(this, arguments), delay);
-    };
-  }
-
-  function filterEvents() {
-    const selectedRadio = document.querySelector('input[name="eventStatus"]:checked');
-    const selectedStatus = selectedRadio ? selectedRadio.value : 'all';
-    const keyword = searchInput.value.trim().toLowerCase();
-
-    cards.forEach(card => {
-      const status = card.getAttribute('data-status');
-      const text = card.textContent.toLowerCase();
-      const matchStatus = selectedStatus === 'all' || selectedStatus === status;
-      const matchKeyword = text.includes(keyword);
-      card.style.display = (matchStatus && matchKeyword) ? 'block' : 'none';
+// Card Hover Animations
+function initializeCardAnimations() {
+    const eventCards = document.querySelectorAll('.event-card');
+    
+    eventCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
     });
-  }
+}
 
-  // Use debounce for input typing
-  const debouncedFilter = debounce(filterEvents, 300);
-
-  // Event listeners
-  filterRadios.forEach(radio => {
-    radio.addEventListener('change', filterEvents);
-  });
-
-  searchBtn.addEventListener('click', filterEvents);
-
-  searchInput.addEventListener('input', debouncedFilter); // Real-time with debounce
-
-  searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      filterEvents();
+// Utility function for smooth scrolling to events section
+function scrollToEvents() {
+    const eventsSection = document.querySelector('.events-grid');
+    if (eventsSection) {
+        eventsSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
     }
-  });
-});
+}
 
+// Add loading state functionality
+function showLoading() {
+    const eventsContainer = document.querySelector('.events-container');
+    eventsContainer.innerHTML = `
+        <div class="events-loading">
+            <i class="bi bi-hourglass-split"></i>
+            <p>Loading events...</p>
+        </div>
+    `;
+}
 
-
-
-
+// Export functions for external use if needed
+window.EventsPage = {
+    filterEvents,
+    scrollToEvents,
+    showLoading
+};

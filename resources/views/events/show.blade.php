@@ -1,187 +1,211 @@
 @extends('layouts.app')
+
 @section('title', $event->title)
 
-@section('extra-css')
-  {{-- keep your custom styles + icons --}}
-  <link rel="stylesheet" href="{{ asset('assets/css/events.css') }}">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-@endsection
-
 @section('content')
-@php
-  use Illuminate\Support\Carbon;
-  $isUpcoming = $event->starts_at ? Carbon::now()->lt($event->starts_at) : true;
-  $cover = $event->banner ? asset($event->banner) : null;
-@endphp
+<link rel="stylesheet" href="{{ asset('assets/css/events.css') }}">
 
-<!-- Hero -->
-<section class="relative">
-  <div
-    class="h-64 md:h-80 w-full bg-gradient-to-r from-indigo-600 to-purple-600"
-    @if($cover)
-      style="background-image:url('{{ $cover }}'); background-size:cover; background-position:center;"
-    @endif
-  >
-    <div class="h-full w-full @if($cover) bg-black/50 @endif">
-      <div class="mx-auto max-w-6xl h-full px-4 flex items-end">
-        <div class="pb-6">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex items-center rounded-full bg-yellow-400/95 px-3 py-1 text-xs font-semibold text-gray-900 shadow">
-              {{ $isUpcoming ? 'Upcoming' : 'Past' }}
-            </span>
-            <a href="{{ route('events.index') }}"
-               class="inline-flex items-center text-indigo-100 hover:text-white transition">
-              <i class="bi bi-arrow-left mr-2"></i> Back to Events
-            </a>
-          </div>
-          <h1 class="mt-3 text-3xl md:text-4xl font-bold text-white drop-shadow">{{ $event->title }}</h1>
-
-          <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-indigo-50">
-            <div class="flex items-center gap-2 bg-white/10 backdrop-blur rounded-lg px-3 py-2">
-              <i class="bi bi-calendar3 text-white"></i>
-              <span class="text-sm">
-                {{ optional($event->starts_at)->format('M d, Y g:i A') }}
-                @if($event->ends_at) – {{ $event->ends_at->format('M d, Y g:i A') }} @endif
-              </span>
+<div class="event-details-container">
+    <!-- Event Banner -->
+    <div class="event-banner">
+        @if($event->banner_url)
+            <img src="{{ $event->banner_url }}" alt="{{ $event->title }}" class="banner-image">
+        @else
+            <div class="banner-placeholder">
+                <i class="bi bi-image"></i>
+                <p>Event Banner</p>
             </div>
-            <div class="flex items-center gap-2 bg-white/10 backdrop-blur rounded-lg px-3 py-2">
-              <i class="bi bi-geo-alt text-white"></i>
-              <span class="text-sm">{{ $event->venue ?? $event->location }}</span>
-            </div>
-            <div class="flex items-center gap-2 bg-white/10 backdrop-blur rounded-lg px-3 py-2">
-              <i class="bi bi-currency-dollar text-white"></i>
-              <span class="text-sm font-semibold">${{ number_format($event->price,2) }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Content -->
-<section class="py-10">
-  <div class="mx-auto max-w-6xl px-4">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Left: Details -->
-      <div class="md:col-span-2 space-y-6">
-        <!-- About -->
-        @if($event->description)
-          <article class="rounded-2xl bg-white shadow p-6">
-            <h2 class="text-xl font-semibold text-gray-900">About this event</h2>
-            <p class="mt-3 leading-relaxed text-gray-700">
-              {!! nl2br(e($event->description)) !!}
-            </p>
-          </article>
         @endif
-
-        <!-- Info blocks -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div class="rounded-2xl bg-white shadow p-6">
-            <div class="flex items-center gap-2 text-gray-500 text-sm">
-              <i class="bi bi-calendar2-week text-indigo-600"></i>
-              When
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+            <div class="event-badge">
+                @php
+                    $now = \Carbon\Carbon::now();
+                    $eventStart = $event->starts_at;
+                    $eventEnd = $event->ends_at ?? $eventStart->copy()->addHours(3);
+                    
+                    if ($now->gt($eventEnd)) {
+                        $status = 'past';
+                        $statusText = 'Event Ended';
+                    } elseif ($now->between($eventStart, $eventEnd)) {
+                        $status = 'ongoing';
+                        $statusText = 'Ongoing';
+                    } else {
+                        $status = 'upcoming';
+                        $statusText = 'Upcoming';
+                    }
+                @endphp
+                <span class="event-status status-{{ $status }}">{{ $statusText }}</span>
             </div>
-            <p class="mt-2 font-medium text-gray-900">
-              {{ optional($event->starts_at)->format('l, M d, Y g:i A') }}
-              @if($event->ends_at)<br><span class="text-gray-600">until</span> {{ $event->ends_at->format('l, M d, Y g:i A') }}@endif
-            </p>
-          </div>
-
-          <div class="rounded-2xl bg-white shadow p-6">
-            <div class="flex items-center gap-2 text-gray-500 text-sm">
-              <i class="bi bi-geo-alt-fill text-indigo-600"></i>
-              Where
+            <h1 class="event-title">{{ $event->title }}</h1>
+            <div class="event-meta">
+                <div class="meta-item">
+                    <i class="bi bi-calendar-event"></i>
+                    <span>{{ $event->starts_at->format('M d, Y') }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-clock"></i>
+                    <span>{{ $event->starts_at->format('h:i A') }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>{{ $event->location }}</span>
+                </div>
             </div>
-            <p class="mt-2 font-medium text-gray-900">{{ $event->venue ?? $event->location }}</p>
-          </div>
         </div>
-
-        <!-- Price note -->
-        <div class="rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 p-6">
-          <div class="flex items-center gap-3">
-            <i class="bi bi-ticket-perforated text-indigo-600 text-xl"></i>
-            <div>
-              <p class="text-sm text-gray-500">Ticket price</p>
-              <p class="text-2xl font-bold text-gray-900">${{ number_format($event->price,2) }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right: Purchase -->
-      <aside class="md:col-span-1">
-        <div class="md:sticky md:top-6 rounded-2xl bg-white shadow-xl p-6">
-          <h2 class="text-xl font-semibold text-gray-900">Buy Ticket</h2>
-
-          <form method="POST" action="{{ route('tickets.start', $event) }}" class="mt-4 space-y-5">
-            @csrf
-
-            <!-- Quantity -->
-            <div>
-              <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
-              <div class="mt-1 flex items-center gap-2">
-                <button type="button" id="decQty"
-                        class="h-10 w-10 rounded-lg border flex items-center justify-center hover:bg-gray-50">−</button>
-                <input type="number" name="quantity" id="quantity" min="1" value="1"
-                       class="h-10 w-20 text-center rounded-lg border">
-                <button type="button" id="incQty"
-                        class="h-10 w-10 rounded-lg border flex items-center justify-center hover:bg-gray-50">+</button>
-              </div>
-            </div>
-
-            <!-- Total -->
-            <div class="rounded-xl bg-gray-50 p-4">
-              <p class="text-sm text-gray-500">Estimated total</p>
-              <p class="mt-1 text-2xl font-bold" id="totalPreview">${{ number_format($event->price,2) }}</p>
-              <p class="text-xs text-gray-500">
-                ${{ number_format($event->price,2) }} × <span id="qtyPreview">1</span>
-              </p>
-            </div>
-
-            <!-- CTA -->
-            <button
-              class="w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-white font-semibold shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              type="submit">
-              <i class="bi bi-box-arrow-in-right mr-2"></i> Proceed to Checkout
-            </button>
-          </form>
-
-          @guest
-            <p class="mt-3 text-xs text-gray-500">
-              You’ll be asked to log in before checkout.
-            </p>
-          @endguest
-        </div>
-      </aside>
     </div>
-  </div>
-</section>
-@endsection
 
-@section('extra-js')
+    <div class="event-content">
+        <div class="event-info">
+            <!-- Event Description -->
+            <div class="info-section">
+                <h2>About This Event</h2>
+                <div class="event-description">
+                    {!! nl2br(e($event->description)) !!}
+                </div>
+            </div>
+
+            <!-- Event Details -->
+            <div class="info-section">
+                <h2>Event Details</h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <strong>Category:</strong>
+                        <span class="category-tag">{{ ucfirst($event->category) }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Date:</strong>
+                        <span>{{ $event->starts_at->format('l, F j, Y') }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Time:</strong>
+                        <span>{{ $event->starts_at->format('g:i A') }}</span>
+                    </div>
+                    @if($event->ends_at)
+                    <div class="detail-item">
+                        <strong>End Time:</strong>
+                        <span>{{ $event->ends_at->format('M j, Y g:i A') }}</span>
+                    </div>
+                    @endif
+                    <div class="detail-item">
+                        <strong>Location:</strong>
+                        <span>{{ $event->location }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Organizer:</strong>
+                        <span>{{ $event->creator->name ?? 'Event Organizer' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ticket Purchase Card -->
+        <div class="purchase-card">
+            <div class="purchase-header">
+                <h3>Get Your Ticket</h3>
+                <div class="price-display">
+                    @if($event->price > 0)
+                        <span class="price">${{ number_format($event->price, 2) }}</span>
+                        <span class="price-label">per ticket</span>
+                    @else
+                        <span class="price free">Free</span>
+                    @endif
+                </div>
+            </div>
+
+            @if($status === 'past')
+                <!-- Past Event - No Purchase Option -->
+                <div class="past-event-notice">
+                    <div class="notice-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="notice-content">
+                        <h4>Event Has Ended</h4>
+                        <p>This event took place on {{ $event->starts_at->format('M j, Y') }}. Ticket sales are no longer available.</p>
+                    </div>
+                </div>
+            @else
+                <!-- Active Event - Show Purchase Form -->
+                <form action="{{ route('tickets.start', $event) }}" method="POST" class="purchase-form">
+                    @csrf
+                    
+                    <div class="form-group">
+                        <label for="quantity">Number of Tickets</label>
+                        <div class="quantity-selector">
+                            <button type="button" class="qty-btn" onclick="changeQuantity(-1)">-</button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" max="10" readonly>
+                            <button type="button" class="qty-btn" onclick="changeQuantity(1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="total-section">
+                        <div class="total-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">${{ number_format($event->price, 2) }}</span>
+                        </div>
+                        <div class="total-row total-final">
+                            <strong>Total:</strong>
+                            <strong id="total">${{ number_format($event->price, 2) }}</strong>
+                        </div>
+                    </div>
+
+                    @guest
+                        <div class="auth-notice">
+                            <p>Please <a href="{{ route('login') }}" class="auth-link">login</a> or <a href="{{ route('register') }}" class="auth-link">register</a> to purchase tickets.</p>
+                        </div>
+                    @else
+                        <button type="submit" class="btn-purchase">
+                            <i class="bi bi-ticket-perforated"></i>
+                            @if($event->price > 0)
+                                Buy Tickets
+                            @else
+                                Get Free Tickets
+                            @endif
+                        </button>
+                    @endguest
+                </form>
+            @endif
+
+            <!-- Event Stats -->
+            <div class="event-stats">
+                <div class="stat-item">
+                    <i class="bi bi-people"></i>
+                    <span>{{ $event->max_attendees ?? 'Unlimited' }} capacity</span>
+                </div>
+                <div class="stat-item">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Created {{ $event->created_at->diffForHumans() }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-  (function () {
-    const price    = {{ (float) $event->price }};
-    const qtyInput = document.getElementById('quantity');
-    const qtyPrev  = document.getElementById('qtyPreview');
-    const totPrev  = document.getElementById('totalPreview');
-    const inc      = document.getElementById('incQty');
-    const dec      = document.getElementById('decQty');
+const eventPrice = {{ $event->price }};
 
-    function clamp(v){ return Math.max(1, parseInt(v || '1', 10)); }
-    function recalc(){
-      const q = clamp(qtyInput.value);
-      qtyInput.value = q;
-      qtyPrev.textContent = q;
-      totPrev.textContent = '$' + (q * price).toFixed(2);
-    }
+function changeQuantity(change) {
+    const quantityInput = document.getElementById('quantity');
+    const currentQuantity = parseInt(quantityInput.value);
+    const newQuantity = Math.max(1, Math.min(10, currentQuantity + change));
+    
+    quantityInput.value = newQuantity;
+    updateTotal();
+}
 
-    inc?.addEventListener('click', () => { qtyInput.value = clamp(qtyInput.value) + 1; recalc(); });
-    dec?.addEventListener('click', () => { qtyInput.value = clamp(qtyInput.value) - 1; recalc(); });
-    qtyInput?.addEventListener('input', recalc);
+function updateTotal() {
+    const quantity = parseInt(document.getElementById('quantity').value);
+    const subtotal = eventPrice * quantity;
+    const total = subtotal;
+    
+    document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+    document.getElementById('total').textContent = '$' + total.toFixed(2);
+}
 
-    recalc();
-  })();
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateTotal();
+});
 </script>
+
 @endsection
