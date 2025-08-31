@@ -1,0 +1,326 @@
+/* EventEase - Event Request Form Enhanced Styles */
+
+/* Root variables for consistent theming */
+:root {
+  --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --secondary-gradient: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  --accent-color: #6366f1;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border-color: #e2e8f0;
+  --border-focus: #6366f1;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --border-radius: 12px;
+  --border-radius-lg: 16px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced container and card styling */
+.event-request-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: calc(100vh - 80px);
+  padding: 2rem 1rem;
+  position: relative;
+}
+
+.event-request-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.05"><circle cx="30" cy="30" r="4"/></g></svg>') repeat;
+  pointer-events: none;
+}
+
+.ee-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Enhanced form animations */
+.ee-field {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.ee-input, .ee-textarea, .ee-select {
+  transition: var(--transition);
+  position: relative;
+}
+
+.ee-input:focus, .ee-textarea:focus, .ee-select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Floating label effect */
+.ee-field.floating .ee-label {
+  position: absolute;
+  top: 0.875rem;
+  left: 1rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: var(--transition);
+  background: white;
+  padding: 0 0.25rem;
+  z-index: 1;
+}
+
+.ee-field.floating .ee-input:focus + .ee-label,
+.ee-field.floating .ee-input:not(:placeholder-shown) + .ee-label,
+.ee-field.floating .ee-textarea:focus + .ee-label,
+.ee-field.floating .ee-textarea:not(:placeholder-shown) + .ee-label {
+  top: -0.5rem;
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* Enhanced button styles */
+.ee-btn {
+  position: relative;
+  overflow: hidden;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  transition: var(--transition);
+}
+
+.ee-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.ee-btn:hover::before {
+  left: 100%;
+}
+
+/* File upload enhancements */
+.ee-file-label {
+  background: var(--secondary-gradient);
+  border: 2px dashed var(--border-color);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.ee-file-label::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.ee-file-label:hover::before {
+  opacity: 1;
+  animation: ripple 2s infinite;
+}
+
+@keyframes ripple {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* Enhanced price section */
+.ee-price-section {
+  position: relative;
+  background: var(--secondary-gradient);
+  border: 2px solid #bae6fd;
+  transition: var(--transition);
+}
+
+.ee-price-section::before {
+  content: '💰';
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: white;
+  padding: 0 8px;
+  font-size: 1.2rem;
+}
+
+/* Toggle switch enhancements */
+.ee-toggle input:checked + .ee-slider {
+  background: var(--primary-gradient);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+}
+
+.ee-slider {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Section headers with enhanced styling */
+.ee-section {
+  position: relative;
+  margin: 2rem 0 1.5rem;
+}
+
+.ee-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--primary-gradient);
+  border-radius: 2px;
+}
+
+/* Progress indicator */
+.form-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(99, 102, 241, 0.1);
+  z-index: 1000;
+}
+
+.form-progress-bar {
+  height: 100%;
+  background: var(--primary-gradient);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Success state animations */
+.ee-input.success, .ee-textarea.success, .ee-select.success {
+  border-color: var(--success-color);
+  box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1);
+}
+
+.ee-input.success::after, .ee-textarea.success::after {
+  content: '✓';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--success-color);
+  font-weight: bold;
+}
+
+/* Loading states */
+.ee-btn.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.ee-btn.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  border: 2px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  .event-request-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .ee-card {
+    margin: 0;
+    border-radius: var(--border-radius);
+  }
+  
+  .ee-grid-2, .ee-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  .ee-actions {
+    flex-direction: column;
+  }
+  
+  .ee-btn {
+    width: 100%;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-color: #374151;
+  }
+  
+  .ee-card {
+    background: rgba(30, 41, 59, 0.95);
+  }
+  
+  .ee-input, .ee-textarea, .ee-select {
+    background: #374151;
+    color: #f8fafc;
+  }
+}
+
+/* Accessibility improvements */
+.ee-input:focus-visible, .ee-textarea:focus-visible, .ee-select:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.ee-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling for form navigation */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced error states */
+.ee-error {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Form validation indicators */
+.field-valid .ee-input, .field-valid .ee-textarea, .field-valid .ee-select {
+  border-left: 4px solid var(--success-color);
+}
+
+.field-error .ee-input, .field-error .ee-textarea, .field-error .ee-select {
+  border-left: 4px solid var(--error-color);
+}

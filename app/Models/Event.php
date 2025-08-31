@@ -8,15 +8,17 @@ class Event extends Model
 {
 protected $fillable = [
   'title','description','location','venue','starts_at','ends_at','capacity',
-  'price','banner','banner_path','created_by','status','approved_by','approved_at','featured_on_home',
+  'price','banner','banner_path','allow_pay_later','created_by','status','approved_by','approved_at','featured_on_home',
 ];
 
 
     protected $casts = [
-        'starts_at'   => 'datetime',
-        'ends_at'     => 'datetime',
-        'approved_at' => 'datetime',
-        'price'       => 'decimal:2',
+        'starts_at'        => 'datetime',
+        'ends_at'          => 'datetime',
+        'approved_at'      => 'datetime',
+        'price'            => 'decimal:2',
+        'allow_pay_later'  => 'boolean',
+        'featured_on_home' => 'boolean',
     ];
 
     public function creator()
