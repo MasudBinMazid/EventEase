@@ -1,8 +1,28 @@
+:root {
+  --primary-navy: #1e3a8a;
+  --primary-dark: #1e293b;
+  --primary-light: #f1f5f9;
+  --accent-blue: #3b82f6;
+  --accent-orange: #f59e0b;
+  --accent-green: #10b981;
+  --text-dark: #0f172a;
+  --text-medium: #475569;
+  --text-light: #64748b;
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+}
+
 .blog-page {
   padding: 40px 20px;
   max-width: 1200px;
   margin: auto;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 .blog-page h2 {
@@ -176,18 +196,24 @@
 
 
 .news-banner {
-  background-color: #7999b8; /* You can choose any color */
+  background: var(--gradient-primary);
   color: white;
   text-align: center;
-  padding: 20px 0;
-  border-radius: 10px;
-  margin-bottom: 30px;
+  padding: 30px 20px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  box-shadow: var(--shadow-md);
 }
 
 .news-banner h2 {
   margin: 0;
-  font-size: 28px;
-  letter-spacing: 1px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 

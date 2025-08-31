@@ -1,21 +1,45 @@
+:root {
+  --primary-navy: #1e3a8a;
+  --primary-dark: #1e293b;
+  --primary-light: #f1f5f9;
+  --accent-blue: #3b82f6;
+  --accent-orange: #f59e0b;
+  --accent-green: #10b981;
+  --text-dark: #0f172a;
+  --text-medium: #475569;
+  --text-light: #64748b;
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Inter", "Segoe UI", sans-serif;
 }
 
 body {
-  background: #f7f9fb;
+  background: var(--primary-light);
+  color: var(--text-dark);
+  line-height: 1.6;
 }
 
 header {
-  background: rgb(65, 65, 123);
+  background: var(--gradient-primary);
   color: white;
   padding: 20px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: var(--shadow-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .logo {
@@ -37,7 +61,7 @@ header {
 .logo-text {
   font-size: 24px;
   font-weight: bold;
-  background: linear-gradient(45deg, #ff6b6b, #ffa500);
+  background: var(--gradient-accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -61,7 +85,7 @@ header {
 .sidebar-logo-text {
   font-size: 20px;
   font-weight: bold;
-  background: linear-gradient(45deg, #ff6b6b, #ffa500);
+  background: var(--gradient-accent);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -72,10 +96,19 @@ nav a {
   color: white;
   text-decoration: none;
   font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+nav a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent-orange);
 }
 
 nav a.active {
-  border-bottom: 2px solid white;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--accent-orange);
 }
 
 /* Desktop Navigation */
@@ -91,20 +124,25 @@ nav a.active {
 
 .desktop-login-section button {
   background: transparent;
-  border: 1px solid white;
-  padding: 6px 12px;
-  color: white;
-  border-radius: 6px;
+  border: 2px solid var(--accent-orange);
+  padding: 8px 16px;
+  color: var(--accent-orange);
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .desktop-login-section button a {
-  color: white;
+  color: inherit;
   text-decoration: none;
 }
 
 .desktop-login-section button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--accent-orange);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Mobile Hamburger Button */
@@ -164,11 +202,11 @@ nav a.active {
   left: -100%;
   width: 280px;
   height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   color: white;
   z-index: 1000;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -269,8 +307,8 @@ nav a.active {
 .sidebar-login-btn {
   width: 100%;
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  border: 2px solid var(--accent-orange);
+  color: var(--accent-orange);
   padding: 12px 16px;
   border-radius: 8px;
   cursor: pointer;
@@ -278,13 +316,15 @@ nav a.active {
   align-items: center;
   gap: 10px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .sidebar-login-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--accent-orange);
+  color: white;
   transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Sidebar Navigation */
@@ -306,10 +346,10 @@ nav a.active {
 
 .sidebar-link:hover {
   background: rgba(255, 255, 255, 0.1);
-  border-left-color: white;
+  border-left-color: var(--accent-orange);
   padding-left: 25px;
   transform: translateX(5px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .sidebar-link svg {
@@ -337,7 +377,7 @@ nav a.active {
 }
 
 .logout-link:hover {
-  color: #ff6b6b;
+  color: #ef4444;
 }
 
 /* Custom scrollbar for sidebar */
@@ -350,18 +390,18 @@ nav a.active {
 }
 
 .mobile-sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--accent-orange);
   border-radius: 3px;
 }
 
 .mobile-sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: #d97706;
 }
 
 /* Active link styling */
 .sidebar-link.active {
   background: rgba(255, 255, 255, 0.15);
-  border-left-color: #ffd700;
+  border-left-color: var(--accent-orange);
   font-weight: 600;
 }
 
@@ -386,120 +426,156 @@ nav a.active {
 }
 
 .card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  padding: 25px;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  padding: 30px;
   flex: 1 1 200px;
   max-width: 220px;
   text-align: center;
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
 .card .icon {
   font-size: 30px;
-  margin-bottom: 10px;
-  background: linear-gradient(to right, #5f65e6, #7a50c5);
+  margin-bottom: 15px;
+  background: var(--gradient-accent);
   color: white;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
-  margin: 0 auto 10px;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  margin: 0 auto 15px;
+  box-shadow: var(--shadow-sm);
 }
 
 .card h2 {
   font-size: 24px;
-  color: #222;
+  color: var(--text-dark);
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .card p {
-  color: #666;
+  color: var(--text-light);
   margin-top: 5px;
+  font-size: 14px;
 }
 
 .recent-events {
-  background: white;
+  background: var(--white);
   margin: 0 30px 30px;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
 }
 
 .recent-events h2 {
-  margin-bottom: 20px;
-  color: #222;
+  margin-bottom: 25px;
+  color: var(--text-dark);
+  font-weight: 700;
+  font-size: 28px;
 }
 
 .event {
   display: flex;
   align-items: center;
-  padding: 12px 0;
-  border-top: 1px solid #eee;
+  padding: 16px 0;
+  border-top: 1px solid var(--border-light);
+  transition: all 0.3s ease;
 }
 
 .event:first-of-type {
   border-top: none;
 }
 
-.date {
-  background: linear-gradient(to right, #5f65e6, #7a50c5);
-  color: white;
-  width: 60px;
-  text-align: center;
-  padding: 10px 0;
+.event:hover {
+  background: var(--primary-light);
+  padding-left: 10px;
   border-radius: 8px;
+}
+
+.date {
+  background: var(--gradient-accent);
+  color: white;
+  width: 70px;
+  text-align: center;
+  padding: 12px 0;
+  border-radius: 12px;
   margin-right: 20px;
+  box-shadow: var(--shadow-sm);
 }
 
 .date span {
   display: block;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .date strong {
   font-size: 20px;
+  font-weight: 700;
 }
 
 .event h3 {
   margin-bottom: 5px;
   font-size: 18px;
-  color: #222;
+  color: var(--text-dark);
+  font-weight: 600;
 }
 
 .event p {
-  color: #555;
+  color: var(--text-light);
   font-size: 14px;
 }
 
 
 
 /* Footer */
-
 .site-footer {
-  background-color: #325676;
+  background: var(--gradient-primary);
   color: #fff;
-  padding: 40px 20px 10px;
-  font-family: 'Segoe UI', sans-serif;
+  padding: 50px 20px 20px;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  border-top: 1px solid var(--border-medium);
 }
 
 .footer-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .footer-column h3,
 .footer-column h4 {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.footer-column.brand h3 {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 24px;
 }
 
 .footer-column p {
-  color: #ccc;
+  color: #cbd5e1;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
+  margin-bottom: 15px;
 }
 
 .footer-column ul {
@@ -508,63 +584,91 @@ nav a.active {
 }
 
 .footer-column ul li a {
-  color: #ccc;
+  color: #cbd5e1;
   text-decoration: none;
   display: block;
-  padding: 5px 0;
-  transition: color 0.3s;
+  padding: 8px 0;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  padding-left: 8px;
+  margin-left: -8px;
 }
 
 .footer-column ul li a:hover {
-  color: #ffcc00;
+  color: var(--accent-orange);
+  background: rgba(255, 255, 255, 0.05);
+  padding-left: 12px;
 }
 
 .social-icons a img {
-  color: antiquewhite;
-  width: 24px;
-  height: 24px;
-  margin-right: 12px;
-  transition: transform 0.3s;
+  width: 28px;
+  height: 28px;
+  margin-right: 15px;
+  transition: all 0.3s ease;
+  filter: brightness(0.9);
+  border-radius: 6px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .social-icons a:hover img {
-  transform: scale(1.2);
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+  background: var(--accent-orange);
 }
 
 .subscribe-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .subscribe-form input {
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
   outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.subscribe-form input::placeholder {
+  color: #cbd5e1;
+}
+
+.subscribe-form input:focus {
+  border-color: var(--accent-orange);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .subscribe-form button {
-  padding: 10px;
-  background-color: #ffcc00;
+  padding: 12px 16px;
+  background: var(--accent-orange);
   border: none;
-  border-radius: 4px;
-  font-weight: bold;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  color: white;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .subscribe-form button:hover {
-  background-color: #e6b800;
+  background: #d97706;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .footer-bottom {
   text-align: center;
-  margin-top: 30px;
-  padding-top: 10px;
-  border-top: 1px solid #444;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 14px;
-  color: #aaa;
+  color: #cbd5e1;
 }
 
 /* Responsive tweaks */

@@ -1,3 +1,23 @@
+:root {
+  --primary-navy: #1e3a8a;
+  --primary-dark: #1e293b;
+  --primary-light: #f1f5f9;
+  --accent-blue: #3b82f6;
+  --accent-orange: #f59e0b;
+  --accent-green: #10b981;
+  --text-dark: #0f172a;
+  --text-medium: #475569;
+  --text-light: #64748b;
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+}
+
 /* === HERO SECTION === */
 .hero-section {
   display: flex;
@@ -122,28 +142,45 @@
 
 /* === UPCOMING EVENTS === */
 .upcoming-events {
-  padding: 40px 20px;
-  background: #f9f9f9;
+  padding: 60px 20px;
+  background: var(--white);
   text-align: center;
+  border-top: 1px solid var(--border-light);
 }
 
 .upcoming-events h2 {
-  font-size: 28px;
-  margin-bottom: 30px;
-  color: #333;
+  font-size: 32px;
+  margin-bottom: 40px;
+  color: var(--text-dark);
+  font-weight: 700;
 }
 
 .event-cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 25px;
   justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .event-card {
-  background: #fff;
-  border-radius: 10px;
+  background: var(--white);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  width: 300px;
+}
+
+.event-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent-blue);
+}
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: transform 0.3s, box-shadow 0.3s;
   text-decoration: none;
@@ -276,8 +313,9 @@ html, body {
 
 /* HERO SECTION */
 .hero-section {
-  padding: 40px 20px;
-  background-color: #f8f9fa;
+  padding: 50px 20px;
+  background: var(--primary-light);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .hero-flex-container {
@@ -325,13 +363,20 @@ html, body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--primary-navy);
   color: white;
   border: none;
-  padding: 10px;
+  padding: 12px;
   border-radius: 50%;
   cursor: pointer;
   z-index: 2;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.slider-btn:hover {
+  background: var(--accent-orange);
+  transform: translateY(-50%) scale(1.1);
 }
 #prevBtn { left: 10px; }
 #nextBtn { right: 10px; }
@@ -394,24 +439,29 @@ html, body {
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
 }
 
 .slider-dot.active {
-  background-color: rgb(21, 32, 44);
+  background-color: var(--accent-orange);
+  border-color: white;
+  transform: scale(1.2);
 }
 
 
 .faq-section {
-  padding: 50px 20px;
-  background-color: #f9f9f9;
+  padding: 60px 20px;
+  background: var(--primary-light);
   text-align: center;
+  border-top: 1px solid var(--border-light);
 }
 
 .faq-section h2 {
-  font-size: 28px;
-  margin-bottom: 30px;
-  color: #333;
+  font-size: 32px;
+  margin-bottom: 40px;
+  color: var(--text-dark);
+  font-weight: 700;
 }
 
 .faq-container {
@@ -421,8 +471,12 @@ html, body {
 }
 
 .faq-item {
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 20px;
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .faq-question {
@@ -431,18 +485,19 @@ html, body {
   width: 100%;
   text-align: left;
   font-size: 18px;
-  padding: 15px;
+  padding: 20px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
-  color: #333;
-  transition: background 0.3s ease;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
 }
 
 .faq-question:hover {
-  background-color: #eee;
+  background: var(--primary-light);
+  color: var(--accent-blue);
 }
 
 .faq-answer {

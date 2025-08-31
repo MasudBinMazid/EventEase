@@ -1,11 +1,29 @@
+:root {
+  --primary-navy: #1e3a8a;
+  --primary-dark: #1e293b;
+  --primary-light: #f1f5f9;
+  --accent-blue: #3b82f6;
+  --accent-orange: #f59e0b;
+  --text-dark: #0f172a;
+  --text-light: #64748b;
+  --border-light: #e2e8f0;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+}
+
 .auth-errors {
-  background: #ffe0e0;
-  color: #b30000;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #f5c2c2;
-  border-radius: 4px;
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
   font-size: 14px;
+  font-weight: 500;
 }
 .edit-profile-wrapper {
   max-width: 500px;
@@ -55,24 +73,27 @@
 .dropdown {
   position: relative;
   display: inline-block;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
 /* Username Button */
 .dropdown-toggle {
-  background-color: #007bff;
+  background: var(--accent-blue);
   color: white;
   padding: 10px 18px;
   font-size: 15px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  font-weight: 600;
 }
 
 .dropdown-toggle:hover {
-  background-color: #0056b3;
+  background: var(--primary-navy);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 /* Dropdown Menu */
@@ -81,13 +102,14 @@
   position: absolute;
   top: 120%;
   right: 0;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
   z-index: 1000;
   min-width: 180px;
   padding: 8px 0;
+  backdrop-filter: blur(10px);
 }
 
 /* Menu Items */
@@ -98,20 +120,21 @@
   text-align: left;
   padding: 12px 20px;
   font-size: 14px;
-  color: #333;
+  color: var(--text-dark);
   text-decoration: none;
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: all 0.3s ease;
   font-weight: 500;
 }
 
 /* Hover Effect */
 .dropdown-menu a:hover,
 .dropdown-menu form button:hover {
-  background-color: #f4f4f4;
-  color: #007bff;
+  background: var(--primary-light);
+  color: var(--accent-blue);
+  padding-left: 24px;
 }
 
 /* Show Class */

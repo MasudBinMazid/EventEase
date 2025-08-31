@@ -1,6 +1,22 @@
+:root {
+  --primary-navy: #1e3a8a;
+  --primary-dark: #1e293b;
+  --primary-light: #f1f5f9;
+  --accent-blue: #3b82f6;
+  --accent-orange: #f59e0b;
+  --text-dark: #0f172a;
+  --text-light: #64748b;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+}
+
 .event-type-slider {
-  margin: 50px auto;
+  margin: 60px auto;
   overflow: hidden;
+  padding: 0 20px;
 }
 
 .event-type-wrapper {
@@ -11,19 +27,24 @@
 }
 
 .arrow-btn {
-  background: #fff;
-  border: 1px solid #ccc;
+  background: var(--white);
+  border: 2px solid var(--accent-blue);
   border-radius: 50%;
   font-size: 1.2rem;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   z-index: 2;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  color: var(--accent-blue);
+  font-weight: bold;
+  box-shadow: var(--shadow-md);
 }
 
 .arrow-btn:hover {
-  background: #eee;
+  background: var(--accent-blue);
+  color: white;
+  transform: scale(1.1);
 }
 
 .event-type-scroll {
@@ -63,22 +84,42 @@
 .event-type-item {
   flex: 0 0 auto;
   text-align: center;
-  width: 100px;
+  width: 110px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px 15px;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.event-type-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-blue);
 }
 
 .event-type-item img {
-  width: 45px;
-  height: 45px;
-  margin-bottom: 6px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
   object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.event-type-item:hover img {
+  transform: scale(1.1);
 }
 
 .event-type-item p {
-  font-size: 13px;
-  color: #333;
-  line-height: 1.2;
+  font-size: 14px;
+  color: var(--text-dark);
+  font-weight: 600;
+  line-height: 1.3;
   text-align: center;
+  margin: 0;
 }

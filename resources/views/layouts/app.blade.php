@@ -29,19 +29,47 @@
 
   {{-- Minimal base in case both CDNs are blocked --}}
   <style>
-    body{background:#f8f9fc;color:#111827;margin:0}
-    /* Fixed header with dark indigo bg */
-    header.site-header{
-      position:fixed;
-      top:0;left:0;right:0;
-      z-index:50;
-      background:#3f3f7a; /* updated color */
-      color:#fff;         /* text white */
-      border-bottom:1px solid #2c2c54;
+    :root {
+      --primary-navy: #1e3a8a;
+      --primary-dark: #1e293b;
+      --primary-light: #f1f5f9;
+      --accent-blue: #3b82f6;
+      --accent-orange: #f59e0b;
+      --text-dark: #0f172a;
+      --text-light: #64748b;
+      --border-light: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
-    header.site-header a{color:#fff;text-decoration:none}
-    header.site-header a:hover{color:#e5e7eb}
-    .header-spacer{height:64px} /* matches ~h-16 */
+    
+    body{
+      background: var(--primary-light);
+      color: var(--text-dark);
+      margin: 0;
+    }
+    
+    /* Fixed header with professional navy */
+    header.site-header{
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(10px);
+    }
+    header.site-header a{
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    header.site-header a:hover{
+      color: var(--accent-orange);
+    }
+    .header-spacer{
+      height: 64px;
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
