@@ -1,199 +1,149 @@
 @extends('admin.layout')
-@section('title','Blogs')
+@section('title','Blogs Management')
 
 @section('content')
-<div class="admin-blogs"><!-- SCOPE WRAPPER: prevents navbar overrides -->
-  <style>
-    /* Page-scoped design tokens (do NOT use :root here) */
-    .admin-blogs{
-      --bg:#ffffff;
-      --surface:#ffffff;
-      --surface-2:#f9fafb;
-      --text:#111827;
-      --muted:#6b7280;
-      --border:#e5e7eb;
-      --ring: rgba(37,99,235,.35);
-
-      --primary:#2563eb;      /* blue-600 */
-      --primary-600:#1d4ed8;
-      --danger:#dc2626;
-
-      --radius:14px;
-      --shadow:0 10px 30px rgba(0,0,0,.06);
-      --shadow-sm:0 2px 10px rgba(0,0,0,.05);
-    }
-
-    .admin-blogs .ab-wrap{ padding: clamp(12px,1.8vw,20px); background: var(--bg); color: var(--text); }
-    .admin-blogs .ab-card{
-      background: var(--surface); border:1px solid var(--border); border-radius: var(--radius);
-      box-shadow: var(--shadow); padding: clamp(16px,2vw,22px);
-    }
-
-    .admin-blogs .ab-head{
-      display:flex; align-items:flex-end; justify-content:space-between; gap: 12px; flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-    .admin-blogs .ab-title{ margin:0; font-weight:800; letter-spacing:.2px; }
-    .admin-blogs .ab-subtitle{ margin:0; color:var(--muted); }
-
-    .admin-blogs .ab-toolbar{
-      display:flex; align-items:center; gap:8px; flex-wrap: wrap; margin-top: 8px;
-    }
-    .admin-blogs .ab-input{
-      background:#fff; border:1px solid var(--border); border-radius:10px; padding:10px 12px;
-      box-shadow: var(--shadow-sm); color:var(--text); min-width: 220px;
-    }
-
-    .admin-blogs .ab-btn{
-      appearance:none; border:1px solid var(--border); border-radius: 999px;
-      padding: 10px 14px; font-weight:700; text-decoration:none; cursor:pointer;
-      display:inline-flex; align-items:center; gap:.5rem; transition:.18s ease;
-      background:#fff; color:var(--text); box-shadow: var(--shadow-sm);
-    }
-    .admin-blogs .ab-btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow); }
-    .admin-blogs .ab-btn:focus-visible{ outline:3px solid var(--ring); outline-offset:2px; }
-    .admin-blogs .ab-btn-primary{ background: var(--primary); color:#fff; border-color: transparent; }
-    .admin-blogs .ab-btn-primary:hover{ background: var(--primary-600); }
-    .admin-blogs .ab-btn-ghost{ background: var(--surface-2); }
-    .admin-blogs .ab-btn-sm{ padding:8px 10px; border-radius:10px; }
-
-    .admin-blogs .ab-empty{
-      border:1px dashed var(--border); border-radius:12px; background:var(--surface-2);
-      padding:22px; color:var(--muted); text-align:center; box-shadow: var(--shadow-sm);
-    }
-
-    .admin-blogs .ab-table-wrap{
-      margin-top: 12px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-      background: var(--surface); box-shadow: var(--shadow);
-    }
-    .admin-blogs .ab-table{ width:100%; border-collapse: separate; border-spacing:0; font-size:.96rem; }
-    .admin-blogs .ab-table thead th{
-      text-align:left; padding:12px 14px; background:#fff; border-bottom:1px solid var(--border);
-      color:var(--muted); font-weight:800;
-    }
-    .admin-blogs .ab-table tbody td{
-      padding:12px 14px; border-bottom:1px solid var(--border); vertical-align: middle;
-    }
-    .admin-blogs .ab-table tbody tr:nth-child(even){ background: var(--surface-2); }
-    .admin-blogs .ab-table tbody tr:hover{ background:#fff; }
-
-    .admin-blogs .ab-col-id{ width:72px; color:var(--muted); }
-    .admin-blogs .ab-col-img{ width:120px; }
-    .admin-blogs .ab-col-actions{ width:240px; text-align:right; white-space: nowrap; }
-
-    /* Author cell */
-    .admin-blogs .ab-author{ display:inline-flex; align-items:center; gap:10px; }
-    .admin-blogs .ab-avatar{
-      width:28px; height:28px; border-radius:50%; display:grid; place-items:center;
-      background:#eff6ff; color:#1d4ed8; border:1px solid #dbeafe; font-weight:800; font-size:.8rem;
-    }
-    .admin-blogs .ab-author-name{ font-weight:700; }
-
-    /* Image */
-    .admin-blogs .ab-thumb{
-      height:40px; width:auto; border-radius:8px; border:1px solid var(--border);
-      box-shadow: var(--shadow-sm); object-fit:cover; background:#fff;
-    }
-    .admin-blogs .ab-thumb.placeholder{
-      display:inline-flex; align-items:center; justify-content:center; height:40px; width:72px;
-      background: var(--surface-2); color: var(--muted); font-size:.8rem;
-      border:1px dashed var(--border); border-radius:8px;
-    }
-
-    /* Created date chip */
-    .admin-blogs .ab-chip-date{
-      display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px;
-      background:#ecfeff; color:#155e75; border:1px solid #cffafe; font-weight:700; font-size:.85rem;
-    }
-    .admin-blogs .ab-ico{ display:inline-flex; }
-
-    /* Responsive stack */
-    @media (max-width: 960px){
-      .admin-blogs .ab-table-wrap{ border-radius:10px; }
-      .admin-blogs .ab-table, 
-      .admin-blogs .ab-table thead, 
-      .admin-blogs .ab-table tbody, 
-      .admin-blogs .ab-table th, 
-      .admin-blogs .ab-table td, 
-      .admin-blogs .ab-table tr{ display:block; }
-      .admin-blogs .ab-table thead{ display:none; }
-      .admin-blogs .ab-table tbody tr{ border-bottom:1px solid var(--border); padding:8px 12px; }
-      .admin-blogs .ab-table tbody td{
-        border:none; padding:8px 0; display:grid; grid-template-columns: 120px 1fr; gap:8px;
-      }
-      .admin-blogs .ab-table tbody td::before{
-        content: attr(data-label);
-        font-weight:700; color:var(--muted);
-      }
-      .admin-blogs .ab-col-actions{ width:auto; text-align:left; }
-    }
-  </style>
-
-  <div class="ab-wrap">
-    <div class="ab-card">
-      <div class="ab-head">
-        <div>
-          <h1 class="ab-title">Blogs</h1>
-          <p class="ab-subtitle">Create, edit, and manage blog posts.</p>
-        </div>
-        <a class="ab-btn ab-btn-primary" href="{{ route('admin.blogs.create') }}">
-          <span class="ab-ico" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </span>
-          New Blog
-        </a>
+<div class="admin-page">
+  <!-- Page Header -->
+  <div class="admin-header">
+    <div>
+      <h1 class="admin-title">Blogs Management</h1>
+      <p class="admin-subtitle">Create, edit, and manage blog posts</p>
+    </div>
+    <div class="admin-actions">
+      <div class="badge badge-info">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        {{ $blogs->count() }} Blog Posts
       </div>
+      <a class="btn btn-primary" href="{{ route('admin.blogs.create') }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        New Blog Post
+      </a>
+    </div>
+  </div>
 
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">{{ $blogs->count() }}</div>
+      <div class="stat-label">Total Posts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ $blogs->where('created_at', '>=', now()->subDays(30))->count() }}</div>
+      <div class="stat-label">This Month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ $blogs->where('created_at', '>=', now()->subDays(7))->count() }}</div>
+      <div class="stat-label">This Week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ $blogs->unique('author')->count() }}</div>
+      <div class="stat-label">Authors</div>
+    </div>
+  </div>
 
-
-      @if ($blogs->isEmpty())
-        <div class="ab-empty">No blogs yet.</div>
+  <!-- Blogs Table -->
+  <div class="admin-card">
+    <div class="card-header">
+      <h3 class="card-title">All Blog Posts</h3>
+    </div>
+    <div class="card-body" style="padding: 0;">
+      @if($blogs->isEmpty())
+        <div style="padding: 3rem; text-align: center; color: var(--text-light);">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.5;">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10,9 9,9 8,9"/>
+          </svg>
+          <p>No blog posts found. Click <strong>New Blog Post</strong> to create one.</p>
+        </div>
       @else
-        <div class="ab-table-wrap" role="region" aria-label="Blogs table">
-          <table class="ab-table">
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
             <thead>
               <tr>
-                <th class="ab-col-id">ID</th>
-                <th>Title</th>
+                <th style="width: 80px;">#</th>
+                <th>Post Details</th>
                 <th>Author</th>
-                <th class="ab-col-img">Image</th>
-                <th>Created</th>
-                <th class="ab-col-actions">Actions</th>
+                <th>Featured Image</th>
+                <th>Published</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              @foreach ($blogs as $b)
-                @php $initial = strtoupper(substr($b->author ?? 'U', 0, 1)); @endphp
+              @foreach($blogs as $blog)
                 <tr>
-                  <td class="ab-col-id" data-label="ID">#{{ $b->id }}</td>
-                  <td data-label="Title"><strong>{{ $b->title }}</strong></td>
-                  <td data-label="Author">
-                    <span class="ab-author">
-                      <span class="ab-avatar" aria-hidden="true">{{ $initial }}</span>
-                      <span class="ab-author-name">{{ $b->author ?? 'Unknown' }}</span>
-                    </span>
+                  <td>
+                    <span style="font-weight: 600; color: var(--primary);">#{{ $blog->id }}</span>
                   </td>
-                  <td class="ab-col-img" data-label="Image">
-                    @if($b->image)
-                      <img class="ab-thumb" src="{{ asset('storage/'.$b->image) }}" alt="Blog image">
-                    @else
-                      <span class="ab-thumb placeholder">—</span>
-                    @endif
+                  <td>
+                    <div>
+                      <div style="font-weight: 600; color: var(--text); margin-bottom: 0.25rem;">{{ $blog->title }}</div>
+                      @if($blog->content)
+                        <div style="font-size: 0.85rem; color: var(--text-light); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                          {{ Str::limit(strip_tags($blog->content), 100) }}
+                        </div>
+                      @endif
+                    </div>
                   </td>
-                  <td data-label="Created">
-                    <span class="ab-chip-date">
-                      <svg class="ab-ico" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M7 2v4M17 2v4M3 9h18M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5A2 2 0 0 0 3 7v12a2 2 0 0 0 2 2Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                      </svg>
-                      {{ $b->created_at?->format('M d, Y') }}
-                    </span>
+                  <td>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                      <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--success); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem;">
+                        {{ strtoupper(substr($blog->author ?? 'U', 0, 1)) }}
+                      </div>
+                      <div style="font-weight: 600; color: var(--text);">{{ $blog->author ?? 'Unknown' }}</div>
+                    </div>
                   </td>
-                  <td class="ab-col-actions" data-label="Actions">
-                    <a class="ab-btn ab-btn-sm" href="{{ route('admin.blogs.edit', $b) }}">Edit</a>
-                    <form action="{{ route('admin.blogs.destroy', $b) }}" method="POST" style="display:inline" onsubmit="return confirm('Delete this blog?')">
-                      @csrf @method('DELETE')
-                      <button class="ab-btn ab-btn-sm ab-btn-ghost" type="submit">Delete</button>
-                    </form>
+                  <td>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                      @if($blog->image)
+                        <img src="{{ asset('storage/'.$blog->image) }}" alt="Blog image" style="width: 60px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-light);">
+                      @else
+                        <div style="width: 60px; height: 40px; background: var(--bg-light); border: 1px dashed var(--border-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.8rem;">
+                          No Image
+                        </div>
+                      @endif
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                      <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M7 2v4M17 2v4M3 9h18M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5A2 2 0 0 0 3 7v12a2 2 0 0 0 2 2Z"/>
+                        </svg>
+                        <span style="color: var(--text); font-size: 0.85rem;">{{ $blog->created_at?->format('M j, Y') }}</span>
+                      </div>
+                      <div style="font-size: 0.8rem; color: var(--text-light); padding-left: 1.25rem;">{{ $blog->created_at?->format('g:i A') }}</div>
+                      <div style="font-size: 0.75rem; color: var(--text-muted); padding-left: 1.25rem;">{{ $blog->created_at?->diffForHumans() }}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                      <a class="btn btn-outline" href="{{ route('admin.blogs.edit', $blog) }}" title="Edit Blog Post">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                          <path d="m18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        Edit
+                      </a>
+                      <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" onsubmit="return confirm('Are you sure you want to delete this blog post? This action cannot be undone.')" style="display: inline;">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-danger" type="submit" title="Delete Blog Post" style="padding: 0.5rem 0.75rem;">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3,6 5,6 21,6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            <line x1="10" y1="11" x2="10" y2="17"/>
+                            <line x1="14" y1="11" x2="14" y2="17"/>
+                          </svg>
+                          Delete
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               @endforeach
@@ -202,6 +152,16 @@
         </div>
       @endif
     </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div style="display: flex; gap: 1rem; justify-content: flex-start; margin-top: 2rem;">
+    <a href="{{ route('admin.index') }}" class="btn btn-outline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"/>
+      </svg>
+      Back to Dashboard
+    </a>
   </div>
 </div>
 @endsection

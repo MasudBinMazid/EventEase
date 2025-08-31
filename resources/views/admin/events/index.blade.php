@@ -1,5 +1,200 @@
 @extends('admin.layout')
-@section('title','Events')
+@section('title','Events Management')
+
+@section('content')
+<div class="admin-page">
+  <!-- Page Header -->
+  <div class="admin-header">
+    <div>
+      <h1 class="admin-title">Events Management</h1>
+      <p class="admin-subtitle">Create, edit, and manage events. Control visibility on public site and home page featuring.</p>
+    </div>
+    <div class="admin-actions">
+      <div class="badge badge-info">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M7 2v4M17 2v4M3 9h18M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5A2 2 0 0 0 3 7v12a2 2 0 0 0 2 2Z"/>
+        </svg>
+        {{ $events->count() }} Total Events
+      </div>
+      <a class="btn btn-primary" href="{{ route('admin.events.create') }}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        New Event
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">{{ $events->where('featured_on_home', true)->count() }}</div>
+      <div class="stat-label">Featured Events</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ $events->where('visible_on_site', true)->count() }}</div>
+      <div class="stat-label">Visible Events</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ $events->where('visible_on_site', false)->count() }}</div>
+      <div class="stat-label">Hidden Events</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ $events->where('created_at', '>=', now()->subDays(7))->count() }}</div>
+      <div class="stat-label">New This Week</div>
+    </div>
+  </div>
+
+  <!-- Events Table -->
+  <div class="admin-card">
+    <div class="card-header">
+      <h3 class="card-title">All Events</h3>
+    </div>
+    <div class="card-body" style="padding: 0;">
+      @if($events->isEmpty())
+        <div style="padding: 3rem; text-align: center; color: var(--text-light);">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.5;">
+            <path d="M7 2v4M17 2v4M3 9h18M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5A2 2 0 0 0 3 7v12a2 2 0 0 0 2 2Z"/>
+          </svg>
+          <p>No events found. Click <strong>New Event</strong> to create one.</p>
+        </div>
+      @else
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">#</th>
+                <th>Event Details</th>
+                <th>Schedule</th>
+                <th>Location & Capacity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($events as $e)
+                <tr>
+                  <td>
+                    <span style="font-weight: 600; color: var(--primary);">#{{ $e->id }}</span>
+                  </td>
+                  <td>
+                    <div>
+                      <div style="font-weight: 600; color: var(--text); margin-bottom: 0.25rem;">{{ $e->title }}</div>
+                      @if($e->description)
+                        <div style="font-size: 0.85rem; color: var(--text-light); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                          {{ Str::limit($e->description, 80) }}
+                        </div>
+                      @endif
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        <span style="color: var(--text);">{{ $e->starts_at }}</span>
+                      </div>
+                      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12,6 12,12 16,14"/>
+                        </svg>
+                        <span style="color: var(--text-light);">{{ $e->ends_at }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                      <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M12 21s7-4.35 7-11a7 7 0 0 0-14 0c0 6.65 7 11 7 11Z"/>
+                          <circle cx="12" cy="10" r="2.5"/>
+                        </svg>
+                        <span style="font-size: 0.85rem; color: var(--text);">{{ $e->location }}</span>
+                      </div>
+                      <div class="badge badge-info">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M4 7h16M5 20h14a1 1 0 0 0 1-1v-8H4v8a1 1 0 0 0 1 1Z"/>
+                        </svg>
+                        {{ $e->capacity }} seats
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                      @if($e->featured_on_home)
+                        <span class="badge badge-success">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                          </svg>
+                          Featured
+                        </span>
+                      @endif
+                      @if($e->visible_on_site)
+                        <span class="badge badge-success">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                          </svg>
+                          Visible
+                        </span>
+                      @else
+                        <span class="badge badge-danger">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+                            <path d="m21.12 2.88-18.24 18.24"/>
+                            <path d="M1 12s4-8 11-8c1.06 0 2.07.17 3.01.46l1.46-1.46A12.93 12.93 0 0 0 12 2C5 2 1 12 1 12s1.73 4.34 4.36 6.36L7.22 16.5A6.82 6.82 0 0 1 1 12Z"/>
+                          </svg>
+                          Hidden
+                        </span>
+                      @endif
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                      <a class="btn btn-outline" href="{{ route('admin.events.edit', $e) }}" title="Edit Event">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                          <path d="m18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        Edit
+                      </a>
+                      <form method="POST" action="{{ route('admin.events.destroy', $e) }}" onsubmit="return confirm('Are you sure you want to delete this event? This action cannot be undone.')" style="display: inline;">
+                        @csrf @method('DELETE')
+                        <button class="btn btn-danger" type="submit" title="Delete Event" style="padding: 0.5rem 0.75rem;">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3,6 5,6 21,6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            <line x1="10" y1="11" x2="10" y2="17"/>
+                            <line x1="14" y1="11" x2="14" y2="17"/>
+                          </svg>
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      @endif
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div style="display: flex; gap: 1rem; justify-content: flex-start; margin-top: 2rem;">
+    <a href="{{ route('admin.index') }}" class="btn btn-outline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"/>
+      </svg>
+      Back to Dashboard
+    </a>
+  </div>
+</div>
+@endsection
 
 @section('content')
 <style>

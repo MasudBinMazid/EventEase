@@ -1,196 +1,267 @@
 @extends('admin.layout')
-@section('title','Sales (Tickets)')
-@section('content')
+@section('title','Sales & Tickets')
 
+@section('content')
 @php
   $tot = $tot ?? ['tickets_count'=>0,'qty_sum'=>0,'amount_sum'=>0,'amount_paid'=>0];
 @endphp
 
-<div class="admin-sales-tickets"><!-- SCOPE WRAPPER -->
-  <style>
-    .admin-sales-tickets{
-      --bg:#ffffff; --surface:#ffffff; --surface-2:#f9fafb; --text:#111827; --muted:#6b7280;
-      --border:#e5e7eb; --ring: rgba(37,99,235,.35); --primary:#2563eb; --primary-600:#1d4ed8;
-      --radius:16px; --shadow:0 10px 25px -18px rgba(0,0,0,.25); --shadow-sm:0 3px 10px rgba(0,0,0,.06);
-    }
-    .admin-sales-tickets h2.st-page-title{ margin:0 0 1rem; font-weight:800; letter-spacing:.2px; color:var(--text); }
-    .admin-sales-tickets .sa-container{ display:grid; gap:1rem; background:var(--bg); color:var(--text); }
-    .admin-sales-tickets .sa-card{ background:var(--surface); border:1px solid rgba(0,0,0,.06); border-radius:var(--radius); box-shadow:var(--shadow); }
-    .admin-sales-tickets .sa-card-body{ padding:1rem; }
-    .admin-sales-tickets .sa-card-header{ display:flex; align-items:center; justify-content:space-between; padding:.9rem 1rem; border-bottom:1px solid #eef2f7; }
-    .admin-sales-tickets .sa-title{ margin:0; font-size:1rem; font-weight:800; letter-spacing:.2px; }
-    .admin-sales-tickets .sa-stats{ display:grid; gap:.75rem; grid-template-columns: repeat(4, minmax(0,1fr)); }
-    .admin-sales-tickets .sa-stat{ padding:1rem; border-radius:14px; background:var(--surface-2); border:1px solid #eef2f7; box-shadow:var(--shadow-sm); }
-    .admin-sales-tickets .sa-stat .k{ font-size:.8rem; color:var(--muted); }
-    .admin-sales-tickets .sa-stat .v{ font-size:1.15rem; font-weight:800; margin-top:.2rem; font-variant-numeric:tabular-nums; }
-    .admin-sales-tickets .sa-filter .grid{ display:grid; gap:.75rem; grid-template-columns: repeat(6, minmax(0,1fr)); align-items:end; }
-    .admin-sales-tickets .sa-filter label{ display:block; font-weight:700; margin-bottom:.35rem; font-size:.9rem; color:#374151; }
-    .admin-sales-tickets .sa-input,.admin-sales-tickets .sa-select{ width:100%; border:1px solid var(--border); border-radius:12px; padding:.65rem .75rem; background:#fff; color:var(--text); box-shadow:var(--shadow-sm); }
-    .admin-sales-tickets .sa-actions{ display:flex; flex-wrap:wrap; gap:.5rem; }
-    .admin-sales-tickets .sa-btn{ appearance:none; border:1px solid transparent; border-radius:999px; padding:.6rem .9rem; font-weight:800; cursor:pointer; background: var(--primary); color:#fff; text-decoration:none; display:inline-flex; align-items:center; }
-    .admin-sales-tickets .sa-btn:hover{ background:var(--primary-600); }
-    .admin-sales-tickets .sa-btn-ghost{ background:#fff; color:#111827; border:1px solid var(--border); box-shadow:none; }
-    .admin-sales-tickets .sa-table-wrap{ overflow:auto; border:1px solid #eef2f7; border-radius:14px; background:var(--surface); }
-    .admin-sales-tickets table.sa-table{ width:100%; border-collapse:separate; border-spacing:0; font-size:.95rem; }
-    .admin-sales-tickets .sa-table thead th{ position:sticky; top:0; z-index:1; background:#f8fafc; color:#111827; text-align:left; font-weight:800; letter-spacing:.2px; border-bottom:1px solid var(--border); padding:.75rem .75rem; }
-    .admin-sales-tickets .sa-table tbody td{ border-bottom:1px solid #f1f5f9; padding:.75rem .75rem; vertical-align:top; }
-    .admin-sales-tickets .sa-table tbody tr:nth-child(even){ background:var(--surface-2); }
-    .admin-sales-tickets .sa-num{ text-align:right; font-variant-numeric:tabular-nums; }
-    .admin-sales-tickets .sa-muted{ color:var(--muted); }
-    @media (max-width: 860px){
-      .admin-sales-tickets .sa-table, .admin-sales-tickets .sa-table thead, .admin-sales-tickets .sa-table tbody, .admin-sales-tickets .sa-table th, .admin-sales-tickets .sa-table td, .admin-sales-tickets .sa-table tr{ display:block; }
-      .admin-sales-tickets .sa-table thead{ display:none; }
-      .admin-sales-tickets .sa-table tbody tr{ border-bottom:1px solid var(--border); padding:.5rem .75rem; }
-      .admin-sales-tickets .sa-table tbody td{ border:none; padding:.45rem 0; display:grid; grid-template-columns: 140px 1fr; gap:8px; }
-      .admin-sales-tickets .sa-table tbody td::before{ content: attr(data-label); font-weight:800; color:var(--muted); }
-      .admin-sales-tickets .sa-num{ text-align:left; }
-    }
-  </style>
-
-  <h2 class="st-page-title">Sales (Tickets)</h2>
-
-  <div class="sa-container">
-
-    <!-- Stats -->
-    <div class="sa-stats">
-      <div class="sa-stat"><div class="k">Total rows</div><div class="v">{{ (int)($tot['tickets_count'] ?? 0) }}</div></div>
-      <div class="sa-stat"><div class="k">Total quantity</div><div class="v">{{ (int)($tot['qty_sum'] ?? 0) }}</div></div>
-      <div class="sa-stat"><div class="k">Gross amount</div><div class="v">{{ number_format((float)($tot['amount_sum'] ?? 0), 2) }}</div></div>
-      <div class="sa-stat"><div class="k">Paid amount</div><div class="v">{{ number_format((float)($tot['amount_paid'] ?? 0), 2) }}</div></div>
+<div class="admin-page">
+  <!-- Page Header -->
+  <div class="admin-header">
+    <div>
+      <h1 class="admin-title">Sales & Tickets</h1>
+      <p class="admin-subtitle">Monitor ticket sales and payment statuses</p>
     </div>
-
-    <!-- Filters -->
-    <div class="sa-card sa-filter">
-      <div class="sa-card-header">
-        <h3 class="sa-title">Filters</h3>
-        <div class="sa-actions">
-          <a href="{{ route('admin.sales.export', request()->query()) }}" class="sa-btn">Export CSV</a>
-        </div>
+    <div class="admin-actions">
+      <div class="badge badge-info">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        {{ (int)($tot['tickets_count'] ?? 0) }} Tickets
       </div>
-      <div class="sa-card-body">
-        <form method="GET" class="grid">
-          <div>
-            <label>Status</label>
-            <select name="status" class="sa-select">
+      <a href="{{ route('admin.sales.export', request()->query()) }}" class="btn btn-success">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7,10 12,15 17,10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export CSV
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">{{ (int)($tot['tickets_count'] ?? 0) }}</div>
+      <div class="stat-label">Total Tickets</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ (int)($tot['qty_sum'] ?? 0) }}</div>
+      <div class="stat-label">Quantity Sold</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">Tk {{ number_format((float)($tot['amount_sum'] ?? 0), 2) }}</div>
+      <div class="stat-label">Gross Revenue</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">Tk {{ number_format((float)($tot['amount_paid'] ?? 0), 2) }}</div>
+      <div class="stat-label">Paid Amount</div>
+    </div>
+  </div>
+
+  <!-- Filters Card -->
+  <div class="admin-card">
+    <div class="card-header">
+      <h3 class="card-title">Filter Sales</h3>
+    </div>
+    <div class="card-body">
+      <form method="GET" class="filter-form">
+        <div class="filter-grid">
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-input">
               @php $status = request('status',''); @endphp
-              <option value="">All</option>
-              @foreach (['unpaid','paid','cancelled'] as $s)
-                <option value="{{ $s }}" {{ $status===$s?'selected':'' }}>{{ ucfirst($s) }}</option>
-              @endforeach
+              <option value="">All Statuses</option>
+              <option value="unpaid" {{ $status === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+              <option value="paid" {{ $status === 'paid' ? 'selected' : '' }}>Paid</option>
+              <option value="cancelled" {{ $status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
             </select>
           </div>
 
-          <div>
-            <label>Payment Option</label>
-            <select name="payment_option" class="sa-select">
+          <div class="form-group">
+            <label class="form-label">Payment Option</label>
+            <select name="payment_option" class="form-input">
               @php $option = request('payment_option',''); @endphp
-              <option value="">All</option>
-              @foreach (['pay_now','pay_later'] as $op)
-                <option value="{{ $op }}" {{ $option===$op?'selected':'' }}>{{ str_replace('_',' ',$op) }}</option>
-              @endforeach
+              <option value="">All Options</option>
+              <option value="pay_now" {{ $option === 'pay_now' ? 'selected' : '' }}>Pay Now</option>
+              <option value="pay_later" {{ $option === 'pay_later' ? 'selected' : '' }}>Pay Later</option>
             </select>
           </div>
 
-          <div>
-            <label>Event</label>
-            <select name="event_id" class="sa-select">
+          <div class="form-group">
+            <label class="form-label">Event</label>
+            <select name="event_id" class="form-input">
               @php $eventId = (int)request('event_id',0); @endphp
-              <option value="0">All events</option>
+              <option value="0">All Events</option>
               @foreach ($events as $e)
-                <option value="{{ $e->id }}" {{ $eventId===$e->id?'selected':'' }}>#{{ $e->id }} — {{ $e->title }}</option>
+                <option value="{{ $e->id }}" {{ $eventId === $e->id ? 'selected' : '' }}>#{{ $e->id }} — {{ $e->title }}</option>
               @endforeach
             </select>
           </div>
 
-          <div>
-            <label>Search</label>
-            <input type="text" name="q" class="sa-input" value="{{ request('q','') }}" placeholder="Ticket code, name, email">
+          <div class="form-group">
+            <label class="form-label">Search</label>
+            <input type="text" name="q" class="form-input" value="{{ request('q','') }}" placeholder="Ticket code, name, email">
           </div>
 
-          <div>
-            <label>From</label>
-            <input type="date" name="from" class="sa-input" value="{{ request('from','') }}">
+          <div class="form-group">
+            <label class="form-label">Date From</label>
+            <input type="date" name="from" class="form-input" value="{{ request('from','') }}">
           </div>
 
-          <div>
-            <label>To</label>
-            <input type="date" name="to" class="sa-input" value="{{ request('to','') }}">
+          <div class="form-group">
+            <label class="form-label">Date To</label>
+            <input type="date" name="to" class="form-input" value="{{ request('to','') }}">
           </div>
-
-          <div>
-            <label>Limit</label>
-            <input type="number" name="limit" class="sa-input" min="10" max="2000" value="{{ (int)request('limit',200) }}">
-          </div>
-
-          <div style="grid-column: span 2;">
-            <div class="sa-actions">
-              <button type="submit" class="sa-btn">Apply Filters</button>
-              <a href="{{ route('admin.sales.index') }}" class="sa-btn sa-btn-ghost">Reset</a>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Results -->
-    <div class="sa-card">
-      <div class="sa-card-header">
-        <h3 class="sa-title">Results</h3>
-        <div style="color:var(--muted); font-size:.9rem;">
-          {{ (int)($tot['tickets_count'] ?? 0) }} matching row{{ ((int)($tot['tickets_count'] ?? 0) === 1 ? '' : 's') }}
         </div>
-      </div>
 
+        <div class="filter-actions">
+          <button type="submit" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            Apply Filters
+          </button>
+          <a href="{{ route('admin.sales.index') }}" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 6h18l-2 13H5L3 6z"/>
+              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            Reset
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sales Table -->
+  <div class="admin-card">
+    <div class="card-header">
+      <h3 class="card-title">Sales Records</h3>
+      <p class="card-subtitle">{{ (int)($tot['tickets_count'] ?? 0) }} matching record{{ ((int)($tot['tickets_count'] ?? 0) === 1 ? '' : 's') }}</p>
+    </div>
+    <div class="card-body" style="padding: 0;">
       @if (empty($rows) || (is_countable($rows) && count($rows)===0))
-        <div class="sa-card-body sa-empty">
-          <h3>No tickets found</h3>
-          <p>Try adjusting your filters or date range.</p>
+        <div style="padding: 3rem; text-align: center; color: var(--text-light);">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.5;">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          <p><strong>No tickets found</strong></p>
+          <p style="color: var(--text-muted);">Try adjusting your filters or date range.</p>
         </div>
       @else
-        <div class="sa-card-body sa-table-wrap">
-          <table class="sa-table">
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
             <thead>
               <tr>
-                <th>Ticket ID</th>
-                <th>Code</th>
+                <th style="width: 80px;">ID</th>
+                <th>Ticket Details</th>
                 <th>Event</th>
-                <th>Buyer</th>
-                <th class="sa-num">Qty</th>
-                <th class="sa-num">Total</th>
-                <th>Pay Opt</th>
+                <th>Buyer Information</th>
+                <th>Purchase Info</th>
                 <th>Status</th>
-                <th>Purchased At</th>
-                <th>Action</th> {{-- NEW --}}
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               @foreach ($rows as $r)
-                @php
-                  $opt = (string) $r->payment_option;
-                  $statusBadge = 'status-' . strtolower((string) $r->payment_status);
-                @endphp
                 <tr>
-                  <td data-label="Ticket ID">#{{ $r->id }}</td>
-                  <td data-label="Code">{{ $r->ticket_code }}</td>
-                  <td data-label="Event">#{{ $r->event_id }} — {{ $r->event_title }}</td>
-                  <td data-label="Buyer">
-                    {{ $r->buyer_name }}<br>
-                    <small class="sa-muted">{{ $r->buyer_email }}@if(!empty($r->buyer_phone)) • {{ $r->buyer_phone }}@endif</small>
+                  <td>
+                    <span style="font-weight: 600; color: var(--primary);">#{{ $r->id }}</span>
                   </td>
-                  <td data-label="Qty" class="sa-num">{{ $r->quantity }}</td>
-                  <td data-label="Total" class="sa-num">{{ number_format((float) $r->total_amount, 2) }}</td>
-                  <td data-label="Pay Opt"><span class="sa-badge {{ $opt === 'pay_later' ? 'pay_later' : 'pay_now' }}">{{ str_replace('_',' ', $opt) }}</span></td>
-                  <td data-label="Status"><span class="sa-badge {{ $statusBadge }}">{{ ucfirst($r->payment_status) }}</span></td>
-                  <td data-label="Purchased At">{{ \Carbon\Carbon::parse($r->created_at)->format('M d, Y H:i') }}</td>
-
-                  <td data-label="Action">
+                  <td>
+                    <div>
+                      <div style="font-weight: 600; color: var(--text); margin-bottom: 0.25rem;">{{ $r->ticket_code }}</div>
+                      <div style="font-size: 0.85rem; color: var(--text-light);">
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem;">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                          </svg>
+                          Qty: {{ $r->quantity }}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <div style="font-weight: 600; color: var(--text);">{{ $r->event_title }}</div>
+                      <div style="font-size: 0.8rem; color: var(--text-muted);">Event #{{ $r->event_id }}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <div style="font-weight: 600; color: var(--text);">{{ $r->buyer_name }}</div>
+                      <div style="font-size: 0.85rem; color: var(--text-light);">{{ $r->buyer_email }}</div>
+                      @if(!empty($r->buyer_phone))
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">{{ $r->buyer_phone }}</div>
+                      @endif
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                      <div style="font-weight: 600; color: var(--text); font-size: 1rem;">Tk {{ number_format((float) $r->total_amount, 2) }}</div>
+                      <div>
+                        @if($r->payment_option === 'pay_later')
+                          <span class="badge badge-warning">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <circle cx="12" cy="12" r="10"/>
+                              <polyline points="12,6 12,12 16,14"/>
+                            </svg>
+                            Pay Later
+                          </span>
+                        @else
+                          <span class="badge badge-info">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                              <line x1="8" y1="21" x2="16" y2="21"/>
+                              <line x1="12" y1="17" x2="12" y2="21"/>
+                            </svg>
+                            Pay Now
+                          </span>
+                        @endif
+                      </div>
+                      <div style="font-size: 0.8rem; color: var(--text-muted);">{{ \Carbon\Carbon::parse($r->created_at)->format('M j, Y g:i A') }}</div>
+                    </div>
+                  </td>
+                  <td>
+                    @if($r->payment_status === 'paid')
+                      <span class="badge badge-success">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="m9 12 2 2 4-4"/>
+                          <path d="m21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.12 0 4.07.74 5.61 1.97"/>
+                        </svg>
+                        Paid
+                      </span>
+                    @elseif($r->payment_status === 'cancelled')
+                      <span class="badge badge-danger">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <line x1="15" y1="9" x2="9" y2="15"/>
+                          <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                        Cancelled
+                      </span>
+                    @else
+                      <span class="badge badge-warning">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <line x1="12" y1="8" x2="12" y2="12"/>
+                          <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        Unpaid
+                      </span>
+                    @endif
+                  </td>
+                  <td>
                     @if ($r->payment_option === 'pay_now' && $r->payment_status === 'unpaid')
-                      <form method="POST" action="{{ route('admin.sales.verify', $r->id) }}" onsubmit="return confirm('Mark as paid?')">
+                      <form method="POST" action="{{ route('admin.sales.verify', $r->id) }}" onsubmit="return confirm('Mark this ticket as paid?')" style="display: inline;">
                         @csrf
-                        <button class="sa-btn" type="submit">Verify Paid</button>
+                        <button class="btn btn-success" type="submit" style="padding: 0.5rem 0.75rem;">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9 12 2 2 4-4"/>
+                          </svg>
+                          Mark Paid
+                        </button>
                       </form>
                     @else
-                      <span class="sa-muted">—</span>
+                      <span style="color: var(--text-muted); font-size: 0.9rem;">—</span>
                     @endif
                   </td>
                 </tr>
@@ -200,7 +271,47 @@
         </div>
       @endif
     </div>
+  </div>
 
+  <!-- Action Buttons -->
+  <div style="display: flex; gap: 1rem; justify-content: flex-start; margin-top: 2rem;">
+    <a href="{{ route('admin.index') }}" class="btn btn-outline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"/>
+      </svg>
+      Back to Dashboard
+    </a>
   </div>
 </div>
+
+<style>
+  .filter-form {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .filter-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+  }
+  
+  @media (max-width: 768px) {
+    .filter-actions {
+      flex-direction: column;
+    }
+    
+    .filter-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 @endsection

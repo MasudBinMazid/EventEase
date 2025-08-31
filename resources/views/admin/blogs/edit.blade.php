@@ -2,189 +2,304 @@
 @section('title','Edit Blog')
 
 @section('content')
-<div class="admin-blog-edit"><!-- SCOPE WRAPPER -->
-  <style>
-    /* Page-scoped tokens (no :root, so nothing leaks) */
-    .admin-blog-edit{
-      --bg:#ffffff;
-      --surface:#ffffff;
-      --surface-2:#f9fafb;
-      --text:#111827;
-      --muted:#6b7280;
-      --border:#e5e7eb;
-      --ring: rgba(37,99,235,.35);
 
-      --primary:#2563eb;
-      --primary-600:#1d4ed8;
-      --danger:#dc2626;
+<div class="admin-page">
+  <!-- Page Header -->
+  <div class="admin-header">
+    <div>
+      <h1 class="admin-title">Edit Blog Post</h1>
+      <p class="admin-subtitle">Update the blog post content and settings</p>
+    </div>
+    <div class="admin-actions">
+      <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15,18 9,12 15,6"/>
+        </svg>
+        Back to Posts
+      </a>
+    </div>
+  </div>
 
-      --radius:14px;
-      --shadow:0 10px 30px rgba(0,0,0,.06);
-      --shadow-sm:0 3px 10px rgba(0,0,0,.05);
-    }
-
-    .admin-blog-edit .be-wrap{ padding: clamp(12px,1.8vw,20px); background: var(--bg); color: var(--text); }
-    .admin-blog-edit .be-card{
-      background: var(--surface); border:1px solid var(--border); border-radius: var(--radius);
-      box-shadow: var(--shadow); padding: clamp(16px,2vw,22px);
-    }
-    .admin-blog-edit .be-title{ margin:0 0 6px; font-weight:800; letter-spacing:.2px; }
-    .admin-blog-edit .be-subtitle{ margin:0 0 16px; color:var(--muted); }
-
-    /* form */
-    .admin-blog-edit .be-form{ display:grid; gap:14px; }
-    .admin-blog-edit .be-row{ display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:12px; }
-    @media (max-width: 860px){ .admin-blog-edit .be-row{ grid-template-columns: 1fr; } }
-
-    .admin-blog-edit .be-field{ display:grid; gap:6px; }
-    .admin-blog-edit .be-label{ font-weight:700; font-size:.95rem; }
-    .admin-blog-edit .be-hint{ color:var(--muted); font-size:.88rem; }
-
-    .admin-blog-edit .be-input,
-    .admin-blog-edit .be-textarea{
-      width:100%; padding:10px 12px; border-radius:12px;
-      border:1px solid var(--border); background: var(--surface-2);
-      color:var(--text); box-shadow: var(--shadow-sm);
-      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
-    }
-    .admin-blog-edit .be-textarea{ min-height:130px; resize:vertical; }
-    .admin-blog-edit .be-input:focus,
-    .admin-blog-edit .be-textarea:focus{ outline:3px solid var(--ring); outline-offset:2px; background:#fff; }
-
-    /* messages */
-    .admin-blog-edit .be-errors{
-      border:1px solid #fecaca; background:#fff1f2; color:#7f1d1d;
-      padding:12px 14px; border-radius:12px; font-weight:700;
-      margin-top: 6px;
-    }
-    .admin-blog-edit .be-error{ color:#b91c1c; font-size:.88rem; }
-
-    /* image preview */
-    .admin-blog-edit .be-preview-wrap{
-      display:grid; gap:10px; padding:12px; border:1px solid var(--border);
-      border-radius:12px; background: var(--surface-2);
-    }
-    .admin-blog-edit .be-current{
-      max-width:100%; height:auto; border-radius:12px; border:1px solid var(--border);
-      box-shadow: var(--shadow-sm); object-fit:cover;
-    }
-    .admin-blog-edit .be-new-preview{
-      max-width:100%; height:auto; border-radius:12px; border:1px solid var(--border);
-      box-shadow: var(--shadow-sm); object-fit:cover; display:none;
-    }
-
-    /* counters */
-    .admin-blog-edit .be-counter{ color:var(--muted); font-size:.86rem; text-align:right; }
-
-    /* actions */
-    .admin-blog-edit .be-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 4px; }
-    .admin-blog-edit .be-btn{
-      appearance:none; border:1px solid var(--border); border-radius:999px;
-      padding:10px 14px; font-weight:700; text-decoration:none; cursor:pointer;
-      display:inline-flex; align-items:center; gap:.5rem; transition:.18s ease;
-      background:#fff; color:var(--text); box-shadow: var(--shadow-sm);
-    }
-    .admin-blog-edit .be-btn:hover{ transform: translateY(-1px); box-shadow: var(--shadow); }
-    .admin-blog-edit .be-btn:focus-visible{ outline:3px solid var(--ring); outline-offset:2px; }
-    .admin-blog-edit .be-btn-primary{ background: var(--primary); color:#fff; border-color:transparent; }
-    .admin-blog-edit .be-btn-primary:hover{ background: var(--primary-600); }
-    .admin-blog-edit .be-btn-ghost{ background: var(--surface-2); }
-  </style>
-
-  <div class="be-wrap">
-    <div class="be-card">
-      <h1 class="be-title">Edit Blog</h1>
-      <p class="be-subtitle">Update the post and save your changes.</p>
-
-      {{-- Optional: show validation summary if present --}}
+  <!-- Edit Form -->
+  <div class="admin-card">
+    <div class="card-header">
+      <h3 class="card-title">Post Details</h3>
+      <p class="card-subtitle">Edit the blog post information and content</p>
+    </div>
+    <div class="card-body">
+      {{-- Validation Errors --}}
       @if ($errors->any())
-        <div class="be-errors">Please review the highlighted fields.</div>
+        <div class="alert alert-error">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+          <div>
+            <strong>Please review the highlighted fields:</strong>
+            <ul style="margin-top: 0.5rem; list-style-type: disc; margin-left: 1.5rem;">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        </div>
       @endif
 
-      <form method="POST" action="{{ route('admin.blogs.update', $blog) }}" enctype="multipart/form-data" class="be-form">
-        @csrf @method('PUT')
+      <form method="POST" action="{{ route('admin.blogs.update', $blog) }}" enctype="multipart/form-data" class="form-grid">
+        @csrf 
+        @method('PUT')
 
-        <div class="be-field">
-          <label class="be-label" for="title">Title</label>
-          <input id="title" type="text" name="title" value="{{ old('title',$blog->title) }}" required class="be-input">
-          @error('title') <div class="be-error">{{ $message }}</div> @enderror
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h4 class="section-title">Basic Information</h4>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="title">Post Title</label>
+              <input 
+                id="title" 
+                type="text" 
+                name="title" 
+                value="{{ old('title', $blog->title) }}" 
+                required 
+                class="form-input {{ $errors->has('title') ? 'error' : '' }}"
+                placeholder="Enter the blog post title"
+              >
+              @error('title')
+                <div class="form-error">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="author">Author</label>
+              <input 
+                id="author" 
+                type="text" 
+                name="author" 
+                value="{{ old('author', $blog->author) }}" 
+                required 
+                class="form-input {{ $errors->has('author') ? 'error' : '' }}"
+                placeholder="Author name"
+              >
+              @error('author')
+                <div class="form-error">{{ $message }}</div>
+              @enderror
+            </div>
+          </div>
         </div>
 
-        <div class="be-field">
-          <label class="be-label" for="author">Author</label>
-          <input id="author" type="text" name="author" value="{{ old('author',$blog->author) }}" required class="be-input">
-          @error('author') <div class="be-error">{{ $message }}</div> @enderror
+        <!-- Content Section -->
+        <div class="form-section">
+          <h4 class="section-title">Content</h4>
+          
+          <div class="form-group">
+            <label class="form-label" for="short_description">Short Description</label>
+            <textarea 
+              id="short_description" 
+              name="short_description" 
+              rows="3" 
+              required 
+              class="form-input {{ $errors->has('short_description') ? 'error' : '' }}" 
+              maxlength="500"
+              placeholder="Brief description or excerpt (max 500 characters)"
+            >{{ old('short_description', $blog->short_description) }}</textarea>
+            <div class="form-help">
+              <span id="short-desc-count">0 / 500</span> characters used
+            </div>
+            @error('short_description')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="full_content">Full Content</label>
+            <textarea 
+              id="full_content" 
+              name="full_content" 
+              rows="12" 
+              required 
+              class="form-input {{ $errors->has('full_content') ? 'error' : '' }}"
+              placeholder="Write the complete blog post content here..."
+            >{{ old('full_content', $blog->full_content) }}</textarea>
+            @error('full_content')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
+          </div>
         </div>
 
-        <div class="be-field">
-          <label class="be-label" for="short_description">Short Description</label>
-          <textarea id="short_description" name="short_description" rows="3" required class="be-textarea" maxlength="500" aria-describedby="sd-count">{{ old('short_description',$blog->short_description) }}</textarea>
-          <div id="sd-count" class="be-counter">0 / 500</div>
-          @error('short_description') <div class="be-error">{{ $message }}</div> @enderror
-        </div>
-
-        <div class="be-field">
-          <label class="be-label" for="full_content">Full Content</label>
-          <textarea id="full_content" name="full_content" rows="10" required class="be-textarea">{{ old('full_content',$blog->full_content) }}</textarea>
-          @error('full_content') <div class="be-error">{{ $message }}</div> @enderror
-        </div>
-
-        <div class="be-field">
-          <span class="be-label">Current Image</span>
+        <!-- Image Section -->
+        <div class="form-section">
+          <h4 class="section-title">Featured Image</h4>
+          
           @if($blog->image)
-            <div class="be-preview-wrap">
-              <img src="{{ asset('storage/'.$blog->image) }}" alt="Current blog image" class="be-current">
+            <div class="form-group">
+              <label class="form-label">Current Image</label>
+              <div class="image-preview-container">
+                <img src="{{ asset('storage/'.$blog->image) }}" alt="Current blog image" class="image-preview">
+                <div class="image-overlay">
+                  <span class="image-badge">Current Image</span>
+                </div>
+              </div>
             </div>
           @else
-            <div class="be-hint">No image uploaded.</div>
+            <div class="form-group">
+              <div class="empty-state" style="padding: 2rem; text-align: center; border: 2px dashed var(--border); border-radius: 12px; background: var(--surface-light);">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.5;">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="9" cy="9" r="2"/>
+                  <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                </svg>
+                <p style="color: var(--text-light); margin: 0;">No image uploaded</p>
+              </div>
+            </div>
           @endif
+
+          <div class="form-group">
+            <label class="form-label" for="image">Replace Image (Optional)</label>
+            <input 
+              id="image" 
+              type="file" 
+              name="image" 
+              accept=".jpg,.jpeg,.png" 
+              class="form-input {{ $errors->has('image') ? 'error' : '' }}"
+            >
+            <div class="form-help">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              Recommended: 1200×630px. Maximum file size: 2MB. Formats: JPG, PNG
+            </div>
+            <div id="new-image-preview" class="image-preview-container" style="display: none; margin-top: 1rem;">
+              <img id="preview-image" class="image-preview" alt="New image preview">
+              <div class="image-overlay">
+                <span class="image-badge badge-success">New Image</span>
+              </div>
+            </div>
+            @error('image')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
+          </div>
         </div>
 
-        <div class="be-field">
-          <label class="be-label" for="image">Replace Image (optional, JPG/PNG ≤ 2MB)</label>
-          <input id="image" type="file" name="image" accept=".jpg,.jpeg,.png" class="be-input" aria-describedby="img-hint">
-          <div class="be-hint" id="img-hint">Recommended 1200×630. Larger than 2MB will be rejected.</div>
-          <img id="newPreview" class="be-new-preview" alt="New image preview">
-          @error('image') <div class="be-error">{{ $message }}</div> @enderror
-        </div>
-
-        <div class="be-actions">
-          <button class="be-btn be-btn-primary" type="submit">Save Changes</button>
-          <a class="be-btn be-btn-ghost" href="{{ route('admin.blogs.index') }}">Cancel</a>
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m9 12 2 2 4-4"/>
+              <path d="m21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c2.12 0 4.07.74 5.61 1.97"/>
+            </svg>
+            Update Blog Post
+          </button>
+          <a href="{{ route('admin.blogs.index') }}" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6 6 18"/>
+              <path d="m6 6 12 12"/>
+            </svg>
+            Cancel
+          </a>
         </div>
       </form>
     </div>
   </div>
-
-  <!-- Tiny scoped helpers (UI-only) -->
-  <script>
-    (function(){
-      const sd = document.getElementById('short_description');
-      const counter = document.getElementById('sd-count');
-      const imgInput = document.getElementById('image');
-      const preview = document.getElementById('newPreview');
-
-      if(sd && counter){
-        const update = () => counter.textContent = (sd.value.length || 0) + ' / 500';
-        sd.addEventListener('input', update); update();
-      }
-
-      if(imgInput && preview){
-        imgInput.addEventListener('change', () => {
-          const f = imgInput.files && imgInput.files[0];
-          if(!f){ preview.style.display = 'none'; return; }
-          if(f.size > 2 * 1024 * 1024){
-            preview.style.display = 'none';
-            alert('Selected file exceeds 2MB.');
-            imgInput.value = '';
-            return;
-          }
-          const reader = new FileReader();
-          reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
-          reader.readAsDataURL(f);
-        });
-      }
-    })();
-  </script>
 </div>
+
+<style>
+  .image-preview-container {
+    position: relative;
+    display: inline-block;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+  }
+  
+  .image-preview {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .image-overlay {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  .image-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    background: var(--primary);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .image-badge.badge-success {
+    background: var(--success);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Character counter for short description
+    const shortDesc = document.getElementById('short_description');
+    const counter = document.getElementById('short-desc-count');
+    
+    if (shortDesc && counter) {
+      function updateCounter() {
+        const length = shortDesc.value.length;
+        counter.textContent = `${length} / 500`;
+        
+        if (length > 450) {
+          counter.style.color = 'var(--warning)';
+        } else if (length > 500) {
+          counter.style.color = 'var(--danger)';
+        } else {
+          counter.style.color = 'var(--text-light)';
+        }
+      }
+      
+      shortDesc.addEventListener('input', updateCounter);
+      updateCounter(); // Initialize counter
+    }
+    
+    // Image preview functionality
+    const imageInput = document.getElementById('image');
+    const previewContainer = document.getElementById('new-image-preview');
+    const previewImage = document.getElementById('preview-image');
+    
+    if (imageInput && previewContainer && previewImage) {
+      imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        
+        if (!file) {
+          previewContainer.style.display = 'none';
+          return;
+        }
+        
+        // Check file size (2MB limit)
+        if (file.size > 2 * 1024 * 1024) {
+          alert('File size exceeds 2MB limit. Please choose a smaller image.');
+          imageInput.value = '';
+          previewContainer.style.display = 'none';
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          previewImage.src = event.target.result;
+          previewContainer.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  });
+</script>
 @endsection
