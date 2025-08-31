@@ -22,11 +22,11 @@
           </div>
           <div>
             <p class="text-sm text-gray-500">Price per ticket</p>
-            <p class="text-lg font-semibold">{{ number_format((float)$event->price, 2) }} USDT</p>
+            <p class="text-lg font-semibold">{{ number_format((float)$event->price, 2) }} BDT</p>
           </div>
           <div>
             <p class="text-sm text-gray-500">Total to pay</p>
-            <p class="text-2xl font-bold">{{ number_format((float)$checkout['total'], 2) }} USDT</p>
+            <p class="text-2xl font-bold">{{ number_format((float)$checkout['total'], 2) }} BDT</p>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@
 
         <div class="mt-4 text-sm text-gray-600">
           <ul class="list-disc ml-5 space-y-1">
-            <li>Send exactly <strong>{{ number_format((float)$checkout['total'], 2) }} USDT Equal BDT</strong>.</li>
+            <li>Send exactly <strong>{{ number_format((float)$checkout['total'], 2) }} BDT</strong>.</li>
             <li>Use <strong>reference: {{ 'EVT'.$event->id }}</strong> if available in your app.</li>
             <li>Keep a screenshot for your records!</li>
           </ul>

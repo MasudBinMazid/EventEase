@@ -783,11 +783,10 @@ input:checked + .ee-slider:before {
 
             <div class="ee-field">
               <label class="ee-label" for="currency">Currency</label>
-              <select id="currency" name="currency" class="ee-select">
-                <option value="BDT" {{ old('currency', 'BDT') == 'BDT' ? 'selected' : '' }}>BDT (৳)</option>
-                <option value="USD" {{ old('currency') == 'USD' ? 'selected' : '' }}>USD ($)</option>
-                <option value="EUR" {{ old('currency') == 'EUR' ? 'selected' : '' }}>EUR (€)</option>
+              <select id="currency" name="currency" class="ee-select" readonly>
+                <option value="BDT" selected>BDT (৳ - Bangladeshi Taka)</option>
               </select>
+              <div class="ee-help">Currently supporting Bangladeshi Taka only</div>
             </div>
 
             <div class="ee-field">

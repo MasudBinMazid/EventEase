@@ -105,7 +105,7 @@
                 <h3>Get Your Ticket</h3>
                 <div class="price-display">
                     @if($event->price > 0)
-                        <span class="price">${{ number_format($event->price, 2) }}</span>
+                        <span class="price">৳{{ number_format($event->price, 2) }}</span>
                         <span class="price-label">per ticket</span>
                     @else
                         <span class="price free">Free</span>
@@ -141,11 +141,11 @@
                     <div class="total-section">
                         <div class="total-row">
                             <span>Subtotal:</span>
-                            <span id="subtotal">${{ number_format($event->price, 2) }}</span>
+                            <span id="subtotal">৳{{ number_format($event->price, 2) }}</span>
                         </div>
                         <div class="total-row total-final">
                             <strong>Total:</strong>
-                            <strong id="total">${{ number_format($event->price, 2) }}</strong>
+                            <strong id="total">৳{{ number_format($event->price, 2) }}</strong>
                         </div>
                     </div>
 
@@ -198,8 +198,8 @@ function updateTotal() {
     const subtotal = eventPrice * quantity;
     const total = subtotal;
     
-    document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
-    document.getElementById('total').textContent = '$' + total.toFixed(2);
+    document.getElementById('subtotal').textContent = '৳' + subtotal.toFixed(2);
+    document.getElementById('total').textContent = '৳' + total.toFixed(2);
 }
 
 // Initialize on page load

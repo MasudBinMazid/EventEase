@@ -96,9 +96,9 @@
           <div class="block">
             <p class="label">Ticket Details</p>
             <p class="value">Quantity: {{ $ticket->quantity }}</p>
-            <div class="row">Price per ticket: ${{ number_format($ticket->event->price, 2) }}</div>
+            <div class="row">Price per ticket: Tk{{ number_format($ticket->event->price, 2) }}</div>
             <div class="row">Payment: {{ str_replace('_',' ', $ticket->payment_option) }} ({{ $ticket->payment_status }})</div>
-            <div class="row" style="font-weight:700;">Total Paid: ${{ number_format($ticket->total_amount, 2) }}</div>
+            <div class="row" style="font-weight:700;">Total Paid: Tk{{ number_format($ticket->total_amount, 2) }}</div>
           </div>
 
         </div>

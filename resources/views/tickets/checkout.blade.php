@@ -59,7 +59,7 @@
           <!-- Price -->
           <div>
             <p class="text-sm text-gray-500">Price per ticket</p>
-            <p class="text-lg font-semibold">${{ number_format($event->price, 2) }}</p>
+            <p class="text-lg font-semibold">৳{{ number_format($event->price, 2) }}</p>
           </div>
 
           <!-- Quantity with stepper -->
@@ -96,7 +96,7 @@
           <!-- Total -->
           <div class="rounded-lg bg-gray-50 p-3">
             <p class="text-sm text-gray-500">Total</p>
-            <p class="text-2xl font-bold" id="totalText">${{ number_format($total, 2) }}</p>
+            <p class="text-2xl font-bold" id="totalText">৳{{ number_format($total, 2) }}</p>
           </div>
 
           <!-- Submit -->
@@ -128,7 +128,7 @@
     function recalc(){
       const q = clamp(qtyInput.value);
       qtyInput.value = q;
-      totalTxt.textContent = '$' + (q * price).toFixed(2);
+      totalTxt.textContent = '৳' + (q * price).toFixed(2);
     }
 
     inc.addEventListener('click', () => { qtyInput.value = clamp(qtyInput.value) + 1; recalc(); });

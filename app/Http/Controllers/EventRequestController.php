@@ -25,7 +25,7 @@ class EventRequestController extends Controller
             'capacity'         => 'nullable|integer|min:1|max:10000',
             'is_paid'          => 'nullable|boolean',
             'price'            => 'nullable|numeric|min:0',
-            'currency'         => 'nullable|string|in:BDT,USD,EUR',
+            'currency'         => 'nullable|string|in:BDT',
             'allow_pay_later'  => 'nullable|boolean',
         ]);
 

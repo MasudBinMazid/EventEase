@@ -109,7 +109,7 @@
               <i class="bi bi-tag"></i>
               <span class="price-amount">
                 @if($event->price > 0)
-                  ${{ number_format($event->price, 2) }}
+                  ৳{{ number_format($event->price, 2) }}
                 @else
                   Free
                 @endif

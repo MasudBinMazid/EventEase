@@ -22,8 +22,8 @@
       @error('payment_option')<div style="color:red">{{ $message }}</div>@enderror
     </div>
 
-    <p><strong>Price:</strong> ${{ number_format($event->price,2) }} × <span id="qtyPreview">1</span>
-      = <strong id="totalPreview">${{ number_format($event->price,2) }}</strong></p>
+    <p><strong>Price:</strong> ৳{{ number_format($event->price,2) }} × <span id="qtyPreview">1</span>
+      = <strong id="totalPreview">৳{{ number_format($event->price,2) }}</strong></p>
 
     <button type="submit" class="btn register">Proceed Checkout</button>
   </form>
@@ -37,7 +37,7 @@
   qty.addEventListener('input', () => {
     const q = Math.max(1, parseInt(qty.value || '1',10));
     qtyPrev.textContent = q;
-    totPrev.textContent = '$' + (q*price).toFixed(2);
+    totPrev.textContent = '৳' + (q*price).toFixed(2);
   });
 </script>
 @endsection

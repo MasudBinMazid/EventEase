@@ -24,7 +24,7 @@
       </p>
       <p style="margin:0 0 6px 0;"><strong>Where:</strong> {{ $ticket->event->location }}</p>
       <p style="margin:0 0 6px 0;"><strong>Quantity:</strong> {{ $ticket->quantity }}</p>
-      <p style="margin:0 0 6px 0;"><strong>Total:</strong> ${{ number_format($ticket->total_amount,2) }}</p>
+      <p style="margin:0 0 6px 0;"><strong>Total:</strong> ৳{{ number_format($ticket->total_amount,2) }}</p>
       <p style="margin:0 0 6px 0;"><strong>Payment:</strong> {{ strtoupper($ticket->payment_option) }} — {{ strtoupper($ticket->payment_status) }}</p>
       <p style="margin:0 0 10px 0;"><strong>Ticket Code:</strong> {{ $ticket->ticket_code }}</p>
 

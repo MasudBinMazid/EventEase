@@ -137,7 +137,7 @@ function displayResult(data) {
         <div><strong>Holder:</strong> ${data.data.holder_name}</div>
         <div><strong>Email:</strong> ${data.data.holder_email}</div>
         <div><strong>Quantity:</strong> ${data.data.quantity}</div>
-        <div><strong>Amount:</strong> $${data.data.total_amount}</div>
+        <div><strong>Amount:</strong> ৳${data.data.total_amount}</div>
         <div><strong>Issued:</strong> ${data.data.issued_at}</div>
       </div>
     `;

@@ -19,7 +19,7 @@
     @if($event->ends_at) – {{ $event->ends_at->format('M d, Y g:i A') }} @endif
   </p>
   <p><strong>Where:</strong> {{ $event->location }}</p>
-  <p><strong>Price:</strong> ${{ number_format($event->price,2) }}</p>
+  <p><strong>Price:</strong> ৳{{ number_format($event->price,2) }}</p>
 
   @if($event->description)
     <div style="margin-top:12px;">{!! nl2br(e($event->description)) !!}</div>
@@ -43,9 +43,9 @@
       </div>
 
       <p class="text-sm">
-        <strong>Price:</strong> ${{ number_format($event->price, 2) }}
+        <strong>Price:</strong> ৳{{ number_format($event->price, 2) }}
         × <span id="qtyPreview">1</span>
-        = <strong id="totalPreview">${{ number_format($event->price, 2) }}</strong>
+        = <strong id="totalPreview">৳{{ number_format($event->price, 2) }}</strong>
       </p>
 
       <button class="btn register" type="submit">Buy Ticket</button>
@@ -65,7 +65,7 @@
       function recalc() {
         const q = Math.max(1, parseInt(qtyInput.value || '1', 10));
         qtyPrev.textContent = q;
-        totPrev.textContent = '$' + (q * price).toFixed(2);
+        totPrev.textContent = '৳' + (q * price).toFixed(2);
       }
       qtyInput.addEventListener('input', recalc);
       recalc();
