@@ -101,12 +101,6 @@
             <div class="row" style="font-weight:700;">Total Paid: ${{ number_format($ticket->total_amount, 2) }}</div>
           </div>
 
-          @if(!empty($ticket->event->description))
-            <div class="block">
-              <p class="label">About this event</p>
-              <div class="desc">{{ strip_tags($ticket->event->description) }}</div>
-            </div>
-          @endif
         </div>
 
         <div class="col" style="width:40%;">

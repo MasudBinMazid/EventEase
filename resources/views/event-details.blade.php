@@ -8,8 +8,8 @@
 
   <h1 class="text-3xl font-bold mt-3">{{ $event->title }}</h1>
 
-  @if($event->banner_path)
-    <img src="{{ $event->banner_path ? (Str::startsWith($event->banner_path,'http') ? $event->banner_path : asset($event->banner_path)) : '' }}"
+  @if($event->banner)
+    <img src="{{ asset($event->banner) }}"
          alt="Banner" style="max-width:100%;border-radius:12px;margin:16px 0;">
   @endif
 

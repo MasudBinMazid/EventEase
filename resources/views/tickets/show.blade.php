@@ -7,7 +7,7 @@
 
   <div class="ticket border rounded-xl p-4 mt-4 bg-white shadow">
     @if($ticket->event->banner)
-      <img src="{{ $ticket->event->banner }}" alt="banner" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px">
+      <img src="{{ asset($ticket->event->banner) }}" alt="banner" style="width:100%;max-height:260px;object-fit:cover;border-radius:10px">
     @endif
 
     <p class="mt-3"><strong>When:</strong>

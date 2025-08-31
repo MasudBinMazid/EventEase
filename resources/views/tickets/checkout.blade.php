@@ -21,7 +21,7 @@
       <!-- Event Summary -->
       <div class="md:col-span-2 space-y-4">
         @if($event->banner)
-          <img src="{{ $event->banner }}" alt="banner"
+          <img src="{{ asset($event->banner) }}" alt="banner"
                class="w-full h-44 object-cover rounded-xl">
         @endif
 

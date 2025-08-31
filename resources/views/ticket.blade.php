@@ -10,8 +10,8 @@
   @endif
 
   <div style="border:1px solid #ddd;border-radius:12px;overflow:hidden;">
-    @if($ticket->event->banner_path)
-      <img src="{{ $ticket->event->banner_path ? (Str::startsWith($ticket->event->banner_path,'http') ? $ticket->event->banner_path : asset($ticket->event->banner_path)) : '' }}"
+    @if($ticket->event->banner)
+      <img src="{{ asset($ticket->event->banner) }}"
            alt="Banner" style="width:100%;max-height:260px;object-fit:cover;">
     @endif
 

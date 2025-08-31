@@ -183,7 +183,7 @@
         <div class="preview-wrap">
           <div><strong>Current banner:</strong></div>
           @if ($event->banner)
-            <img src="{{ $event->banner }}" alt="Current banner" class="preview">
+            <img src="{{ asset($event->banner) }}" alt="Current banner" class="preview">
             <label class="inline-checkbox">
               <input type="checkbox" name="remove_banner" value="1">
               <span>Remove current banner</span>

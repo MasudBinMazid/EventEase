@@ -11,7 +11,7 @@
 @php
   use Illuminate\Support\Carbon;
   $isUpcoming = $event->starts_at ? Carbon::now()->lt($event->starts_at) : true;
-  $cover = $event->banner;
+  $cover = $event->banner ? asset($event->banner) : null;
 @endphp
 
 <!-- Hero -->
