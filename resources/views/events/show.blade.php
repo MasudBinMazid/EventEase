@@ -37,7 +37,7 @@
                 @endphp
                 <span class="event-status status-{{ $status }}">{{ $statusText }}</span>
             </div>
-            <h1 class="event-title">{{ $event->title }}</h1>
+            
             <div class="event-meta">
                 <div class="meta-item">
                     <i class="bi bi-calendar-event"></i>
