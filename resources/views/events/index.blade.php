@@ -115,6 +115,13 @@
                 @endif
               </span>
             </div>
+            
+            @if($event->creator)
+              <div class="event-detail organizer">
+                <i class="bi bi-person-circle"></i>
+                <span>Organized by {{ $event->creator->name }}</span>
+              </div>
+            @endif
           </div>
           
           @if($event->description)

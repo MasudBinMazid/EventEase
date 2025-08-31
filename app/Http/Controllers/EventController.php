@@ -9,7 +9,8 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::where('status', 'approved')
+        $events = Event::with('creator')
+            ->where('status', 'approved')
             ->orderBy('starts_at', 'asc')
             ->paginate(9);
 

@@ -120,134 +120,68 @@
   gap: 20px;
 }
 
-/* Event Card - Simple & Fixed */
+/* Event Card - Simple Layout (Banner Hidden for Cards Only) */
 .event-card {
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
-  height: 400px;
+  min-height: 200px;
+  padding: 20px;
+  position: relative; /* For status badge positioning */
 }
 
 .event-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Event Banner */
-.event-banner {
-  position: relative;
-  height: 180px;
-  background: #f1f5f9;
-  overflow: hidden;
+/* Hide Event Banner ONLY in event cards (not in details page) */
+.events-container .event-card .event-banner {
+  display: none;
 }
 
-.event-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+.events-container .event-card .event-image {
+  display: none;
 }
 
-.event-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #cbd5e1;
-  font-size: 2rem;
+.events-container .event-card .event-placeholder {
+  display: none;
 }
 
-/* Status Badge */
-.event-status-badge {
+/* Event Status Badge - Positioned at top right of card */
+.events-container .event-card .event-status-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  top: 15px;
+  right: 15px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 4px;
+  z-index: 10;
 }
 
-.event-status-badge.upcoming {
-  background: #10b981;
+.events-container .event-card .event-status-badge.upcoming {
+  background: rgba(16, 185, 129, 0.9);
   color: white;
 }
 
-.event-status-badge.ongoing {
-  background: #ef4444;
-  color: white;
-}
-
-.event-status-badge.past {
-  background: #6b7280;
-  color: white;
-}
-
-/* Event Banner */
-.event-banner {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-}
-
-.event-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.event-card:hover .event-image {
-  transform: scale(1.05);
-}
-
-.event-placeholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 3rem;
-}
-
-/* Event Status Badge */
-.event-status-badge {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.event-status-badge.upcoming {
-  background: rgba(40, 167, 69, 0.9);
-  color: white;
-}
-
-.event-status-badge.ongoing {
-  background: rgba(220, 53, 69, 0.9);
+.events-container .event-card .event-status-badge.ongoing {
+  background: rgba(239, 68, 68, 0.9);
   color: white;
   animation: pulse 2s infinite;
 }
 
-.event-status-badge.past {
-  background: rgba(108, 117, 125, 0.9);
+.events-container .event-card .event-status-badge.past {
+  background: rgba(107, 114, 128, 0.9);
   color: white;
 }
 
@@ -257,116 +191,138 @@
   100% { opacity: 1; }
 }
 
-/* Event Content - Ultra Simple */
-.event-content {
-  padding: 16px;
+/* Event Content - Simplified for Cards Only */
+.events-container .event-card .event-content {
+  padding: 0; /* No padding since card has padding */
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 15px;
   flex: 1;
+  overflow: visible;
 }
 
-.event-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0 0 8px 0;
+.events-container .event-card .event-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.3;
+  margin-bottom: 15px;
+  padding-right: 90px; /* Make space for status badge */
+  /* Handle long titles */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 3.25rem; /* Space for 2 lines */
+}
+
+.events-container .event-card .event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.events-container .event-card .event-detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #4b5563;
   line-height: 1.3;
 }
 
-.event-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 12px;
-}
-
-.event-detail {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-.event-detail i {
-  color: #6366f1;
-  font-size: 0.8rem;
-  width: 12px;
+.events-container .event-card .event-detail i {
+  color: #667eea;
+  font-size: 1rem;
+  width: 16px;
   text-align: center;
+  flex-shrink: 0;
 }
 
-.event-detail.price .price-amount {
-  font-weight: 600;
+.events-container .event-card .event-detail.price .price-amount {
+  font-weight: 700;
   color: #059669;
+  font-size: 1rem;
 }
 
-.event-description {
-  display: none; /* Hide description for ultra-simple design */
-}
-  color: #666;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* Add organizer detail style */
+.events-container .event-card .event-detail.organizer {
+  color: #6b7280;
+  font-style: italic;
 }
 
-/* Action Buttons */
-/* Event Actions - Ultra Simple */
-.event-actions {
+.events-container .event-card .event-detail.organizer i {
+  color: #9333ea;
+}
+
+/* Hide description in event cards for cleaner layout */
+.events-container .event-card .event-description {
+  display: none;
+}
+
+/* Event Actions - Simplified for Cards */
+.events-container .event-card .event-actions {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
 }
 
-.btn {
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 500;
+.events-container .event-card .btn {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-decoration: none;
   border: 1px solid #e5e7eb;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
   text-align: center;
+  white-space: nowrap;
 }
 
-.btn-outline {
+.events-container .event-card .btn-outline {
   background: white;
   color: #6b7280;
 }
 
-.btn-outline:hover {
-  background: #f9fafb;
+.events-container .event-card .btn-outline:hover {
+  background: #f3f4f6;
   color: #374151;
+  border-color: #d1d5db;
 }
 
-.btn-primary {
-  background: #6366f1;
+.events-container .event-card .btn-primary {
+  background: #667eea;
   color: white;
-  border-color: #6366f1;
+  border-color: #667eea;
 }
 
-.btn-primary:hover {
+.events-container .event-card .btn-primary:hover {
   background: #5856eb;
+  border-color: #5856eb;
 }
 
-.btn-disabled {
+.events-container .event-card .btn-disabled {
   background: #f9fafb;
   color: #d1d5db;
   cursor: not-allowed;
+  border-color: #e5e7eb;
 }
 
-.btn i {
-  font-size: 0.7rem;
+.events-container .event-card .btn i {
+  font-size: 0.85rem;
 }
 
 /* No Events State */
@@ -445,25 +401,29 @@
     gap: 20px;
   }
   
-  .event-banner {
-    height: 180px;
+  .events-container .event-card {
+    min-height: auto;
+    padding: 15px;
   }
   
-  .event-content {
-    padding: 15px;
+  .events-container .event-card .event-title {
+    font-size: 1.1rem;
+    padding-right: 70px;
+    max-height: 2.85rem;
+  }
+  
+  .events-container .event-card .event-content {
     gap: 12px;
   }
   
-  .event-title {
-    font-size: 1.1rem;
-  }
-  
-  .event-actions {
+  .events-container .event-card .event-actions {
     flex-direction: column;
+    gap: 8px;
   }
   
-  .btn {
-    padding: 12px 15px;
+  .events-container .event-card .btn {
+    padding: 10px 12px;
+    font-size: 0.85rem;
   }
 }
 
