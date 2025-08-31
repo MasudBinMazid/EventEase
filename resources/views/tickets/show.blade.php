@@ -16,12 +16,19 @@
     </p>
     <p><strong>Venue:</strong> {{ $ticket->event->venue ?? $ticket->event->location }}</p>
     <p><strong>Quantity:</strong> {{ $ticket->quantity }}</p>
+    @if($ticket->ticket_number)
+    <p><strong>Ticket Number:</strong> {{ $ticket->ticket_number }}</p>
+    @endif
     <p><strong>Payment:</strong> {{ str_replace('_',' ', $ticket->payment_option) }} — <strong>{{ ucfirst($ticket->payment_status) }}</strong></p>
 
     <div class="mt-4">
       <strong>QR Code:</strong><br>
       @if($ticket->qr_path && is_file(storage_path('app/public/'.$ticket->qr_path)))
-        {!! file_get_contents(storage_path('app/public/'.$ticket->qr_path)) !!}
+        @if(str_ends_with($ticket->qr_path, '.svg'))
+          {!! file_get_contents(storage_path('app/public/'.$ticket->qr_path)) !!}
+        @else
+          <img src="{{ asset('storage/'.$ticket->qr_path) }}" alt="QR Code" style="width:200px;height:200px;">
+        @endif
       @endif
       <div style="margin-top:6px;font-size:12px">Code: {{ $ticket->ticket_code }}</div>
     </div>

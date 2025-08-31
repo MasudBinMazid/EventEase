@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Ticket;
+use App\Services\QrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -89,7 +90,75 @@ class TicketController extends Controller
     }
 
     /**
-     * Helper: creates ticket, generates SVG QR into storage/app/public/tickets/
+     * Verify a ticket using QR code scan
+     * This is a public route for event organizers to verify tickets
+     */
+    public function verify(string $ticketCode)
+    {
+        // Handle both formats: compact (TKT-XXX|user|event|status) or simple (TKT-XXX)
+        $parts = explode('|', $ticketCode);
+        $actualTicketCode = $parts[0]; // First part is always the ticket code
+        
+        $ticket = Ticket::where('ticket_code', $actualTicketCode)->first();
+        
+        if (!$ticket) {
+            return response()->json([
+                'valid' => false,
+                'message' => 'Ticket not found',
+                'status' => 'invalid'
+            ], 404);
+        }
+
+        // Additional validation for compact format
+        if (count($parts) > 1) {
+            $qrUserId = (int)$parts[1];
+            $qrEventId = (int)$parts[2];
+            $qrPaymentStatus = $parts[3] ?? '';
+            
+            // Validate QR data matches database
+            if ($ticket->user_id !== $qrUserId || 
+                $ticket->event_id !== $qrEventId || 
+                $ticket->payment_status !== $qrPaymentStatus) {
+                return response()->json([
+                    'valid' => false,
+                    'message' => 'Invalid QR code - data mismatch',
+                    'status' => 'tampered'
+                ], 400);
+            }
+        }
+
+        $isValid = $ticket->payment_status === 'paid';
+        
+        return response()->json([
+            'valid' => $isValid,
+            'message' => $isValid ? 'Valid ticket' : 'Ticket payment not confirmed',
+            'status' => $ticket->payment_status,
+            'data' => [
+                'ticket_code' => $ticket->ticket_code,
+                'ticket_number' => $ticket->ticket_number,
+                'event_title' => $ticket->event->title,
+                'event_date' => $ticket->event->starts_at?->format('M d, Y g:i A'),
+                'venue' => $ticket->event->venue ?? $ticket->event->location,
+                'holder_name' => $ticket->user->name,
+                'holder_email' => $ticket->user->email,
+                'quantity' => $ticket->quantity,
+                'total_amount' => $ticket->total_amount,
+                'issued_at' => $ticket->created_at->format('M d, Y g:i A'),
+                'payment_verified_at' => $ticket->payment_verified_at?->format('M d, Y g:i A')
+            ]
+        ]);
+    }
+
+    /**
+     * Show ticket verification form for event organizers
+     */
+    public function verifyForm()
+    {
+        return view('tickets.verify');
+    }
+
+    /**
+     * Helper: creates ticket, generates QR code using pure PHP library
      * (made PUBLIC so PaymentController can reuse it)
      */
     public function createTicketAndQr(Event $event, int $qty, string $paymentOption, string $paymentStatus): Ticket
@@ -104,15 +173,22 @@ class TicketController extends Controller
             'payment_option' => $paymentOption, // 'pay_now' | 'pay_later'
             'payment_status' => $paymentStatus, // 'paid' | 'unpaid'
             'ticket_code'    => 'TKT-' . strtoupper(Str::random(8)),
+            'ticket_number'  => 'TN-' . time() . '-' . strtoupper(Str::random(4)), // Add ticket number
         ]);
 
-        // Generate QR SVG
-        $svg = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
-            ->size(260)
-            ->generate($ticket->ticket_code);
+        // Generate QR code with essential ticket data (optimized for size)
+        $qrData = $ticket->ticket_code . '|' . $ticket->user_id . '|' . $ticket->event_id . '|' . $ticket->payment_status;
 
-        $path = 'tickets/'.$ticket->ticket_code.'.svg';
-        Storage::disk('public')->put($path, $svg);
+        try {
+            $qrPngBinary = QrCodeService::generatePngBinary($qrData);
+            $path = 'tickets/'.$ticket->ticket_code.'.png';
+            Storage::disk('public')->put($path, $qrPngBinary);
+        } catch (\Exception $e) {
+            // Fallback to SVG if PNG fails
+            $qrSvg = QrCodeService::generateSvg($qrData);
+            $path = 'tickets/'.$ticket->ticket_code.'.svg';
+            Storage::disk('public')->put($path, $qrSvg);
+        }
 
         $ticket->qr_path = $path;
         $ticket->save();

@@ -99,6 +99,10 @@ Route::middleware('auth')->group(function () {
     // Ticket views & download
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets/{ticket}/download', [TicketController::class, 'download'])->name('tickets.download');
+    
+    // Ticket verification (public route for QR code scanning)
+    Route::get('/verify/{ticketCode}', [TicketController::class, 'verify'])->name('tickets.verify');
+    Route::get('/verify', [TicketController::class, 'verifyForm'])->name('tickets.verify.form');
 });
 
 /*

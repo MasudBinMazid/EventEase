@@ -30,7 +30,7 @@
     .muted  { color:#6b7280; }
 
     .qrwrap { text-align:center; padding:12px; border:1px dashed #d1d5db; border-radius:8px; }
-    .qr     { width:200px; height:200px; display:inline-block; }
+    .qr     { width:200px; height:200px; display:block; margin:0 auto; }
     .code   { margin-top:6px; font-weight:700; letter-spacing:.03em; }
 
     .footer { margin-top:14px; padding:10px 18px; text-align:center; font-size:10px; color:#6b7280; border-top:1px solid #e5e7eb; }
@@ -111,9 +111,29 @@
 
         <div class="col" style="width:40%;">
           <div class="qrwrap">
-            {{-- QR (SVG) from storage/app/public/... --}}
-            @if($ticket->qr_path && is_file(storage_path('app/public/'.$ticket->qr_path)))
-              {!! file_get_contents(storage_path('app/public/'.$ticket->qr_path)) !!}
+            {{-- Generate QR code as base64 data URL for PDF using pure PHP library --}}
+            @php
+              try {
+                // Create compact QR data for size optimization: ticket_code|user_id|event_id|payment_status
+                $qrData = $ticket->ticket_code . '|' . $ticket->user_id . '|' . $ticket->event_id . '|' . $ticket->payment_status;
+                
+                $qrDataUrl = \App\Services\QrCodeService::generateBase64Png($qrData);
+              } catch (\Exception $e) {
+                $qrDataUrl = null;
+              }
+            @endphp
+            
+            @if($qrDataUrl)
+              <img src="{{ $qrDataUrl }}" alt="QR Code" class="qr" style="width:200px;height:200px;">
+            @else
+              {{-- Fallback text-based representation --}}
+              <div style="width:200px;height:200px;border:2px solid #666;display:flex;align-items:center;justify-content:center;margin:0 auto;background:#f9f9f9;">
+                <div style="text-align:center;font-family:monospace;font-size:10px;line-height:1.2;">
+                  QR CODE<br>
+                  <strong>{{ $ticket->ticket_code }}</strong><br>
+                  <small>Scan at venue</small>
+                </div>
+              </div>
             @endif
             <div class="code">{{ $ticket->ticket_code }}</div>
           </div>
@@ -125,7 +145,7 @@
 
           <div class="block">
             <p class="label">Ticket #</p>
-            <p class="value">{{ $ticket->ticket_code }}</p>
+            <p class="value">{{ $ticket->ticket_number ?: $ticket->ticket_code }}</p>
           </div>
         </div>
       </div>
