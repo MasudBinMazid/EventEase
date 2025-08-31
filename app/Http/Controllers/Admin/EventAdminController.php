@@ -10,7 +10,7 @@ class EventAdminController extends Controller
 {
     public function index()
     {
-        $events = Event::select('id','title','location','starts_at','ends_at','capacity','featured_on_home')
+        $events = Event::select('id','title','location','starts_at','ends_at','capacity','featured_on_home','visible_on_site')
                        ->orderByDesc('starts_at')
                        ->get();
 
@@ -36,6 +36,7 @@ class EventAdminController extends Controller
             'purchase_option'  => 'required|in:both,pay_now,pay_later',
             'banner'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'featured_on_home' => 'nullable|boolean',
+            'visible_on_site'  => 'nullable|boolean',
         ]);
 
         // Ensure folder exists
@@ -60,6 +61,7 @@ class EventAdminController extends Controller
             'created_by'       => auth()->id(),
             'status'           => 'approved',
             'featured_on_home' => $r->boolean('featured_on_home'),
+            'visible_on_site'  => $r->boolean('visible_on_site', true), // Default to true
         ]);
 
         Event::create($payload);
@@ -89,6 +91,7 @@ class EventAdminController extends Controller
             'remove_banner'    => 'nullable|boolean',
             'banner'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'featured_on_home' => 'nullable|boolean',
+            'visible_on_site'  => 'nullable|boolean',
         ]);
 
         $uploadDir = public_path('uploads/events');
@@ -123,6 +126,7 @@ class EventAdminController extends Controller
         $payload = array_merge($data, [
             'banner'           => $bannerPath,
             'featured_on_home' => $r->boolean('featured_on_home'),
+            'visible_on_site'  => $r->boolean('visible_on_site'),
         ]);
 
         $event->update($payload);

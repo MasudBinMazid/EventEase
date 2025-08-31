@@ -182,6 +182,15 @@
           @error('featured_on_home') <div class="error">{{ $message }}</div> @enderror
         </div>
 
+        <div class="field">
+          <label class="label" style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" name="visible_on_site" value="1" {{ old('visible_on_site', true) ? 'checked' : '' }}>
+            Show on Public Site
+          </label>
+          <div class="hint">Uncheck this to hide the event from public site while keeping it in admin panel.</div>
+          @error('visible_on_site') <div class="error">{{ $message }}</div> @enderror
+        </div>
+
         <div class="actions">
           <button type="submit" class="btn btn-primary">
             <span class="ico" aria-hidden="true">

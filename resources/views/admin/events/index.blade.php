@@ -134,7 +134,7 @@
       <div class="page-head">
         <div>
           <h2 class="page-title">Events</h2>
-          <p class="help">Create, edit, and manage events. Events marked as "Featured" will appear in the "Upcoming Events" section on the home page.</p>
+          <p class="help">Create, edit, and manage events. Control visibility on public site and home page featuring. Hidden events remain accessible in admin panel.</p>
         </div>
         <a class="btn btn-primary" href="{{ route('admin.events.create') }}">
           <span class="ico" aria-hidden="true">
@@ -161,6 +161,7 @@
                 <th>Location</th>
                 <th>Cap.</th>
                 <th title="Featured on Home Page">Home</th>
+                <th title="Visible on Public Site">Visible</th>
                 <th class="col-actions" style="text-align:right">Actions</th>
               </tr>
             </thead>
@@ -194,6 +195,13 @@
                     <span style="color: #16a34a; font-weight: 700;">✓ Featured</span>
                   @else
                     <span style="color: #6b7280;">—</span>
+                  @endif
+                </td>
+                <td data-label="Visible">
+                  @if($e->visible_on_site)
+                    <span style="color: #16a34a; font-weight: 700;">✓ Show</span>
+                  @else
+                    <span style="color: #dc2626; font-weight: 700;">✗ Hidden</span>
                   @endif
                 </td>
                 <td class="col-actions" data-label="Actions" style="text-align:right">

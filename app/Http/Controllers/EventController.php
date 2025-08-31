@@ -10,7 +10,7 @@ class EventController extends Controller
     public function index()
     {
         $events = Event::with('creator')
-            ->where('status', 'approved')
+            ->visibleOnSite()
             ->orderBy('starts_at', 'asc')
             ->paginate(9);
 
@@ -19,7 +19,9 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        if ($event->status !== 'approved') {
+        // Allow viewing if event is visible on site and approved
+        // OR if user is admin or creator
+        if ($event->status !== 'approved' || !$event->visible_on_site) {
             $user = Auth::user();
             if (!$user || (!$user->isAdmin() && $user->id !== $event->created_by)) {
                 abort(404);

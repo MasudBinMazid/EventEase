@@ -8,7 +8,7 @@ class Event extends Model
 {
 protected $fillable = [
   'title','description','location','venue','starts_at','ends_at','capacity',
-  'price','banner','banner_path','allow_pay_later','created_by','status','approved_by','approved_at','featured_on_home',
+  'price','banner','banner_path','allow_pay_later','created_by','status','approved_by','approved_at','featured_on_home','visible_on_site',
 ];
 
 
@@ -19,6 +19,7 @@ protected $fillable = [
         'price'            => 'decimal:2',
         'allow_pay_later'  => 'boolean',
         'featured_on_home' => 'boolean',
+        'visible_on_site'  => 'boolean',
     ];
 
     public function creator()
@@ -71,7 +72,15 @@ protected $fillable = [
     {
         return $query->where('featured_on_home', true)
                     ->where('status', 'approved')
+                    ->where('visible_on_site', true)
                     ->where('starts_at', '>', now())
                     ->orderBy('starts_at');
+    }
+
+    // Scope for events visible on the public site
+    public function scopeVisibleOnSite($query)
+    {
+        return $query->where('visible_on_site', true)
+                    ->where('status', 'approved');
     }
 }
