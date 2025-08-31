@@ -120,14 +120,14 @@
   gap: 20px;
 }
 
-/* Event Card - Simple Layout (Banner Hidden for Cards Only) */
+/* Event Card - Simple Layout with Standard Colors */
 .event-card {
-  background: white;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   min-height: 200px;
@@ -136,8 +136,9 @@
 }
 
 .event-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.15);
+  background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
 }
 
 /* Hide Event Banner ONLY in event cards (not in details page) */
@@ -170,19 +171,22 @@
 }
 
 .events-container .event-card .event-status-badge.upcoming {
-  background: rgba(16, 185, 129, 0.9);
+  background: linear-gradient(135deg, #10b981, #059669);
   color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
 .events-container .event-card .event-status-badge.ongoing {
-  background: rgba(239, 68, 68, 0.9);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   animation: pulse 2s infinite;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .events-container .event-card .event-status-badge.past {
-  background: rgba(107, 114, 128, 0.9);
+  background: linear-gradient(135deg, #6b7280, #4b5563);
   color: white;
+  box-shadow: 0 2px 8px rgba(107, 114, 128, 0.3);
 }
 
 @keyframes pulse {
@@ -204,7 +208,7 @@
 .events-container .event-card .event-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #1e293b;
   margin: 0;
   line-height: 1.3;
   margin-bottom: 15px;
@@ -216,6 +220,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-height: 3.25rem; /* Space for 2 lines */
+  background: linear-gradient(135deg, #334155, #1e293b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .events-container .event-card .event-details {
@@ -231,8 +239,18 @@
   align-items: center;
   gap: 10px;
   font-size: 0.9rem;
-  color: #4b5563;
+  color: #475569;
   line-height: 1.3;
+  padding: 8px 12px;
+  background: rgba(241, 245, 249, 0.5);
+  border-radius: 8px;
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+}
+
+.events-container .event-card .event-detail:hover {
+  background: rgba(241, 245, 249, 0.8);
+  transform: translateX(2px);
 }
 
 .events-container .event-card .event-detail i {
@@ -241,22 +259,40 @@
   width: 16px;
   text-align: center;
   flex-shrink: 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.events-container .event-card .event-detail.price {
+  background: rgba(5, 150, 105, 0.1);
+  border: 1px solid rgba(5, 150, 105, 0.2);
 }
 
 .events-container .event-card .event-detail.price .price-amount {
   font-weight: 700;
   color: #059669;
   font-size: 1rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Add organizer detail style */
 .events-container .event-card .event-detail.organizer {
-  color: #6b7280;
+  background: rgba(147, 51, 234, 0.1);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  color: #7c3aed;
   font-style: italic;
 }
 
 .events-container .event-card .event-detail.organizer i {
-  color: #9333ea;
+  background: linear-gradient(135deg, #9333ea, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Hide description in event cards for cleaner layout */
@@ -264,13 +300,13 @@
   display: none;
 }
 
-/* Event Actions - Simplified for Cards */
+/* Event Actions - Colorful Buttons */
 .events-container .event-card .event-actions {
   display: flex;
   gap: 10px;
   margin-top: auto;
   padding-top: 15px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 2px solid rgba(102, 126, 234, 0.1);
   flex-shrink: 0;
 }
 
@@ -280,9 +316,8 @@
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
-  border: 1px solid #e5e7eb;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -290,35 +325,43 @@
   flex: 1;
   text-align: center;
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .events-container .event-card .btn-outline {
-  background: white;
-  color: #6b7280;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  color: #475569;
+  border: 2px solid #e2e8f0;
 }
 
 .events-container .event-card .btn-outline:hover {
-  background: #f3f4f6;
-  color: #374151;
-  border-color: #d1d5db;
+  background: linear-gradient(135deg, #f1f5f9, #cbd5e1);
+  color: #334155;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 .events-container .event-card .btn-primary {
-  background: #667eea;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
-  border-color: #667eea;
+  border: 2px solid #667eea;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .events-container .event-card .btn-primary:hover {
-  background: #5856eb;
+  background: linear-gradient(135deg, #5856eb, #6d28d9);
   border-color: #5856eb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .events-container .event-card .btn-disabled {
-  background: #f9fafb;
-  color: #d1d5db;
+  background: linear-gradient(135deg, #f9fafb, #e5e7eb);
+  color: #9ca3af;
   cursor: not-allowed;
-  border-color: #e5e7eb;
+  border: 2px solid #e5e7eb;
+  opacity: 0.6;
 }
 
 .events-container .event-card .btn i {
