@@ -97,16 +97,55 @@
       @endguest
 
       @auth
-        <div class="dropdown">
-          <button class="dropdown-toggle">{{ Auth::user()->name }}</button>
-          <div class="dropdown-menu">
-            <a href="{{ route('dashboard') }}" style="color: black;">Dashboard</a>
-            <form method="POST" action="{{ route('logout') }}">
-              @csrf
-              <button type="submit" style="color: black; background: none; border: none; cursor: pointer;">
-                Logout
-              </button>
-            </form>
+        <div class="user-menu-wrapper">
+          <div class="user-status-indicator">
+            @if(Auth::user()->profile_picture)
+              <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="{{ Auth::user()->name }}" class="header-user-avatar">
+            @else
+              <div class="header-avatar-placeholder">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
+            @endif
+            <div class="status-dot online"></div>
+          </div>
+          <div class="dropdown">
+            <button class="dropdown-toggle">
+              <span class="user-name">{{ Auth::user()->name }}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu">
+              <div class="dropdown-header">
+                <div class="dropdown-user-info">
+                  <span class="dropdown-name">{{ Auth::user()->name }}</span>
+                  <span class="dropdown-email">{{ Auth::user()->email }}</span>
+                </div>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="{{ route('dashboard') }}" class="dropdown-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <path d="M9 9H15V15H9V9Z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                Dashboard
+              </a>
+              <a href="{{ route('profile.edit') }}" class="dropdown-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+                </svg>
+                Profile
+              </a>
+              <div class="dropdown-divider"></div>
+              <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="dropdown-item logout-item">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9M16 17L21 12L16 7M21 12H9" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  Sign Out
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       @endauth
@@ -142,10 +181,27 @@
       <div class="sidebar-profile">
         @guest
           <div class="guest-profile">
-            <div class="guest-avatar">👲🏻</div>
+            <div class="guest-avatar">
+              <div class="guest-avatar-icon">�</div>
+              <div class="avatar-ring"></div>
+            </div>
             <div class="guest-info">
               <h3>Welcome, Guest!</h3>
-              <p>Please login to access all features</p>
+              <p>Join our community to discover amazing events and connect with like-minded people</p>
+              <div class="guest-benefits">
+                <span class="benefit-item">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Book Events
+                </span>
+                <span class="benefit-item">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Create Events
+                </span>
+              </div>
             </div>
           </div>
           <button class="sidebar-login-btn" onclick="openAuthModal(); closeSidebar();">
@@ -164,10 +220,25 @@
               @else
                 <div class="avatar-placeholder">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
               @endif
+              <div class="status-indicator online"></div>
             </div>
             <div class="user-info">
               <h3>{{ Auth::user()->name }}</h3>
               <p>{{ Auth::user()->email }}</p>
+              <div class="user-stats">
+                <span class="stat-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"/>
+                    <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"/>
+                    <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  {{ Auth::user()->tickets()->count() }} Events
+                </span>
+                <span class="user-badge {{ Auth::user()->role ?? 'user' }}">
+                  {{ ucfirst(Auth::user()->role ?? 'User') }}
+                </span>
+              </div>
             </div>
           </div>
         @endauth
