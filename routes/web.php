@@ -345,6 +345,65 @@ if (config('app.debug')) {
             'closingLine' => 'If you have any questions, please don\'t hesitate to contact us.<br><br>See you at the event! 🎉',
         ]);
     })->name('preview.ticket.email');
+    
+    // Preview email verification template
+    Route::get('/preview-verify-email', function () {
+        $user = \App\Models\User::first();
+        if (!$user) {
+            return 'No users found. Please create a user first.';
+        }
+        
+        $contentLines = [
+            'Thank you for creating an account with EventEase, your trusted partner for event discovery and ticket booking.',
+            'To get started and access all our amazing features, please verify your email address by clicking the button below.',
+            'This verification link will expire in 60 minutes.',
+            'If you did not create an account with EventEase, no further action is required.'
+        ];
+
+        return view('emails.auth-notification', [
+            'subject' => 'Welcome to EventEase - Verify Your Email Address',
+            'headerTitle' => 'Email Verification',
+            'greeting' => 'Welcome to EventEase, ' . $user->name . '!',
+            'introLine' => '🎉 Welcome to EventEase! We\'re excited to have you join our community.',
+            'contentLines' => $contentLines,
+            'actionUrl' => '#',
+            'actionText' => '✅ Verify Email Address',
+            'importantNote' => '<strong>🔒 Security Note:</strong> This is an automated email. If you didn\'t create an EventEase account, you can safely ignore this message.',
+            'closingLines' => [
+                'Welcome to the EventEase community! 🎉',
+                'Get ready to discover amazing events and book tickets with ease.'
+            ]
+        ]);
+    })->name('preview.verify.email');
+    
+    // Preview password reset template
+    Route::get('/preview-reset-password', function () {
+        $user = \App\Models\User::first();
+        if (!$user) {
+            return 'No users found. Please create a user first.';
+        }
+        
+        $contentLines = [
+            'You are receiving this email because we received a password reset request for your EventEase account.',
+            'This password reset link will expire in 60 minutes.',
+            'If you did not request a password reset, no further action is required. Your account remains secure.'
+        ];
+
+        return view('emails.auth-notification', [
+            'subject' => '🔐 Reset Your EventEase Password',
+            'headerTitle' => 'Password Reset',
+            'greeting' => 'Hello ' . $user->name . '!',
+            'introLine' => '🔑 We received a request to reset your EventEase account password.',
+            'contentLines' => $contentLines,
+            'actionUrl' => '#',
+            'actionText' => '🔐 Reset Password',
+            'importantNote' => '<strong>🛡️ Security Reminder:</strong> For security reasons, please do not share this link with anyone. If you didn\'t request this reset, your account is still secure.',
+            'closingLines' => [
+                'If you have any questions or need help, feel free to contact our support team.',
+                'Stay secure! 🛡️'
+            ]
+        ]);
+    })->name('preview.reset.password');
 }
 
 

@@ -17,16 +17,29 @@ class VerifyEmailNotification extends VerifyEmail
     {
         $verificationUrl = $this->verificationUrl($notifiable);
 
+        $contentLines = [
+            'Thank you for creating an account with EventEase, your trusted partner for event discovery and ticket booking.',
+            'To get started and access all our amazing features, please verify your email address by clicking the button below.',
+            'This verification link will expire in ' . config('auth.verification.expire', 60) . ' minutes.',
+            'If you did not create an account with EventEase, no further action is required.'
+        ];
+
         return (new MailMessage)
             ->subject('Welcome to EventEase - Verify Your Email Address')
-            ->greeting('Welcome to EventEase!')
-            ->line('Thank you for creating an account with EventEase, your trusted partner for event discovery and ticket booking.')
-            ->line('To get started and access all our amazing features, please verify your email address by clicking the button below.')
-            ->action('Verify Email Address', $verificationUrl)
-            ->line('This verification link will expire in ' . config('auth.verification.expire', 60) . ' minutes.')
-            ->line('If you did not create an account with EventEase, no further action is required.')
-            ->line('Welcome to the EventEase community! 🎉')
-            ->salutation('Best regards,<br>The EventEase Team');
+            ->view('emails.auth-notification', [
+                'subject' => 'Welcome to EventEase - Verify Your Email Address',
+                'headerTitle' => 'Email Verification',
+                'greeting' => 'Welcome to EventEase, ' . $notifiable->name . '!',
+                'introLine' => '🎉 Welcome to EventEase! We\'re excited to have you join our community.',
+                'contentLines' => $contentLines,
+                'actionUrl' => $verificationUrl,
+                'actionText' => '✅ Verify Email Address',
+                'importantNote' => '<strong>🔒 Security Note:</strong> This is an automated email. If you didn\'t create an EventEase account, you can safely ignore this message.',
+                'closingLines' => [
+                    'Welcome to the EventEase community! 🎉',
+                    'Get ready to discover amazing events and book tickets with ease.'
+                ]
+            ]);
     }
 
     /**
