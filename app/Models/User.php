@@ -21,12 +21,14 @@ class User extends Authenticatable implements MustVerifyEmail
      */
    
 
-protected $fillable = ['name', 'email', 'password', 'phone', 'profile_picture'];
+protected $fillable = ['name', 'email', 'password', 'phone', 'profile_picture', 'role'];
 
 
 // inside the class User extends Authenticatable
 public function tickets(){ return $this->hasMany(\App\Models\Ticket::class); }
+public function events(){ return $this->hasMany(\App\Models\Event::class, 'created_by'); }
 public function isAdmin(): bool { return $this->role === 'admin'; }
+public function isOrganizer(): bool { return $this->role === 'organizer'; }
 
 
 

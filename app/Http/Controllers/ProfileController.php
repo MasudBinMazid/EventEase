@@ -16,6 +16,17 @@ class ProfileController extends Controller
     public function dashboard()
     {
         $user = auth()->user();
+        
+        // Redirect based on user role
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.index');
+        }
+        
+        if ($user->isOrganizer()) {
+            return redirect()->route('organizer.dashboard');
+        }
+        
+        // Regular user dashboard
         $tickets = Ticket::with('event')->where('user_id', $user->id)->latest()->get();
         return view('auth.dashboard', compact('user', 'tickets'));
     }

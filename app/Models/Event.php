@@ -31,6 +31,11 @@ protected $fillable = [
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+    
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 
     // Optional: always get a usable URL for banner
     public function getBannerUrlAttribute(): ?string

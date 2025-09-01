@@ -46,6 +46,9 @@ use App\Http\Controllers\Admin\StatsController as AdminStatsController;
 use App\Http\Controllers\Admin\PaymentReceivedController;
 use App\Http\Controllers\Admin\NoticeController;
 
+// Organizer controllers
+use App\Http\Controllers\Organizer\OrganizerController;
+
 /*
 |--------------------------------------------------------------------------
 | Navbar / static pages
@@ -266,6 +269,23 @@ Route::post('/payments-received/{ticket}/verify', [PaymentReceivedController::cl
     Route::post('/notices/settings', [NoticeController::class, 'toggleSettings'])->name('notices.settings');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Organizer Panel
+|--------------------------------------------------------------------------
+| Routes for event organizers to manage their events
+*/
+Route::prefix('organizer')->name('organizer.')->middleware(['auth', 'verified', 'organizer'])->group(function () {
+    // Dashboard
+    Route::get('/', [OrganizerController::class, 'index'])->name('dashboard');
+    
+    // Event details (only events created by this organizer)
+    Route::get('/events/{event}', [OrganizerController::class, 'show'])->name('events.show');
+    
+    // Event tickets (only for events created by this organizer)
+    Route::get('/events/{event}/tickets', [OrganizerController::class, 'tickets'])->name('tickets');
+});
+
 // Test route for ticket email functionality (development only)
 if (config('app.debug')) {
     Route::get('/test-ticket-email/{ticket}', function (\App\Models\Ticket $ticket) {
@@ -404,6 +424,30 @@ if (config('app.debug')) {
             ]
         ]);
     })->name('preview.reset.password');
+    
+    // Test route to assign organizer role (development only)
+    Route::get('/test-assign-organizer/{email}', function($email) {
+        $user = \App\Models\User::where('email', $email)->first();
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        
+        $oldRole = $user->role;
+        $user->role = 'organizer';
+        $user->save();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Role updated successfully',
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'old_role' => $oldRole,
+                'new_role' => $user->role
+            ],
+            'organizer_panel_url' => route('organizer.dashboard')
+        ]);
+    })->name('test.assign.organizer');
 }
 
 

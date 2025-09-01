@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\OrganizerMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -11,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
 ->withMiddleware(function (\Illuminate\Foundation\Configuration\Middleware $middleware) {
-    $middleware->alias(['admin' => \App\Http\Middleware\AdminMiddleware::class]);
+    $middleware->alias([
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        'organizer' => \App\Http\Middleware\OrganizerMiddleware::class
+    ]);
     
     // Exclude SSLCommerz callback routes from CSRF verification
     $middleware->validateCsrfTokens(except: [
