@@ -266,6 +266,33 @@ Route::post('/payments-received/{ticket}/verify', [PaymentReceivedController::cl
     Route::post('/notices/settings', [NoticeController::class, 'toggleSettings'])->name('notices.settings');
 });
 
+// Test route for ticket email functionality (development only)
+if (config('app.debug')) {
+    Route::get('/test-ticket-email/{ticket}', function (\App\Models\Ticket $ticket) {
+        try {
+            $ticket->user->notify(new \App\Notifications\TicketPdfNotification($ticket));
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Email sent successfully to ' . $ticket->user->email,
+                'ticket' => [
+                    'id' => $ticket->id,
+                    'code' => $ticket->ticket_code,
+                    'user' => $ticket->user->name,
+                    'event' => $ticket->event->title,
+                    'status' => $ticket->payment_status
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send email: ' . $e->getMessage(),
+                'error' => $e->getLine() . ': ' . $e->getFile()
+            ], 500);
+        }
+    })->name('test.ticket.email');
+}
+
 
 
 

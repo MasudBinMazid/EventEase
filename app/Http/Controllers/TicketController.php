@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Ticket;
 use App\Services\QrCodeService;
+use App\Notifications\TicketPdfNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -192,6 +193,18 @@ class TicketController extends Controller
 
         $ticket->qr_path = $path;
         $ticket->save();
+
+        // Send ticket PDF via email automatically
+        try {
+            $ticket->user->notify(new TicketPdfNotification($ticket));
+        } catch (\Exception $e) {
+            // Log the error but don't fail ticket creation
+            \Log::error('Failed to send ticket email notification', [
+                'ticket_id' => $ticket->id,
+                'user_id' => $ticket->user_id,
+                'error' => $e->getMessage()
+            ]);
+        }
 
         return $ticket;
     }

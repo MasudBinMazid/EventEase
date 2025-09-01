@@ -186,8 +186,8 @@
 
     <div class="offer-item">
       <img src="{{ asset('assets/icons/icon2.png') }}" alt="Instant Ticket Delivery" />
-      <h3>Instant Ticket Delivery</h3>
-      <p>Receive your tickets immediately upon purchase via email. If preferred, users can also opt to receive their tickets on WhatsApp.</p>
+      <h3>Automatic PDF Delivery</h3>
+      <p>Receive your tickets instantly via email with PDF attachment immediately after booking. Professional tickets with QR codes delivered automatically to your inbox.</p>
     </div>
 
     <div class="offer-item">

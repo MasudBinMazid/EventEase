@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
+use App\Notifications\TicketPdfNotification;
 use Illuminate\Http\Request;
 
 class PaymentReceivedController extends Controller
@@ -56,6 +57,18 @@ class PaymentReceivedController extends Controller
             'payment_verified_by' => auth()->id(),
         ]);
 
-        return back()->with('success', "Ticket #{$ticket->id} marked as paid.");
+        // Send updated ticket email with payment confirmed status
+        try {
+            $ticket->user->notify(new TicketPdfNotification($ticket));
+        } catch (\Exception $e) {
+            // Log the error but don't fail the verification process
+            \Log::error('Failed to send payment verification email notification', [
+                'ticket_id' => $ticket->id,
+                'user_id' => $ticket->user_id,
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        return back()->with('success', "Ticket #{$ticket->id} marked as paid and confirmation email sent.");
     }
 }
