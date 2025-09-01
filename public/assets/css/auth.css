@@ -339,17 +339,28 @@
   transition: all 0.3s ease;
   box-shadow: var(--shadow-sm);
   width: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 .google-btn:hover {
-  background: var(--primary-light);
-  border-color: var(--accent-blue);
+  background: #f8f9fa;
+  border-color: #dadce0;
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  color: var(--text-dark);
+  text-decoration: none;
+}
+
+.google-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .google-btn svg {
   flex-shrink: 0;
+  width: 18px;
+  height: 18px;
 }
 
 .auth-or {
@@ -683,27 +694,3 @@
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-.social-login a {
-  display: block;
-  text-align: center;
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 5px;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.google-btn {
-  background-color: #DB4437;
-  color: white;
-}

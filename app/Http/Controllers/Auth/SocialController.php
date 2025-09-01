@@ -16,7 +16,12 @@ class SocialController extends Controller
      */
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        try {
+            return Socialite::driver('google')->redirect();
+        } catch (\Exception $e) {
+            \Log::error('Google OAuth Redirect Error: ' . $e->getMessage());
+            return redirect('/')->with('error', 'Google OAuth is not properly configured. Please contact support.');
+        }
     }
 
     /**
@@ -33,6 +38,7 @@ class SocialController extends Controller
             if ($user) {
                 // User exists, log them in
                 Auth::login($user);
+                $message = 'Welcome back! Successfully logged in with Google.';
             } else {
                 // Create new user
                 $user = User::create([
@@ -43,11 +49,15 @@ class SocialController extends Controller
                 ]);
 
                 Auth::login($user);
+                $message = 'Account created successfully! Welcome to EventEase.';
             }
 
-            return redirect()->intended('/dashboard')->with('success', 'Successfully logged in with Google!');
+            return redirect()->intended('/dashboard')->with('success', $message);
+        } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+            return redirect('/')->with('error', 'Authentication session expired. Please try again.');
         } catch (\Exception $e) {
-            return redirect('/login')->with('error', 'Unable to login with Google. Please try again.');
+            \Log::error('Google OAuth Error: ' . $e->getMessage());
+            return redirect('/')->with('error', 'Unable to login with Google. Please try again or contact support.');
         }
     }
 }
