@@ -218,29 +218,40 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
+  gap: 16px;
+  margin-top: 20px;
 }
 
 .auth-form label {
-  font-weight: 500;
-  margin-bottom: 2px;
+  font-weight: 600;
+  margin-bottom: 8px;
   font-size: 14px;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .auth-form input {
-  padding: 10px 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 14px 16px;
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
   font-size: 15px;
   width: 100%;
-  transition: border 0.2s ease;
+  background: var(--white);
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  outline: none;
 }
 
 .auth-form input:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  transform: translateY(-1px);
+}
+
+.auth-form input::placeholder {
+  color: var(--text-light);
 }
 
 .auth-options {
@@ -263,20 +274,33 @@
 }
 
 .auth-form button {
-  margin-top: 10px;
-  padding: 12px;
-  background-color: #007bff;
-  color: #fff;
+  margin-top: 16px;
+  padding: 14px 20px;
+  background: var(--gradient-primary);
+  color: var(--white);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  text-transform: none;
+  letter-spacing: 0.5px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 .auth-form button:hover {
-  background-color: #0056b3;
+  background: var(--gradient-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.auth-form button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Error box */
@@ -294,29 +318,65 @@
 .social-login {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   text-align: center;
-  padding: 10px;
-  border-radius: 6px;
-  font-weight: 500;
-  color: white;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-dark);
   text-decoration: none;
-  background-color: #db4437;
+  background: var(--white);
+  border: 2px solid var(--border-light);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
 }
 
 .google-btn:hover {
-  background-color: #c1351d;
+  background: var(--primary-light);
+  border-color: var(--accent-blue);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.google-btn svg {
+  flex-shrink: 0;
 }
 
 .auth-or {
   text-align: center;
-  margin-top: 12px;
-  font-weight: bold;
-  color: #555;
+  margin: 20px 0;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-light);
+  position: relative;
+}
+
+.auth-or::before,
+.auth-or::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: var(--border-light);
+}
+
+.auth-or::before {
+  left: 0;
+}
+
+.auth-or::after {
+  right: 0;
 }
 
 /* Modern Profile Edit Page */
