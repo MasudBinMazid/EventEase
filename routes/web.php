@@ -291,6 +291,60 @@ if (config('app.debug')) {
             ], 500);
         }
     })->name('test.ticket.email');
+    
+    // Preview route to see how the email looks
+    Route::get('/preview-ticket-email/{ticket}', function (\App\Models\Ticket $ticket) {
+        $eventDetails = '
+            <div style="margin: 10px 0;">
+                <strong>Event:</strong> ' . $ticket->event->title . '
+            </div>
+            <div style="margin: 10px 0;">
+                <strong>📅 Date:</strong> ' . ($ticket->event->starts_at ? $ticket->event->starts_at->format('l, F j, Y g:i A') : 'TBA') . '
+            </div>
+            <div style="margin: 10px 0;">
+                <strong>📍 Venue:</strong> ' . ($ticket->event->venue ?? $ticket->event->location ?? 'TBA') . '
+            </div>
+            <div style="margin: 10px 0;">
+                <strong>🎫 Ticket Code:</strong> ' . $ticket->ticket_code . '
+            </div>
+            <div style="margin: 10px 0;">
+                <strong>🔢 Quantity:</strong> ' . $ticket->quantity . ' ' . ($ticket->quantity > 1 ? 'tickets' : 'ticket') . '
+            </div>
+            <div style="margin: 10px 0;">
+                <strong>💰 Total Amount:</strong> ৳' . number_format($ticket->total_amount, 2) . '
+            </div>
+            <div style="margin: 10px 0;">
+                <strong>💳 Payment Status:</strong> ' . ucfirst($ticket->payment_status) . '
+            </div>
+        ';
+        
+        $contentLines = [];
+        $actionUrl = route('tickets.show', $ticket);
+        $actionText = 'View Ticket Online';
+        
+        if ($ticket->payment_status === 'paid') {
+            $contentLines[] = '✅ Your payment has been confirmed and your ticket is valid for entry.';
+        } else {
+            $contentLines[] = '⏳ Your ticket is generated but payment verification is pending.';
+            $contentLines[] = 'You will receive another confirmation email once your payment is verified.';
+            $actionText = 'Complete Payment';
+        }
+        
+        $importantNote = 'Please bring this ticket (printed or on your mobile device) and a valid ID to the event.<br><br>Your PDF ticket is attached to this email for your convenience.';
+        
+        return view('emails.ticket-notification', [
+            'subject' => '🎫 Your Event Ticket - ' . $ticket->event->title,
+            'headerTitle' => 'Your Event Ticket',
+            'greeting' => 'Hello ' . $ticket->user->name . '!',
+            'introLine' => 'Thank you for your booking! Your event ticket is ready.',
+            'eventDetails' => $eventDetails,
+            'contentLines' => $contentLines,
+            'actionUrl' => $actionUrl,
+            'actionText' => $actionText,
+            'importantNote' => $importantNote,
+            'closingLine' => 'If you have any questions, please don\'t hesitate to contact us.<br><br>See you at the event! 🎉',
+        ]);
+    })->name('preview.ticket.email');
 }
 
 
