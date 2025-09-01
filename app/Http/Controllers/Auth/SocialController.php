@@ -7,38 +7,47 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class SocialController extends Controller
 {
-    public function redirectToGoogle() {
+    /**
+     * Redirect to Google OAuth
+     */
+    public function redirectToGoogle()
+    {
         return Socialite::driver('google')->redirect();
     }
 
-    public function handleGoogleCallback() {
-        $googleUser = Socialite::driver('google')->user();
+    /**
+     * Handle Google OAuth callback
+     */
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
 
-        $user = User::firstOrCreate(
-            ['email' => $googleUser->getEmail()],
-            ['name' => $googleUser->getName(), 'password' => bcrypt(Str::random(16))]
-        );
+            // Check if user exists with this email
+            $user = User::where('email', $googleUser->getEmail())->first();
 
-        Auth::login($user);
-        return redirect('/');
-    }
+            if ($user) {
+                // User exists, log them in
+                Auth::login($user);
+            } else {
+                // Create new user
+                $user = User::create([
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'password' => Hash::make(Str::random(16)), // Random password since they use Google
+                    'email_verified_at' => now(), // Mark as verified since Google verified it
+                ]);
 
-    public function redirectToFacebook() {
-        return Socialite::driver('facebook')->redirect();
-    }
+                Auth::login($user);
+            }
 
-    public function handleFacebookCallback() {
-        $fbUser = Socialite::driver('facebook')->user();
-
-        $user = User::firstOrCreate(
-            ['email' => $fbUser->getEmail()],
-            ['name' => $fbUser->getName(), 'password' => bcrypt(Str::random(16))]
-        );
-
-        Auth::login($user);
-        return redirect('/');
+            return redirect()->intended('/dashboard')->with('success', 'Successfully logged in with Google!');
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'Unable to login with Google. Please try again.');
+        }
     }
 }

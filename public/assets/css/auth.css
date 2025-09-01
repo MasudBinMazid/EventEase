@@ -298,30 +298,18 @@
   margin-top: 12px;
 }
 
-.google-btn,
-.facebook-btn {
+.google-btn {
   text-align: center;
   padding: 10px;
   border-radius: 6px;
   font-weight: 500;
   color: white;
   text-decoration: none;
-}
-
-.google-btn {
   background-color: #db4437;
 }
 
 .google-btn:hover {
   background-color: #c1351d;
-}
-
-.facebook-btn {
-  background-color: #3b5998;
-}
-
-.facebook-btn:hover {
-  background-color: #2d4373;
 }
 
 .auth-or {
@@ -657,10 +645,5 @@
 
 .google-btn {
   background-color: #DB4437;
-  color: white;
-}
-
-.facebook-btn {
-  background-color: #4267B2;
   color: white;
 }

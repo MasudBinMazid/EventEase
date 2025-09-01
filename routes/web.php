@@ -125,14 +125,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Social auth
+| Social auth (Google only)
 |--------------------------------------------------------------------------
 */
 Route::get('/auth/google', [SocialController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallback']);
-
-Route::get('/auth/facebook', [SocialController::class, 'redirectToFacebook']);
-Route::get('/auth/facebook/callback', [SocialController::class, 'handleFacebookCallback']);
 
 /*
 |--------------------------------------------------------------------------

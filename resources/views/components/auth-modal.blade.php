@@ -40,7 +40,6 @@
       <p class="auth-or">OR</p>
       <div class="social-login">
         <a href="{{ url('/auth/google') }}" class="google-btn">Continue with Google</a>
-        <a href="{{ url('/auth/facebook') }}" class="facebook-btn">Continue with Facebook</a>
       </div>
     </form>
 
@@ -75,7 +74,6 @@
       <p class="auth-or">OR</p>
       <div class="social-login">
         <a href="{{ url('/auth/google') }}" class="google-btn">Continue with Google</a>
-        <a href="{{ url('/auth/facebook') }}" class="facebook-btn">Continue with Facebook</a>
       </div>
     </form>
   </div>
