@@ -68,6 +68,8 @@ class TicketPdfNotification extends Notification
             ->line('Your PDF ticket is attached to this email for your convenience.')
             ->line('If you have any questions, please don\'t hesitate to contact us.')
             ->line('See you at the event! 🎉')
+            ->salutation('Regards,  
+EventEase Team')
             ->attachData($pdfContent, $filename, [
                 'mime' => 'application/pdf',
             ]);
