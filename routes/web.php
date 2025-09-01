@@ -44,6 +44,7 @@ use App\Http\Controllers\Admin\SalesByEventController;
 use App\Http\Controllers\Admin\MessageAdminController;
 use App\Http\Controllers\Admin\StatsController as AdminStatsController;
 use App\Http\Controllers\Admin\PaymentReceivedController;
+use App\Http\Controllers\Admin\NoticeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -231,6 +232,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','admin'])->group(func
     // Payment Received (manual payments awaiting verification)
 Route::get('/payments-received', [PaymentReceivedController::class, 'index'])->name('payments.index');
 Route::post('/payments-received/{ticket}/verify', [PaymentReceivedController::class, 'verify'])->name('payments.verify');
+
+    // Notice Management
+    Route::get('/notices', [NoticeController::class, 'index'])->name('notices.index');
+    Route::get('/notices/create', [NoticeController::class, 'create'])->name('notices.create');
+    Route::post('/notices', [NoticeController::class, 'store'])->name('notices.store');
+    Route::get('/notices/{notice}/edit', [NoticeController::class, 'edit'])->name('notices.edit');
+    Route::put('/notices/{notice}', [NoticeController::class, 'update'])->name('notices.update');
+    Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
+    Route::post('/notices/settings', [NoticeController::class, 'toggleSettings'])->name('notices.settings');
 });
 
 

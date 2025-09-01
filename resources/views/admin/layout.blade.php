@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title','Admin') • EventEase Admin</title>
   @stack('head')
   @yield('extra-css')
@@ -640,6 +641,8 @@
   <a href="{{ route('admin.blogs.index') }}"    class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'is-active' : '' }}">Blogs</a>
   <a href="{{ route('admin.messages.index') }}" class="nav-link {{ request()->routeIs('admin.messages.*') ? 'is-active' : '' }}">Messages</a>
 
+  {{-- Notice Management --}}
+  <a href="{{ route('admin.notices.index') }}" class="nav-link {{ request()->routeIs('admin.notices.*') ? 'is-active' : '' }}">📢 Notices</a>
 
   {{-- NEW: Payment Received --}}
   <a href="{{ route('admin.payments.index') }}" class="nav-link {{ request()->routeIs('admin.payments.*') ? 'is-active' : '' }}">Payment Received</a>

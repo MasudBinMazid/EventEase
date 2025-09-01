@@ -9,6 +9,9 @@
 
 @section('content')
 
+<!-- Notice Bar -->
+@include('components.notice-bar')
+
 <!-- Header Section -->
 <section class="events-header">
   <div class="events-header-content">
