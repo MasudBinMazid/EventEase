@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFilterTabs();
     initializeSearch();
     initializeCardAnimations();
+    initializeStickySearchBar();
 });
 
 // Filter Tab Functionality
@@ -196,6 +197,42 @@ function showLoading() {
             <p>Loading events...</p>
         </div>
     `;
+}
+
+// Sticky Search Bar Effect
+function initializeStickySearchBar() {
+    const searchSection = document.querySelector('.search-section');
+    const eventsHeader = document.querySelector('.events-header');
+    
+    if (!searchSection || !eventsHeader) return;
+    
+    // Calculate when search bar becomes sticky
+    const headerHeight = eventsHeader.offsetHeight;
+    
+    function handleScroll() {
+        const scrollPosition = window.scrollY;
+        
+        // Add scrolled class when user scrolls past the header
+        if (scrollPosition > headerHeight - 64) { // 64px is header height
+            searchSection.classList.add('scrolled');
+        } else {
+            searchSection.classList.remove('scrolled');
+        }
+    }
+    
+    // Throttle scroll event for better performance
+    let ticking = false;
+    function optimizedScroll() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+    
+    window.addEventListener('scroll', optimizedScroll);
 }
 
 // Export functions for external use if needed

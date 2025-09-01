@@ -46,6 +46,17 @@
   padding: 15px 20px;
   box-shadow: var(--shadow-sm);
   border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 64px; /* Position below the fixed header */
+  z-index: 40; /* High z-index to stay above content but below header */
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+/* Enhanced shadow when sticky and scrolled */
+.search-section.scrolled {
+  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .search-container {
@@ -433,6 +444,9 @@
   
   .search-section {
     padding: 15px 20px;
+    position: sticky;
+    top: 64px; /* Same sticky position for tablet */
+    z-index: 40;
   }
   
   .search-container {
@@ -508,6 +522,9 @@
   
   .search-section {
     padding: 15px;
+    position: sticky;
+    top: 64px; /* Same sticky position for mobile */
+    z-index: 40;
   }
   
   .search-bar input {
