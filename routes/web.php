@@ -134,6 +134,29 @@ Route::get('/auth/google/callback', [SocialController::class, 'handleGoogleCallb
 
 /*
 |--------------------------------------------------------------------------
+| SSLCommerz Payment Gateway
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/payment/sslcommerz/initiate', [App\Http\Controllers\SSLCommerzController::class, 'initiatePayment'])->name('sslcommerz.initiate');
+    Route::get('/payment/success-page', [App\Http\Controllers\SSLCommerzController::class, 'paymentSuccessPage'])->name('sslcommerz.success.page');
+    Route::get('/payment/status/{tran_id}', [App\Http\Controllers\SSLCommerzController::class, 'checkPaymentStatus'])->name('sslcommerz.status');
+    
+    // Test route for payment success page (remove in production)
+    Route::get('/payment/test-success/{ticket_id}', function($ticketId) {
+        session()->flash('payment_success_ticket', $ticketId);
+        return redirect()->route('sslcommerz.success.page');
+    })->name('test.payment.success');
+});
+
+// SSLCommerz callback routes (no auth required)
+Route::post('/payment/success', [App\Http\Controllers\SSLCommerzController::class, 'paymentSuccess'])->name('sslcommerz.success');
+Route::post('/payment/fail', [App\Http\Controllers\SSLCommerzController::class, 'paymentFail'])->name('sslcommerz.fail');
+Route::post('/payment/cancel', [App\Http\Controllers\SSLCommerzController::class, 'paymentCancel'])->name('sslcommerz.cancel');
+Route::post('/payment/ipn', [App\Http\Controllers\SSLCommerzController::class, 'paymentIPN'])->name('sslcommerz.ipn');
+
+/*
+|--------------------------------------------------------------------------
 | Username/password auth (custom endpoints in your AuthController)
 |--------------------------------------------------------------------------
 */

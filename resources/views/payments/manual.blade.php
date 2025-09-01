@@ -31,8 +31,34 @@
         </div>
       </div>
 
+      <!-- SSLCommerz Payment Gateway -->
+      <div class="rounded-xl border-2 border-indigo-200 bg-indigo-50 p-4">
+        <h2 class="text-lg font-semibold mb-3 text-indigo-800">💳 Pay with Card/Mobile Banking</h2>
+        <p class="text-sm text-indigo-600 mb-4">Secure payment via SSLCommerz - Supports all major cards and mobile banking</p>
+        
+        <form method="POST" action="{{ route('sslcommerz.initiate') }}">
+          @csrf
+          <input type="hidden" name="event_id" value="{{ $checkout['event_id'] }}">
+          <input type="hidden" name="qty" value="{{ $checkout['qty'] }}">
+          
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+            </svg>
+            Pay Now with SSLCommerz
+          </button>
+        </form>
+      </div>
+
+      <!-- OR Divider -->
+      <div class="flex items-center gap-4">
+        <div class="flex-1 h-px bg-gray-300"></div>
+        <span class="text-gray-500 font-medium">OR</span>
+        <div class="flex-1 h-px bg-gray-300"></div>
+      </div>
+
       <div class="rounded-xl border p-4">
-        <h2 class="text-lg font-semibold mb-3">Send money to one of these numbers</h2>
+        <h2 class="text-lg font-semibold mb-3">Send money manually to one of these numbers</h2>
 
         <div class="space-y-3">
           <div class="flex items-center justify-between rounded-lg border p-3">
@@ -72,8 +98,13 @@
         </div>
       </div>
 
-      {{-- NEW: payment details form --}}
-      <form method="POST" action="{{ route('payments.manual.confirm') }}" class="space-y-4" enctype="multipart/form-data">
+      <!-- Manual Payment Confirmation -->
+      <div class="rounded-xl border p-4">
+        <h2 class="text-lg font-semibold mb-4 text-gray-800">📝 Manual Payment Confirmation</h2>
+        <p class="text-sm text-gray-600 mb-4">If you paid manually using mobile banking, please provide the transaction details below:</p>
+
+        {{-- Payment details form --}}
+        <form method="POST" action="{{ route('payments.manual.confirm') }}" class="space-y-4" enctype="multipart/form-data">
         @csrf
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -109,7 +140,8 @@
           <a href="{{ route('tickets.checkout', ['event_id' => $event->id, 'qty' => $checkout['qty']]) }}"
              class="text-sm text-gray-600 hover:underline">Go back to checkout</a>
         </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>

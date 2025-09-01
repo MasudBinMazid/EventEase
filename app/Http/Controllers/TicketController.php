@@ -38,7 +38,7 @@ class TicketController extends Controller
             default     => ['pay_now','pay_later'],
         };
 
-        return view('tickets.checkout', compact('event','qty','total','allowed'));
+        return view('tickets.checkout_new', compact('event','qty','total','allowed'));
     }
 
     /**

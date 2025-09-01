@@ -370,6 +370,48 @@
     border: 1px solid #e2e8f0;
   }
   
+  .payment-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f0f9ff;
+    border: 1px solid #0ea5e9;
+    border-radius: 12px;
+  }
+  
+  .info-card {
+    text-align: center;
+  }
+  
+  .info-title {
+    font-weight: 600;
+    color: #0c4a6e;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .info-text {
+    color: #075985;
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+  }
+  
+  .supported-methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  
+  .method-badge {
+    background: #0ea5e9;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+  
   .error-message {
     color: #dc2626;
     font-size: 0.875rem;
@@ -512,12 +554,33 @@
                       <div class="payment-radio"></div>
                       <input type="radio" name="method" value="{{ $opt }}" {{ $loop->first ? 'checked' : '' }} style="display: none;">
                       <span class="payment-text">
-                        {{ $opt === 'pay_now' ? '💳 Pay Now' : '⏰ Pay Later' }}
+                        @if($opt === 'pay_now')
+                          💳 Pay Now (SSLCommerz)
+                        @else
+                          ⏰ Pay Later
+                        @endif
                       </span>
                     </label>
                   @endforeach
                 </div>
                 @error('method') <div class="error-message">{{ $message }}</div> @enderror
+                
+                <!-- SSLCommerz Info -->
+                <div id="sslcommerz-info" class="payment-info" style="display: none;">
+                  <div class="info-card">
+                    <div class="info-title">🔒 Secure Online Payment</div>
+                    <div class="info-text">
+                      Pay securely using SSLCommerz. Supports all major credit cards, debit cards, and mobile banking.
+                    </div>
+                    <div class="supported-methods">
+                      <span class="method-badge">Visa</span>
+                      <span class="method-badge">MasterCard</span>
+                      <span class="method-badge">bKash</span>
+                      <span class="method-badge">Nagad</span>
+                      <span class="method-badge">Rocket</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- Total Section -->
@@ -527,13 +590,13 @@
               </div>
 
               <!-- Submit Button -->
-              <button type="submit" class="submit-btn">
-                🎫 Confirm Booking
+              <button type="submit" class="submit-btn" id="submitBtn">
+                🎫 <span id="btnText">Confirm Booking</span>
               </button>
 
               <div class="checkout-note">
                 <strong>🔒 Secure Checkout</strong><br>
-                You'll receive your digital ticket and QR code after confirmation.
+                <span id="noteText">You'll receive your digital ticket and QR code after confirmation.</span>
               </div>
             </form>
           </div>
@@ -547,17 +610,23 @@
 @section('extra-js')
 <script>
   (function () {
-    const price    = {{ (float) $event->price }};
+    const price = {{ (float) $event->price }};
     const qtyInput = document.getElementById('qty');
     const totalTxt = document.getElementById('totalText');
-    const inc      = document.getElementById('incQty');
-    const dec      = document.getElementById('decQty');
+    const inc = document.getElementById('incQty');
+    const dec = document.getElementById('decQty');
+    const checkoutForm = document.getElementById('checkoutForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const noteText = document.getElementById('noteText');
+    const sslcommerzInfo = document.getElementById('sslcommerz-info');
 
     function clamp(v){ return Math.max(1, parseInt(v || '1', 10)); }
     function recalc(){
       const q = clamp(qtyInput.value);
       qtyInput.value = q;
-      totalTxt.textContent = '৳' + (q * price).toFixed(2);
+      const total = q * price;
+      totalTxt.textContent = '৳' + total.toLocaleString('en-BD', {minimumFractionDigits: 2});
     }
 
     inc.addEventListener('click', () => { qtyInput.value = clamp(qtyInput.value) + 1; recalc(); });
@@ -575,8 +644,33 @@
         // Update the hidden radio input
         const radio = option.querySelector('input[type="radio"]');
         radio.checked = true;
+        
+        // Update form action and UI based on payment method
+        updatePaymentUI(radio.value);
       });
     });
+
+    function updatePaymentUI(method) {
+      if (method === 'pay_now') {
+        // SSLCommerz payment
+        checkoutForm.action = '{{ route("sslcommerz.initiate") }}';
+        btnText.textContent = 'Pay Now';
+        noteText.textContent = 'You will be redirected to SSLCommerz secure payment gateway.';
+        sslcommerzInfo.style.display = 'block';
+      } else {
+        // Pay later
+        checkoutForm.action = '{{ route("tickets.confirm") }}';
+        btnText.textContent = 'Confirm Booking';
+        noteText.textContent = 'You\'ll receive your digital ticket and can pay later.';
+        sslcommerzInfo.style.display = 'none';
+      }
+    }
+
+    // Initialize UI based on default selection
+    const selectedOption = document.querySelector('.payment-option.selected input[type="radio"]');
+    if (selectedOption) {
+      updatePaymentUI(selectedOption.value);
+    }
 
     recalc();
   })();

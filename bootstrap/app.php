@@ -12,6 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
 ->withMiddleware(function (\Illuminate\Foundation\Configuration\Middleware $middleware) {
     $middleware->alias(['admin' => \App\Http\Middleware\AdminMiddleware::class]);
+    
+    // Exclude SSLCommerz callback routes from CSRF verification
+    $middleware->validateCsrfTokens(except: [
+        'payment/success',
+        'payment/fail', 
+        'payment/cancel',
+        'payment/ipn',
+    ]);
 })
 
     ->withExceptions(function ($exceptions) {
