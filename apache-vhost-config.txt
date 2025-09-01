@@ -1,0 +1,36 @@
+# Apache Virtual Host Configuration for EventEase Laravel App
+
+# Add this to your Apache httpd.conf or create a new .conf file in Apache's sites-available
+
+<VirtualHost *:80>
+    ServerName eventease.local
+    DocumentRoot "D:/EventEaseWeb/EventEase/public"
+    
+    <Directory "D:/EventEaseWeb/EventEase/public">
+        AllowOverride All
+        Require all granted
+        DirectoryIndex index.php
+        
+        # Enable URL rewriting
+        RewriteEngine On
+        
+        # Handle Angular Router / React Router / Laravel Routes
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^(.*)$ index.php [QSA,L]
+    </Directory>
+    
+    # Optional: Set error and access logs
+    ErrorLog "logs/eventease_error.log"
+    CustomLog "logs/eventease_access.log" common
+</VirtualHost>
+
+# Steps to implement:
+# 1. Add the above VirtualHost configuration to your Apache configuration
+# 2. Add this line to your Windows hosts file (C:\Windows\System32\drivers\etc\hosts):
+#    127.0.0.1 eventease.local
+# 3. Restart Apache
+# 4. Access your app at: http://eventease.local/forgot-password
+
+# Alternative: If you don't want to use a custom domain, you can configure Apache 
+# to serve from a subdirectory, but Laravel routing works best with virtual hosts.

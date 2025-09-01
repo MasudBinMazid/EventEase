@@ -31,6 +31,10 @@
       <label>Password</label>
       <input type="password" name="password" required>
 
+      <div class="auth-options">
+        <a href="{{ route('password.request') }}" class="forgot-password-link">Forgot Password?</a>
+      </div>
+
       <button type="submit">Login</button>
 
       <p class="auth-or">OR</p>

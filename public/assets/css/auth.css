@@ -243,6 +243,25 @@
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
+.auth-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.forgot-password-link {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.forgot-password-link:hover {
+  color: var(--accent-orange);
+  text-decoration: underline;
+}
+
 .auth-form button {
   margin-top: 10px;
   padding: 12px;
