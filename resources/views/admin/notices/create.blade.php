@@ -177,6 +177,151 @@
           </div>
         </div>
 
+        <!-- Styling Options -->
+        <div class="form-group">
+          <label class="form-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 0.5rem;">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            Visual Styling
+          </label>
+          
+          <!-- Colors -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div>
+              <label for="bg_color" style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-light); margin-bottom: 0.5rem;">
+                🎨 Background Color
+              </label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="color" 
+                       id="bg_color" 
+                       name="bg_color" 
+                       value="{{ old('bg_color', '#f59e0b') }}"
+                       style="width: 50px; height: 40px; border-radius: 8px; border: 2px solid var(--border); cursor: pointer;">
+                <input type="text" 
+                       id="bg_color_text" 
+                       value="{{ old('bg_color', '#f59e0b') }}"
+                       class="form-input" 
+                       placeholder="#f59e0b"
+                       style="flex: 1;">
+              </div>
+              @error('bg_color')
+                <div style="color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem;">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <div>
+              <label for="text_color" style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-light); margin-bottom: 0.5rem;">
+                ✏️ Text Color
+              </label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="color" 
+                       id="text_color" 
+                       name="text_color" 
+                       value="{{ old('text_color', '#ffffff') }}"
+                       style="width: 50px; height: 40px; border-radius: 8px; border: 2px solid var(--border); cursor: pointer;">
+                <input type="text" 
+                       id="text_color_text" 
+                       value="{{ old('text_color', '#ffffff') }}"
+                       class="form-input" 
+                       placeholder="#ffffff"
+                       style="flex: 1;">
+              </div>
+              @error('text_color')
+                <div style="color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem;">{{ $message }}</div>
+              @enderror
+            </div>
+          </div>
+
+          <!-- Font Settings -->
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 1rem;">
+            <div>
+              <label for="font_family" style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-light); margin-bottom: 0.5rem;">
+                📝 Font Family
+              </label>
+              <select id="font_family" name="font_family" class="form-input">
+                <option value="Inter, sans-serif" {{ old('font_family', 'Inter, sans-serif') == 'Inter, sans-serif' ? 'selected' : '' }}>Inter (Default)</option>
+                <option value="Arial, sans-serif" {{ old('font_family') == 'Arial, sans-serif' ? 'selected' : '' }}>Arial</option>
+                <option value="Helvetica, sans-serif" {{ old('font_family') == 'Helvetica, sans-serif' ? 'selected' : '' }}>Helvetica</option>
+                <option value="Georgia, serif" {{ old('font_family') == 'Georgia, serif' ? 'selected' : '' }}>Georgia</option>
+                <option value="Times New Roman, serif" {{ old('font_family') == 'Times New Roman, serif' ? 'selected' : '' }}>Times New Roman</option>
+                <option value="Courier New, monospace" {{ old('font_family') == 'Courier New, monospace' ? 'selected' : '' }}>Courier New</option>
+                <option value="Roboto, sans-serif" {{ old('font_family') == 'Roboto, sans-serif' ? 'selected' : '' }}>Roboto</option>
+                <option value="Open Sans, sans-serif" {{ old('font_family') == 'Open Sans, sans-serif' ? 'selected' : '' }}>Open Sans</option>
+                <option value="Poppins, sans-serif" {{ old('font_family') == 'Poppins, sans-serif' ? 'selected' : '' }}>Poppins</option>
+                <option value="Montserrat, sans-serif" {{ old('font_family') == 'Montserrat, sans-serif' ? 'selected' : '' }}>Montserrat</option>
+              </select>
+              @error('font_family')
+                <div style="color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem;">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <div>
+              <label for="font_size" style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-light); margin-bottom: 0.5rem;">
+                📏 Size (px)
+              </label>
+              <input type="number" 
+                     id="font_size" 
+                     name="font_size" 
+                     value="{{ old('font_size', 16) }}"
+                     class="form-input"
+                     min="10" 
+                     max="48"
+                     placeholder="16">
+              @error('font_size')
+                <div style="color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem;">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <div>
+              <label for="font_weight" style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-light); margin-bottom: 0.5rem;">
+                💪 Weight
+              </label>
+              <select id="font_weight" name="font_weight" class="form-input">
+                <option value="300" {{ old('font_weight') == '300' ? 'selected' : '' }}>Light</option>
+                <option value="400" {{ old('font_weight') == '400' ? 'selected' : '' }}>Normal</option>
+                <option value="500" {{ old('font_weight', '500') == '500' ? 'selected' : '' }}>Medium</option>
+                <option value="600" {{ old('font_weight') == '600' ? 'selected' : '' }}>Semi Bold</option>
+                <option value="700" {{ old('font_weight') == '700' ? 'selected' : '' }}>Bold</option>
+                <option value="800" {{ old('font_weight') == '800' ? 'selected' : '' }}>Extra Bold</option>
+              </select>
+              @error('font_weight')
+                <div style="color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem;">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <div>
+              <label for="text_style" style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-light); margin-bottom: 0.5rem;">
+                🎭 Style
+              </label>
+              <select id="text_style" name="text_style" class="form-input">
+                <option value="normal" {{ old('text_style', 'normal') == 'normal' ? 'selected' : '' }}>Normal</option>
+                <option value="italic" {{ old('text_style') == 'italic' ? 'selected' : '' }}>Italic</option>
+              </select>
+              @error('text_style')
+                <div style="color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem;">{{ $message }}</div>
+              @enderror
+            </div>
+          </div>
+
+          <!-- Preview -->
+          <div style="margin-top: 1rem;">
+            <label style="display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-light); margin-bottom: 0.5rem;">
+              👁️ Live Preview
+            </label>
+            <div id="notice-preview" 
+                 style="padding: 12px 20px; border-radius: 8px; border: 2px solid var(--border); min-height: 50px; display: flex; align-items: center; overflow: hidden; position: relative;">
+              <div id="preview-text" style="white-space: nowrap; animation: scroll-left 10s linear infinite;">
+                Your notice content will appear here...
+              </div>
+            </div>
+          </div>
+
+          <div style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.5rem;">
+            Customize the appearance of your scrolling notice to match your brand
+          </div>
+        </div>
+
         <!-- Submit Buttons -->
         <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 2rem; border-top: 1px solid var(--border);">
           <a href="{{ route('admin.notices.index') }}" class="btn btn-outline">
@@ -204,6 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
     textarea.addEventListener('input', function() {
       this.style.height = 'auto';
       this.style.height = this.scrollHeight + 'px';
+      updatePreview(); // Update preview when content changes
     });
     
     // Initial resize
@@ -258,6 +404,79 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // Color picker synchronization
+  const bgColorPicker = document.getElementById('bg_color');
+  const bgColorText = document.getElementById('bg_color_text');
+  const textColorPicker = document.getElementById('text_color');
+  const textColorText = document.getElementById('text_color_text');
+
+  if (bgColorPicker && bgColorText) {
+    bgColorPicker.addEventListener('input', function() {
+      bgColorText.value = this.value;
+      updatePreview();
+    });
+    
+    bgColorText.addEventListener('input', function() {
+      if (this.value.match(/^#[0-9A-F]{6}$/i)) {
+        bgColorPicker.value = this.value;
+        updatePreview();
+      }
+    });
+  }
+
+  if (textColorPicker && textColorText) {
+    textColorPicker.addEventListener('input', function() {
+      textColorText.value = this.value;
+      updatePreview();
+    });
+    
+    textColorText.addEventListener('input', function() {
+      if (this.value.match(/^#[0-9A-F]{6}$/i)) {
+        textColorPicker.value = this.value;
+        updatePreview();
+      }
+    });
+  }
+
+  // Font and style change handlers
+  const fontFamily = document.getElementById('font_family');
+  const fontSize = document.getElementById('font_size');
+  const fontWeight = document.getElementById('font_weight');
+  const textStyle = document.getElementById('text_style');
+
+  [fontFamily, fontSize, fontWeight, textStyle].forEach(element => {
+    if (element) {
+      element.addEventListener('change', updatePreview);
+    }
+  });
+
+  // Live preview function
+  function updatePreview() {
+    const preview = document.getElementById('notice-preview');
+    const previewText = document.getElementById('preview-text');
+    
+    if (!preview || !previewText) return;
+
+    const content = contentInput ? contentInput.value || 'Your notice content will appear here...' : 'Your notice content will appear here...';
+    const bgColor = bgColorText ? bgColorText.value : '#f59e0b';
+    const textColor = textColorText ? textColorText.value : '#ffffff';
+    const fontFam = fontFamily ? fontFamily.value : 'Inter, sans-serif';
+    const fontSz = fontSize ? fontSize.value + 'px' : '16px';
+    const fontWt = fontWeight ? fontWeight.value : '500';
+    const textSt = textStyle ? textStyle.value : 'normal';
+
+    preview.style.backgroundColor = bgColor;
+    previewText.style.color = textColor;
+    previewText.style.fontFamily = fontFam;
+    previewText.style.fontSize = fontSz;
+    previewText.style.fontWeight = fontWt;
+    previewText.style.fontStyle = textSt;
+    previewText.textContent = content;
+  }
+
+  // Initial preview update
+  updatePreview();
 });
 </script>
 
@@ -266,6 +485,11 @@ document.addEventListener('DOMContentLoaded', function() {
   .form-group > div[style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
   }
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 </style>
 @endsection

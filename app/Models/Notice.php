@@ -14,9 +14,15 @@ class Notice extends Model
         'title',
         'content',
         'is_active',
-        'order',
+        'priority',
         'start_date',
         'end_date',
+        'bg_color',
+        'text_color',
+        'font_family',
+        'font_size',
+        'font_weight',
+        'text_style',
     ];
 
     protected $casts = [

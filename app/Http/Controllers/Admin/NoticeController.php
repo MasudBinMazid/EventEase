@@ -31,6 +31,12 @@ class NoticeController extends Controller
             'priority' => 'integer|min:0|max:100',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after:start_date',
+            'bg_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'text_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'font_family' => 'nullable|string|max:255',
+            'font_size' => 'nullable|integer|min:10|max:48',
+            'font_weight' => 'nullable|string|in:300,400,500,600,700,800',
+            'text_style' => 'nullable|string|in:normal,italic',
         ]);
 
         Notice::create([
@@ -40,6 +46,12 @@ class NoticeController extends Controller
             'priority' => $request->priority ?? 0,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
+            'bg_color' => $request->bg_color ?? '#f59e0b',
+            'text_color' => $request->text_color ?? '#ffffff',
+            'font_family' => $request->font_family ?? 'Inter, sans-serif',
+            'font_size' => $request->font_size ?? 16,
+            'font_weight' => $request->font_weight ?? '500',
+            'text_style' => $request->text_style ?? 'normal',
             'type' => 'marquee',
             'is_marquee' => true,
         ]);
@@ -67,6 +79,12 @@ class NoticeController extends Controller
             'priority' => 'integer|min:0|max:100',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after:start_date',
+            'bg_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'text_color' => 'nullable|string|regex:/^#[0-9A-F]{6}$/i',
+            'font_family' => 'nullable|string|max:255',
+            'font_size' => 'nullable|integer|min:10|max:48',
+            'font_weight' => 'nullable|string|in:300,400,500,600,700,800',
+            'text_style' => 'nullable|string|in:normal,italic',
         ]);
 
         $notice->update([
@@ -76,6 +94,12 @@ class NoticeController extends Controller
             'priority' => $request->priority ?? $notice->priority,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
+            'bg_color' => $request->bg_color ?? $notice->bg_color,
+            'text_color' => $request->text_color ?? $notice->text_color,
+            'font_family' => $request->font_family ?? $notice->font_family,
+            'font_size' => $request->font_size ?? $notice->font_size,
+            'font_weight' => $request->font_weight ?? $notice->font_weight,
+            'text_style' => $request->text_style ?? $notice->text_style,
         ]);
 
         return redirect()->route('admin.notices.index')

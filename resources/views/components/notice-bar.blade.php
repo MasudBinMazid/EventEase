@@ -71,36 +71,43 @@
                 animation: scroll-{{ $settings->scroll_speed }} 
                 {{ $settings->scroll_speed == 'slow' ? '80s' : ($settings->scroll_speed == 'fast' ? '30s' : '50s') }} 
                 linear infinite;
-                background: linear-gradient(90deg, 
-                    {{ $settings->text_color }} 0%, 
-                    rgba(255,255,255,0.9) 20%, 
-                    {{ $settings->text_color }} 40%, 
-                    rgba(255,255,255,0.9) 60%, 
-                    {{ $settings->text_color }} 80%, 
-                    rgba(255,255,255,0.9) 100%);
-                -webkit-background-clip: text;
-                background-clip: text;
                 animation-fill-mode: both;
             ">
                 @foreach($notices as $index => $notice)
                     <span class="notice-item" style="
-                        padding-right: 120px;
+                        padding-right: 60px;
                         position: relative;
                         display: inline-block;
                     ">
-                        @if($notice->priority >= 80)
-                            �
-                        @elseif($notice->priority >= 50)
-                            ⚠️
-                        @else
-                            �📢
-                        @endif
-                        {{ $notice->content }}
+                        <span style="
+                            color: {{ $notice->text_color ?? $settings->text_color }};
+                            font-family: {{ $notice->font_family ?? 'Inter, sans-serif' }};
+                            font-size: {{ ($notice->font_size ?? 16) }}px;
+                            font-weight: {{ $notice->font_weight ?? '600' }};
+                            font-style: {{ $notice->text_style ?? 'normal' }};
+                            background: {{ $notice->bg_color ?? 'transparent' }};
+                            padding: 6px 12px;
+                            border-radius: 6px;
+                            display: inline-block;
+                            box-shadow: {{ $notice->bg_color ? '0 2px 8px rgba(0,0,0,0.1)' : 'none' }};
+                            border: {{ $notice->bg_color ? '1px solid rgba(255,255,255,0.2)' : 'none' }};
+                            margin-right: 8px;
+                        ">
+                            @if($notice->priority >= 80)
+                                🚨
+                            @elseif($notice->priority >= 50)
+                                ⚠️
+                            @else
+                                📢
+                            @endif
+                            {{ $notice->content }}
+                        </span>
                         @if($index < $notices->count() - 1)
                             <span style="
-                                margin: 0 60px;
+                                margin: 0 30px;
                                 color: rgba(255,255,255,0.6);
                                 font-size: 20px;
+                                display: inline-block;
                             ">●</span>
                         @endif
                     </span>
@@ -162,7 +169,12 @@
         @media (max-width: 768px) {
             .notice-bar-wrapper {
                 padding: 12px 0;
-                font-size: 14px;
+            }
+            
+            .notice-item span {
+                font-size: calc(1em * 0.9) !important;
+                padding: 4px 8px !important;
+                margin-right: 6px !important;
             }
             
             .notice-bar-sticky div[style*="left: 20px"] {
@@ -179,7 +191,12 @@
         @media (max-width: 480px) {
             .notice-bar-wrapper {
                 padding: 10px 0;
-                font-size: 13px;
+            }
+            
+            .notice-item span {
+                font-size: calc(1em * 0.8) !important;
+                padding: 3px 6px !important;
+                margin-right: 4px !important;
             }
             
             .notice-bar-sticky div[style*="left: 20px"] {

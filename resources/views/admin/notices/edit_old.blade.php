@@ -212,6 +212,11 @@
             text-align: center;
         }
     }
+
+    @keyframes scroll-left {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
 </style>
 @endsection
 
@@ -420,6 +425,168 @@
                         </div>
                     </div>
 
+                    <!-- Styling Options -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            🎨 Visual Styling
+                        </label>
+                        
+                        <!-- Colors -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                            <div>
+                                <label for="bg_color" class="block text-sm font-medium text-gray-700 mb-2">
+                                    🎨 Background Color
+                                </label>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <input type="color" 
+                                           id="bg_color" 
+                                           name="bg_color" 
+                                           value="{{ old('bg_color', $notice->bg_color ?? '#f59e0b') }}"
+                                           style="width: 50px; height: 40px; border-radius: 12px; border: 2px solid #e2e8f0; cursor: pointer;">
+                                    <input type="text" 
+                                           id="bg_color_text" 
+                                           value="{{ old('bg_color', $notice->bg_color ?? '#f59e0b') }}"
+                                           class="form-input" 
+                                           placeholder="#f59e0b"
+                                           style="flex: 1;">
+                                </div>
+                                @error('bg_color')
+                                    <div class="error-message">
+                                        <span>⚠️</span>
+                                        <span>{{ $message }}</span>
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="text_color" class="block text-sm font-medium text-gray-700 mb-2">
+                                    ✏️ Text Color
+                                </label>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <input type="color" 
+                                           id="text_color" 
+                                           name="text_color" 
+                                           value="{{ old('text_color', $notice->text_color ?? '#ffffff') }}"
+                                           style="width: 50px; height: 40px; border-radius: 12px; border: 2px solid #e2e8f0; cursor: pointer;">
+                                    <input type="text" 
+                                           id="text_color_text" 
+                                           value="{{ old('text_color', $notice->text_color ?? '#ffffff') }}"
+                                           class="form-input" 
+                                           placeholder="#ffffff"
+                                           style="flex: 1;">
+                                </div>
+                                @error('text_color')
+                                    <div class="error-message">
+                                        <span>⚠️</span>
+                                        <span>{{ $message }}</span>
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Font Settings -->
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                            <div>
+                                <label for="font_family" class="block text-sm font-medium text-gray-700 mb-2">
+                                    📝 Font Family
+                                </label>
+                                <select id="font_family" name="font_family" class="form-input priority-select">
+                                    <option value="Inter, sans-serif" {{ old('font_family', $notice->font_family ?? 'Inter, sans-serif') == 'Inter, sans-serif' ? 'selected' : '' }}>Inter (Default)</option>
+                                    <option value="Arial, sans-serif" {{ old('font_family', $notice->font_family ?? '') == 'Arial, sans-serif' ? 'selected' : '' }}>Arial</option>
+                                    <option value="Helvetica, sans-serif" {{ old('font_family', $notice->font_family ?? '') == 'Helvetica, sans-serif' ? 'selected' : '' }}>Helvetica</option>
+                                    <option value="Georgia, serif" {{ old('font_family', $notice->font_family ?? '') == 'Georgia, serif' ? 'selected' : '' }}>Georgia</option>
+                                    <option value="Times New Roman, serif" {{ old('font_family', $notice->font_family ?? '') == 'Times New Roman, serif' ? 'selected' : '' }}>Times New Roman</option>
+                                    <option value="Courier New, monospace" {{ old('font_family', $notice->font_family ?? '') == 'Courier New, monospace' ? 'selected' : '' }}>Courier New</option>
+                                    <option value="Roboto, sans-serif" {{ old('font_family', $notice->font_family ?? '') == 'Roboto, sans-serif' ? 'selected' : '' }}>Roboto</option>
+                                    <option value="Open Sans, sans-serif" {{ old('font_family', $notice->font_family ?? '') == 'Open Sans, sans-serif' ? 'selected' : '' }}>Open Sans</option>
+                                    <option value="Poppins, sans-serif" {{ old('font_family', $notice->font_family ?? '') == 'Poppins, sans-serif' ? 'selected' : '' }}>Poppins</option>
+                                    <option value="Montserrat, sans-serif" {{ old('font_family', $notice->font_family ?? '') == 'Montserrat, sans-serif' ? 'selected' : '' }}>Montserrat</option>
+                                </select>
+                                @error('font_family')
+                                    <div class="error-message">
+                                        <span>⚠️</span>
+                                        <span>{{ $message }}</span>
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="font_size" class="block text-sm font-medium text-gray-700 mb-2">
+                                    📏 Size (px)
+                                </label>
+                                <input type="number" 
+                                       id="font_size" 
+                                       name="font_size" 
+                                       value="{{ old('font_size', $notice->font_size ?? 16) }}"
+                                       class="form-input"
+                                       min="10" 
+                                       max="48"
+                                       placeholder="16">
+                                @error('font_size')
+                                    <div class="error-message">
+                                        <span>⚠️</span>
+                                        <span>{{ $message }}</span>
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="font_weight" class="block text-sm font-medium text-gray-700 mb-2">
+                                    💪 Weight
+                                </label>
+                                <select id="font_weight" name="font_weight" class="form-input priority-select">
+                                    <option value="300" {{ old('font_weight', $notice->font_weight ?? '500') == '300' ? 'selected' : '' }}>Light</option>
+                                    <option value="400" {{ old('font_weight', $notice->font_weight ?? '500') == '400' ? 'selected' : '' }}>Normal</option>
+                                    <option value="500" {{ old('font_weight', $notice->font_weight ?? '500') == '500' ? 'selected' : '' }}>Medium</option>
+                                    <option value="600" {{ old('font_weight', $notice->font_weight ?? '500') == '600' ? 'selected' : '' }}>Semi Bold</option>
+                                    <option value="700" {{ old('font_weight', $notice->font_weight ?? '500') == '700' ? 'selected' : '' }}>Bold</option>
+                                    <option value="800" {{ old('font_weight', $notice->font_weight ?? '500') == '800' ? 'selected' : '' }}>Extra Bold</option>
+                                </select>
+                                @error('font_weight')
+                                    <div class="error-message">
+                                        <span>⚠️</span>
+                                        <span>{{ $message }}</span>
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="text_style" class="block text-sm font-medium text-gray-700 mb-2">
+                                    🎭 Style
+                                </label>
+                                <select id="text_style" name="text_style" class="form-input priority-select">
+                                    <option value="normal" {{ old('text_style', $notice->text_style ?? 'normal') == 'normal' ? 'selected' : '' }}>Normal</option>
+                                    <option value="italic" {{ old('text_style', $notice->text_style ?? 'normal') == 'italic' ? 'selected' : '' }}>Italic</option>
+                                </select>
+                                @error('text_style')
+                                    <div class="error-message">
+                                        <span>⚠️</span>
+                                        <span>{{ $message }}</span>
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Preview -->
+                        <div style="margin-bottom: 16px;">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                👁️ Live Preview
+                            </label>
+                            <div id="notice-preview" 
+                                 style="padding: 12px 20px; border-radius: 16px; border: 2px solid #e2e8f0; min-height: 50px; display: flex; align-items: center; overflow: hidden; position: relative; background: {{ old('bg_color', $notice->bg_color ?? '#f59e0b') }};">
+                                <div id="preview-text" 
+                                     style="white-space: nowrap; animation: scroll-left 10s linear infinite; color: {{ old('text_color', $notice->text_color ?? '#ffffff') }}; font-family: {{ old('font_family', $notice->font_family ?? 'Inter, sans-serif') }}; font-size: {{ old('font_size', $notice->font_size ?? 16) }}px; font-weight: {{ old('font_weight', $notice->font_weight ?? '500') }}; font-style: {{ old('text_style', $notice->text_style ?? 'normal') }};">
+                                    {{ old('content', $notice->content) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hint-text">
+                            <span>✨</span>
+                            <span>Customize the appearance of your scrolling notice to match your brand</span>
+                        </div>
+                    </div>
+
                     <!-- Submit Buttons -->
                     <div class="flex justify-between items-center pt-8 border-t border-gray-200 action-buttons">
                         <!-- Delete Button -->
@@ -458,6 +625,7 @@ document.addEventListener('DOMContentLoaded', function() {
     textarea.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
+        updatePreview(); // Update preview when content changes
     });
     
     // Character count for content
@@ -484,6 +652,79 @@ document.addEventListener('DOMContentLoaded', function() {
     
     contentInput.addEventListener('input', updateCharCount);
     updateCharCount();
+
+    // Color picker synchronization
+    const bgColorPicker = document.getElementById('bg_color');
+    const bgColorText = document.getElementById('bg_color_text');
+    const textColorPicker = document.getElementById('text_color');
+    const textColorText = document.getElementById('text_color_text');
+
+    if (bgColorPicker && bgColorText) {
+        bgColorPicker.addEventListener('input', function() {
+            bgColorText.value = this.value;
+            updatePreview();
+        });
+        
+        bgColorText.addEventListener('input', function() {
+            if (this.value.match(/^#[0-9A-F]{6}$/i)) {
+                bgColorPicker.value = this.value;
+                updatePreview();
+            }
+        });
+    }
+
+    if (textColorPicker && textColorText) {
+        textColorPicker.addEventListener('input', function() {
+            textColorText.value = this.value;
+            updatePreview();
+        });
+        
+        textColorText.addEventListener('input', function() {
+            if (this.value.match(/^#[0-9A-F]{6}$/i)) {
+                textColorPicker.value = this.value;
+                updatePreview();
+            }
+        });
+    }
+
+    // Font and style change handlers
+    const fontFamily = document.getElementById('font_family');
+    const fontSize = document.getElementById('font_size');
+    const fontWeight = document.getElementById('font_weight');
+    const textStyle = document.getElementById('text_style');
+
+    [fontFamily, fontSize, fontWeight, textStyle].forEach(element => {
+        if (element) {
+            element.addEventListener('change', updatePreview);
+        }
+    });
+
+    // Live preview function
+    function updatePreview() {
+        const preview = document.getElementById('notice-preview');
+        const previewText = document.getElementById('preview-text');
+        
+        if (!preview || !previewText) return;
+
+        const content = contentInput ? contentInput.value || 'Your notice content will appear here...' : 'Your notice content will appear here...';
+        const bgColor = bgColorText ? bgColorText.value : '#f59e0b';
+        const textColor = textColorText ? textColorText.value : '#ffffff';
+        const fontFam = fontFamily ? fontFamily.value : 'Inter, sans-serif';
+        const fontSz = fontSize ? fontSize.value + 'px' : '16px';
+        const fontWt = fontWeight ? fontWeight.value : '500';
+        const textSt = textStyle ? textStyle.value : 'normal';
+
+        preview.style.backgroundColor = bgColor;
+        previewText.style.color = textColor;
+        previewText.style.fontFamily = fontFam;
+        previewText.style.fontSize = fontSz;
+        previewText.style.fontWeight = fontWt;
+        previewText.style.fontStyle = textSt;
+        previewText.textContent = content;
+    }
+
+    // Initial preview update
+    updatePreview();
 });
 
 function confirmDelete() {
