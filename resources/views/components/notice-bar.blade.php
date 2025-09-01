@@ -24,7 +24,6 @@
     <div class="notice-bar-sticky" style="
         position: sticky;
         top: 0;
-        z-index: 1000;
         background: linear-gradient(135deg, {{ $settings->background_color }}ee 0%, {{ $settings->background_color }}dd 100%);
         backdrop-filter: blur(10px);
         border-bottom: 2px solid {{ $settings->background_color }};
@@ -163,10 +162,15 @@
 
         .notice-bar-sticky {
             transition: all 0.3s ease;
+            z-index: 1000; /* Default z-index for desktop */
         }
 
         /* Enhanced Mobile Responsiveness */
         @media (max-width: 768px) {
+            .notice-bar-sticky {
+                z-index: 999; /* Lower z-index than sidebar on mobile */
+            }
+            
             .notice-bar-wrapper {
                 padding: 12px 0;
             }
@@ -189,6 +193,10 @@
         }
 
         @media (max-width: 480px) {
+            .notice-bar-sticky {
+                z-index: 999; /* Lower z-index than sidebar on mobile */
+            }
+            
             .notice-bar-wrapper {
                 padding: 10px 0;
             }

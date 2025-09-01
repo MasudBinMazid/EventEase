@@ -151,7 +151,7 @@ nav a.active {
   flex-direction: column;
   cursor: pointer;
   padding: 4px;
-  z-index: 1001;
+  z-index: 1200;
 }
 
 .mobile-hamburger span {
@@ -184,7 +184,7 @@ nav a.active {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(4px);
-  z-index: 999;
+  z-index: 1050;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -204,7 +204,7 @@ nav a.active {
   height: 100vh;
   background: var(--gradient-primary);
   color: white;
-  z-index: 1000;
+  z-index: 1100;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   box-shadow: var(--shadow-lg);
   overflow-y: auto;
