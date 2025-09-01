@@ -887,7 +887,7 @@ nav a.active {
 .site-footer {
   background: var(--gradient-primary);
   color: #fff;
-  padding: 50px 20px 20px;
+  padding: 30px 20px 15px;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   border-top: 1px solid var(--border-medium);
 }
@@ -895,14 +895,14 @@ nav a.active {
 .footer-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px;
+  gap: 25px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .footer-column h3,
 .footer-column h4 {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #fff;
   font-weight: 700;
   font-size: 18px;
@@ -919,8 +919,8 @@ nav a.active {
 .footer-column p {
   color: #cbd5e1;
   font-size: 14px;
-  line-height: 1.7;
-  margin-bottom: 15px;
+  line-height: 1.6;
+  margin-bottom: 10px;
 }
 
 .footer-column ul {
@@ -932,7 +932,7 @@ nav a.active {
   color: #cbd5e1;
   text-decoration: none;
   display: block;
-  padding: 8px 0;
+  padding: 6px 0;
   transition: all 0.3s ease;
   border-radius: 4px;
   padding-left: 8px;
@@ -960,6 +960,15 @@ nav a.active {
   transform: translateY(-2px);
   filter: brightness(1.2);
   background: var(--accent-orange);
+}
+
+.footer-contact {
+  margin-top: 15px;
+}
+
+.footer-contact p {
+  margin-bottom: 5px;
+  font-size: 13px;
 }
 
 .subscribe-form {
@@ -1009,8 +1018,8 @@ nav a.active {
 
 .footer-bottom {
   text-align: center;
-  margin-top: 40px;
-  padding-top: 20px;
+  margin-top: 25px;
+  padding-top: 15px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 14px;
   color: #cbd5e1;

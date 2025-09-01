@@ -329,7 +329,7 @@
     <div class="footer-container">
       <div class="footer-column brand">
         <h3>📅 EventEase</h3>
-        <p>Your trusted partner for event discovery and ticket booking. Join our community and never miss out again!</p>
+        <p>Your trusted partner for event discovery and ticket booking.</p>
       </div>
 
       <div class="footer-column">
@@ -345,22 +345,17 @@
       </div>
 
       <div class="footer-column">
-        <h4>Follow Us</h4>
+        <h4>Connect With Us</h4>
         <div class="social-icons">
-          <a href="#"><img src="{{ asset('assets/icons/facebook.svg') }}" alt="Facebook"></a>
-          <a href="#"><img src="{{ asset('assets/icons/twitter.svg') }}" alt="Twitter"></a>
-          <a href="#"><img src="{{ asset('assets/icons/instagram.svg') }}" alt="Instagram"></a>
-          <a href="#"><img src="{{ asset('assets/icons/youtube.svg') }}" alt="YouTube"></a>
+          <a href="#" aria-label="Facebook"><img src="{{ asset('assets/icons/facebook.svg') }}" alt="Facebook"></a>
+          <a href="#" aria-label="Twitter"><img src="{{ asset('assets/icons/twitter.svg') }}" alt="Twitter"></a>
+          <a href="#" aria-label="Instagram"><img src="{{ asset('assets/icons/instagram.svg') }}" alt="Instagram"></a>
+          <a href="#" aria-label="YouTube"><img src="{{ asset('assets/icons/youtube.svg') }}" alt="YouTube"></a>
         </div>
-      </div>
-
-      <div class="footer-column">
-        <h4>Subscribe</h4>
-        <p>Get event updates directly to your inbox.</p>
-        <form class="subscribe-form">
-          <input type="email" placeholder="Enter your email" />
-          <button type="submit">Subscribe</button>
-        </form>
+        <div class="footer-contact">
+          <p>Email: mamun15-5451@diu.edu.bd</p>
+          <p>Phone: +8801613013536</p>
+        </div>
       </div>
     </div>
 
