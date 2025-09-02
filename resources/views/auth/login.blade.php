@@ -2,7 +2,7 @@
     <!-- Header -->
     <div class="text-center">
         <h1 class="text-2xl font-semibold tracking-tight">
-            Welcome back to <span class="text-indigo-600">EventEase</span>
+            Welcome back to <span class="text-cyan-600">EventEase</span>
         </h1>
         <p class="mt-1 text-sm text-gray-500">Please log in to buy tickets.</p>
     </div>

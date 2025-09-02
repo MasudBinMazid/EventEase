@@ -12,9 +12,9 @@
       </label>
       <div class="flex gap-2">
         <input type="text" id="ticketCode" placeholder="e.g., TKT-ABC12345" 
-               class="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+               class="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
         <button onclick="verifyTicket()" 
-                class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold">
+                class="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 font-semibold">
           Verify
         </button>
       </div>

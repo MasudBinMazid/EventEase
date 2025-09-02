@@ -5,7 +5,7 @@
 @section('extra-css')
 <style>
   .checkout-container {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
     min-height: 100vh;
     padding: 2rem 0;
   }
@@ -19,7 +19,7 @@
   }
   
   .checkout-header {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
     padding: 2rem;
     color: white;
     position: relative;
@@ -32,7 +32,7 @@
     left: 0;
     right: 0;
     height: 30px;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
     clip-path: ellipse(100% 100% at 50% 0%);
   }
   
@@ -89,7 +89,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
   }
   
   .detail-label {
@@ -124,7 +124,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
   }
   
   .about-text {
@@ -246,14 +246,14 @@
   }
   
   .payment-option:hover {
-    border-color: #4f46e5;
+    border-color: #0891b2;
     background: #f8faff;
   }
   
   .payment-option.selected {
-    border-color: #4f46e5;
+    border-color: #0891b2;
     background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.1);
+    box-shadow: 0 4px 15px rgba(8, 145, 178, 0.1);
   }
   
   .payment-radio {
@@ -267,8 +267,8 @@
   }
   
   .payment-option.selected .payment-radio {
-    border-color: #4f46e5;
-    background: #4f46e5;
+    border-color: #0891b2;
+    background: #0891b2;
   }
   
   .payment-option.selected .payment-radio::after {
@@ -289,7 +289,7 @@
   }
   
   .payment-option.selected .payment-text {
-    color: #4f46e5;
+    color: #0891b2;
   }
   
   .total-section {
@@ -333,7 +333,7 @@
   
   .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
     color: white;
     padding: 1.25rem 2rem;
     border-radius: 16px;

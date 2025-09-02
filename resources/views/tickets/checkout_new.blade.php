@@ -1,25 +1,25 @@
 @extends('layouts.app')
 @section('title','Checkout')
 
-{{-- Add modern styling --}}
+{{-- Add professional styling --}}
 @section('extra-css')
 <style>
   .checkout-container {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
     min-height: 100vh;
     padding: 2rem 0;
   }
   
   .checkout-card {
     background: white;
-    border-radius: 24px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    border: 1px solid #e5e7eb;
   }
   
   .checkout-header {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
     padding: 2rem;
     color: white;
     position: relative;
@@ -32,7 +32,7 @@
     left: 0;
     right: 0;
     height: 30px;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
     clip-path: ellipse(100% 100% at 50% 0%);
   }
   
@@ -89,7 +89,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
   }
   
   .detail-label {
@@ -124,7 +124,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
   }
   
   .about-text {
@@ -268,8 +268,8 @@
   }
   
   .payment-option.selected .payment-radio {
-    border-color: #4f46e5;
-    background: #4f46e5;
+    border-color: #0891b2;
+    background: #0891b2;
   }
   
   .payment-option.selected .payment-radio::after {
@@ -290,11 +290,11 @@
   }
   
   .payment-option.selected .payment-text {
-    color: #4f46e5;
+    color: #0891b2;
   }
   
   .total-section {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
     padding: 2rem;
     border-radius: 16px;
     color: white;
@@ -334,10 +334,10 @@
   
   .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
     color: white;
     padding: 1.25rem 2rem;
-    border-radius: 16px;
+    border-radius: 12px;
     border: none;
     font-size: 1.1rem;
     font-weight: 600;
@@ -345,14 +345,14 @@
     letter-spacing: 0.05em;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(8, 145, 178, 0.3);
     position: relative;
     overflow: hidden;
   }
   
   .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.4);
+    box-shadow: 0 10px 15px -3px rgba(8, 145, 178, 0.4);
   }
   
   .submit-btn:active {

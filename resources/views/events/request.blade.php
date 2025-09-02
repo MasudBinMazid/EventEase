@@ -6,9 +6,9 @@
 <style>
 /* EventEase - Event Request Form Enhanced Styles */
 :root {
-  --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --primary-gradient: linear-gradient(135deg, #0891b2, #0d9488);
   --secondary-gradient: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  --accent-color: #6366f1;
+  --accent-color: #0891b2;
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --error-color: #ef4444;
@@ -16,7 +16,7 @@
   --text-secondary: #64748b;
   --text-muted: #94a3b8;
   --border-color: #e2e8f0;
-  --border-focus: #6366f1;
+  --border-focus: #0891b2;
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
@@ -66,7 +66,7 @@
   font-weight: 800;
   letter-spacing: .3px;
   font-size: 2rem;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #0891b2, #0d9488);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -112,7 +112,7 @@
 }
 
 .ee-input:focus, .ee-textarea:focus, .ee-select:focus {
-  border-color: #6366f1;
+  border-color: #0891b2;
   box-shadow: 0 0 0 6px rgba(99, 102, 241, .1);
   transform: translateY(-1px);
 }
@@ -142,7 +142,7 @@
   padding: 1rem 2rem;
   font-weight: 700;
   cursor: pointer;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #0891b2, #0d9488);
   color: #fff;
   box-shadow: 0 10px 25px -10px rgba(99, 102, 241, .6);
   transition: all .2s ease;
@@ -245,7 +245,7 @@
 }
 
 .ee-file-label:hover {
-  border-color: #6366f1;
+  border-color: #0891b2;
   background: #f0f4ff;
 }
 
@@ -340,7 +340,7 @@
 }
 
 input:checked + .ee-slider {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #0891b2, #0d9488);
   box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
 }
 
@@ -350,7 +350,7 @@ input:checked + .ee-slider:before {
 
 /* Section headers */
 .ee-section {
-  border-left: 4px solid #6366f1;
+  border-left: 4px solid #0891b2;
   padding-left: 1rem;
   margin: 2rem 0 1rem;
   position: relative;
@@ -363,7 +363,7 @@ input:checked + .ee-slider:before {
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #0891b2, #0d9488);
   border-radius: 2px;
 }
 
@@ -392,7 +392,7 @@ input:checked + .ee-slider:before {
 
 .form-progress-bar {
   height: 100%;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #0891b2, #0d9488);
   width: 0%;
   transition: width 0.3s ease;
 }
@@ -507,20 +507,20 @@ input:checked + .ee-slider:before {
     </div>
 
     <p class="ee-muted" style="margin-top:1rem;text-align:center;">
-      Questions? Contact us at <a href="mailto:support@eventease.local" style="color:#6366f1;font-weight:600;">support@eventease.local</a> 
+      Questions? Contact us at <a href="mailto:support@eventease.local" style="color:#0891b2;font-weight:600;">support@eventease.local</a> 
       or call <strong>+880-1234-567890</strong>
     </p>.ee-title{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
-    .ee-title h2{margin:0;font-weight:800;letter-spacing:.3px;font-size:2rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .ee-title h2{margin:0;font-weight:800;letter-spacing:.3px;font-size:2rem;background:linear-gradient(135deg,#0891b2,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .ee-grid{display:grid;gap:1.5rem;grid-template-columns:1fr}
     @media (min-width:720px){.ee-grid-2{grid-template-columns:1fr 1fr}.ee-grid-3{grid-template-columns:1fr 1fr 1fr}}
     .ee-label{display:block;font-weight:600;margin-bottom:.5rem;color:#374151}
     .ee-required{color:#dc3545;margin-left:.25rem}
     .ee-input,.ee-textarea,.ee-select{width:100%;border:2px solid #e5e7eb;background:#fff;color:#111827;border-radius:12px;padding:.875rem 1rem;outline:none;transition:all .2s ease;font-size:.95rem}
-    .ee-input:focus,.ee-textarea:focus,.ee-select:focus{border-color:#6366f1;box-shadow:0 0 0 6px rgba(99,102,241,.1);transform:translateY(-1px)}
+    .ee-input:focus,.ee-textarea:focus,.ee-select:focus{border-color:#0891b2;box-shadow:0 0 0 6px rgba(99,102,241,.1);transform:translateY(-1px)}
     .ee-help{font-size:.875rem;color:#6b7280;margin-top:.5rem}
     .ee-error{border-color:#dc3545 !important;box-shadow:0 0 0 6px rgba(220,53,69,.1) !important}
     .ee-actions{display:flex;gap:1rem;align-items:center;justify-content:center;margin-top:2rem}
-    .ee-btn{border:none;border-radius:12px;padding:1rem 2rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 10px 25px -10px rgba(99,102,241,.6);transition:all .2s ease;font-size:1.1rem}
+    .ee-btn{border:none;border-radius:12px;padding:1rem 2rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#0891b2,#8b5cf6);color:#fff;box-shadow:0 10px 25px -10px rgba(99,102,241,.6);transition:all .2s ease;font-size:1.1rem}
     .ee-btn:hover{transform:translateY(-2px);box-shadow:0 15px 35px -10px rgba(99,102,241,.8)}
     .ee-btn:active{transform:translateY(0)}
     .ee-btn-secondary{background:#f3f4f6;color:#374151;box-shadow:0 10px 25px -10px rgba(0,0,0,.15)}
@@ -537,7 +537,7 @@ input:checked + .ee-slider:before {
     .ee-file-upload{position:relative;overflow:hidden;display:inline-block;width:100%}
     .ee-file-input{position:absolute;left:-9999px}
     .ee-file-label{display:flex;align-items:center;gap:.75rem;padding:1rem;border:2px dashed #d1d5db;border-radius:12px;background:#f9fafb;cursor:pointer;transition:all .2s ease}
-    .ee-file-label:hover{border-color:#6366f1;background:#f0f4ff}
+    .ee-file-label:hover{border-color:#0891b2;background:#f0f4ff}
     .ee-file-preview{margin-top:1rem;padding:1rem;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0}
     .ee-file-preview img{max-width:100%;max-height:200px;border-radius:8px;object-fit:cover}
     .ee-remove-file{background:#ef4444;color:white;border:none;padding:.5rem .75rem;border-radius:8px;cursor:pointer;margin-top:.5rem}
@@ -549,11 +549,11 @@ input:checked + .ee-slider:before {
     .ee-toggle input{opacity:0;width:0;height:0}
     .ee-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;transition:.3s;border-radius:24px}
     .ee-slider:before{position:absolute;content:"";height:20px;width:20px;left:2px;bottom:2px;background:white;transition:.3s;border-radius:50%}
-    input:checked + .ee-slider{background:#6366f1}
+    input:checked + .ee-slider{background:#0891b2}
     input:checked + .ee-slider:before{transform:translateX(26px)}
     
     /* Section headers */
-    .ee-section{border-left:4px solid #6366f1;padding-left:1rem;margin:2rem 0 1rem}
+    .ee-section{border-left:4px solid #0891b2;padding-left:1rem;margin:2rem 0 1rem}
     .ee-section h3{margin:0;color:#1e293b;font-weight:700}
     .ee-section p{margin:.25rem 0 0;color:#64748b;font-size:.9rem}
   </style>
@@ -907,7 +907,7 @@ input:checked + .ee-slider:before {
       });
       
       function highlight(e) {
-        fileLabel.style.borderColor = '#6366f1';
+        fileLabel.style.borderColor = '#0891b2';
         fileLabel.style.backgroundColor = '#f0f4ff';
       }
       
@@ -1105,7 +1105,7 @@ input:checked + .ee-slider:before {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#6366f1'};
+        background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#0891b2'};
         color: white;
         padding: 1rem 1.5rem;
         border-radius: 12px;

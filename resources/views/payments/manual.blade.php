@@ -8,7 +8,7 @@
 @section('content')
 <div class="max-w-3xl mx-auto px-4 py-10">
   <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
-    <div class="px-6 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+    <div class="px-6 py-5 bg-gradient-to-r from-cyan-600 to-teal-600 text-white">
       <h1 class="text-xl md:text-2xl font-semibold">Complete Payment</h1>
       <p class="opacity-90">Event: <strong>{{ $event->title }}</strong></p>
     </div>

@@ -6,37 +6,37 @@
   <!-- Inline design tokens + components (scoped) -->
   <style>
 :root {
-  /* Professional EventEase Color Palette */
-  --bg: linear-gradient(135deg, var(--primary-light) 0%, #c3cfe2 100%);
+  /* Professional EventEase Color Palette - Updated */
+  --bg: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
   --card: rgba(255, 255, 255, 0.95);
-  --surface: rgba(255, 255, 255, 0.85);
+  --surface: rgba(255, 255, 255, 0.90);
   
-  /* EventEase Professional Borders and Shadows */
-  --border: rgba(30, 58, 138, 0.1);
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.2);
-  --radius: 16px;
+  /* Professional Borders and Shadows */
+  --border: rgba(8, 145, 178, 0.12);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius: 12px;
   --glass: blur(20px) saturate(120%);
   --glass-strong: blur(25px) saturate(140%);
 
-  /* EventEase Typography Colors */
-  --text: #0f172a;
+  /* Professional Typography Colors */
+  --text: #111827;
   --text-secondary: #374151;
-  --muted: #64748b;
+  --muted: #6b7280;
 
-  /* EventEase Accent Colors */
-  --accent: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-  --accent-2: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%);
-  --accent-3: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
-  --success: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
-  --warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-  --danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  /* Professional Accent Colors */
+  --accent: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+  --accent-2: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
+  --accent-3: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --success: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+  --warning: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+  --danger: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
   
-  /* Additional EventEase Colors */
-  --primary: #1e3a8a;
-  --primary-light: #a5b4fc;
-  --secondary: #64748b;
-  --accent-soft: #e0e7ff;
+  /* Professional Brand Colors */
+  --primary: #0f172a;
+  --primary-light: #e0f2fe;
+  --secondary: #6b7280;
+  --accent-soft: #ecfdf5;
 }
 
     .dash-shell{

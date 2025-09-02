@@ -4,7 +4,7 @@
 @section('extra-css')
 <style>
   .ticket-container {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
     min-height: 100vh;
     padding: 2rem 0;
   }
@@ -18,7 +18,7 @@
   }
   
   .ticket-header {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
     padding: 2rem;
     color: white;
     text-align: center;
@@ -35,7 +35,7 @@
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-top: 20px solid #7c3aed;
+    border-top: 20px solid #0d9488;
   }
   
   .ticket-title {
@@ -87,7 +87,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
   }
   
   .info-label {
@@ -173,7 +173,7 @@
   }
   
   .btn-primary {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, #0891b2 0%, #0d9488 100%);
     color: white;
     padding: 0.875rem 1.5rem;
     border-radius: 12px;
@@ -227,7 +227,7 @@
     left: -10px;
     width: 20px;
     height: 20px;
-    background: #667eea;
+    background: #0f172a;
     border-radius: 50%;
   }
   
