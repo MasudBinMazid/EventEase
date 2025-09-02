@@ -7,11 +7,12 @@
   --primary-light: #f1f5f9;
   --accent-blue: #3b82f6;
   --accent-orange: #f59e0b;
+  --accent-green: #22c55e;
   --text-dark: #0f172a;
   --text-medium: #374151;
   --text-light: #64748b;
   --white: #ffffff;
-  --border-light: var(--border-light);
+  --border-light: #e2e8f0;
   --border-medium: #d1d5db;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -157,18 +158,17 @@
   gap: 20px;
 }
 
-/* Event Card - Matching Website Color Scheme */
+/* Event Card - Fixed Size with Banner */
 .event-card {
   background: linear-gradient(145deg, var(--white) 0%, rgba(30, 58, 138, 0.02) 100%);
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible to prevent badge cutoff */
   box-shadow: var(--shadow-md);
   border: 1px solid rgba(30, 58, 138, 0.08);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  min-height: 200px;
-  padding: 24px;
+  height: 480px; /* Fixed height */
   position: relative;
   backdrop-filter: blur(5px);
 }
@@ -180,24 +180,53 @@
   border-color: rgba(59, 130, 246, 0.2);
 }
 
-/* Hide Event Banner ONLY in event cards (not in details page) */
+/* Event Banner in Card - Show and Style */
 .events-container .event-card .event-banner {
-  display: none;
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: visible; /* Changed to visible to prevent badge cutoff */
+  border-radius: 12px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-dark) 100%);
 }
 
 .events-container .event-card .event-image {
-  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+  border-radius: 12px; /* Move border radius to image instead */
 }
 
 .events-container .event-card .event-placeholder {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  border-radius: 12px; /* Apply border radius to placeholder too */
 }
 
-/* Event Status Badge - Positioned at top right of card */
+.events-container .event-card .event-placeholder i {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+/* Hover effect on banner image */
+.events-container .event-card:hover .event-image {
+  transform: scale(1.05);
+}
+
+/* Event Status Badge - Now positioned with more space */
 .events-container .event-card .event-status-badge {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 12px;
+  right: 12px;
   padding: 6px 10px;
   border-radius: 16px;
   font-size: 0.75rem;
@@ -206,9 +235,13 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  z-index: 10;
+  z-index: 20; /* Very high z-index */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Event Status Badge Colors */
 .events-container .event-card .event-status-badge.upcoming {
   background: linear-gradient(135deg, var(--accent-green), #059669);
   color: white;
@@ -234,14 +267,14 @@
   100% { opacity: 1; }
 }
 
-/* Event Content - Simplified for Cards Only */
+/* Event Content - With banner, adjusted layout */
 .events-container .event-card .event-content {
-  padding: 0; /* No padding since card has padding */
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
   flex: 1;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .events-container .event-card .event-title {
@@ -250,8 +283,7 @@
   color: var(--primary-dark);
   margin: 0;
   line-height: 1.3;
-  margin-bottom: 15px;
-  padding-right: 90px; /* Make space for status badge */
+  margin-bottom: 12px;
   /* Handle long titles */
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -268,8 +300,8 @@
 .events-container .event-card .event-details {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 8px;
+  margin-bottom: 12px;
   flex-shrink: 0;
 }
 
@@ -280,18 +312,18 @@
   font-size: 0.9rem;
   color: var(--text-medium);
   line-height: 1.3;
-  padding: 10px 14px;
-  background: rgba(30, 58, 138, 0.04);
-  border-radius: 10px;
-  margin-bottom: 4px;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(30, 58, 138, 0.08);
+  padding: 0; /* Remove background styling to make it plain text */
+  background: none;
+  border-radius: 0;
+  margin-bottom: 0;
+  transition: none;
+  border: none;
 }
 
 .events-container .event-card .event-detail:hover {
-  background: rgba(30, 58, 138, 0.08);
-  transform: translateX(3px);
-  border-color: rgba(59, 130, 246, 0.15);
+  background: none;
+  transform: none;
+  border-color: transparent;
 }
 
 .events-container .event-card .event-detail i {
@@ -307,8 +339,8 @@
 }
 
 .events-container .event-card .event-detail.price {
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: none;
+  border: none;
 }
 
 .events-container .event-card .event-detail.price .price-amount {
@@ -323,8 +355,8 @@
 
 /* Add organizer detail style */
 .events-container .event-card .event-detail.organizer {
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: none;
+  border: none;
   color: var(--accent-orange);
   font-style: italic;
 }
@@ -341,20 +373,20 @@
   display: none;
 }
 
-/* Event Actions - Matching Website Color Scheme */
+/* Event Actions - Compact design for fixed card */
 .events-container .event-card .event-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   margin-top: auto;
-  padding-top: 20px;
+  padding-top: 15px;
   border-top: 2px solid rgba(30, 58, 138, 0.08);
   flex-shrink: 0;
 }
 
 .events-container .event-card .btn {
-  padding: 12px 18px;
+  padding: 10px 14px;
   border-radius: 10px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
@@ -362,7 +394,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
   text-align: center;
   white-space: nowrap;
@@ -502,25 +534,46 @@
   }
   
   .events-container .event-card {
-    min-height: auto;
-    padding: 15px;
+    height: 450px; /* Slightly smaller on tablet */
+    padding: 0; /* Remove padding since banner takes full width */
   }
   
-  .events-container .event-card .event-title {
-    font-size: 1.1rem;
-    padding-right: 70px;
-    max-height: 2.85rem;
+  .events-container .event-card .event-banner {
+    height: 160px; /* Smaller banner on tablet */
+    border-radius: 12px; /* Keep border radius on all sides */
+    margin-bottom: 0;
+  }
+  
+  .events-container .event-card .event-image {
+    border-radius: 12px;
+  }
+  
+  .events-container .event-card .event-status-badge {
+    top: 10px;
+    right: 10px;
+    padding: 5px 8px;
+    font-size: 0.7rem;
+    border-radius: 14px;
   }
   
   .events-container .event-card .event-content {
-    gap: 12px;
+    padding: 15px 20px 20px; /* Add back padding to content only */
   }
-  
+
+  .events-container .event-card .event-title {
+    font-size: 1.1rem;
+    max-height: 2.85rem;
+  }
+
+  .events-container .event-card .event-content {
+    gap: 10px;
+  }
+
   .events-container .event-card .event-actions {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .events-container .event-card .btn {
     padding: 10px 12px;
     font-size: 0.85rem;
@@ -583,35 +636,48 @@
   .events-grid {
     padding: 25px 15px;
   }
-  
-  .event-banner {
-    height: 140px;
+
+  .events-container .event-card {
+    height: 420px; /* Smaller on mobile */
   }
-  
-  .event-content {
-    padding: 10px;
-    gap: 10px;
+
+  .events-container .event-card .event-banner {
+    height: 140px; /* Smaller banner on mobile */
   }
-  
-  .event-title {
+
+  .events-container .event-card .event-image {
+    border-radius: 12px;
+  }
+
+  .events-container .event-card .event-status-badge {
+    top: 8px;
+    right: 8px;
+    padding: 4px 7px;
+    font-size: 0.68rem;
+    border-radius: 12px;
+    gap: 3px;
+  }
+
+  .events-container .event-card .event-content {
+    padding: 12px 15px 15px;
+    gap: 8px;
+  }
+
+  .events-container .event-card .event-title {
     font-size: 0.95rem;
     line-height: 1.3;
+    margin-bottom: 8px;
   }
-  
-  .event-detail {
+
+  .events-container .event-card .event-detail {
     font-size: 0.8rem;
   }
-  
-  .event-detail i {
+
+  .events-container .event-card .event-detail i {
     font-size: 0.9rem;
   }
-  
-  .event-description {
-    font-size: 0.8rem;
-    line-height: 1.4;
-  }
-  
-  .btn {
+
+  .events-container .event-card .btn {
     padding: 8px 12px;
     font-size: 0.85rem;
   }
