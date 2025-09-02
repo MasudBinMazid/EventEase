@@ -244,7 +244,7 @@
             <div class="event-stats">
                 <div class="stat-item">
                     <i class="bi bi-people"></i>
-                    <span>{{ $event->max_attendees ?? 'Unlimited' }} capacity</span>
+                    <span>{{ $event->capacity_display }} capacity</span>
                 </div>
                 <div class="stat-item">
                     <i class="bi bi-calendar-check"></i>

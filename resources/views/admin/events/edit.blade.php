@@ -216,7 +216,7 @@
             </div>
           </div>
 
-          <div class="form-group">
+                    <div class="form-group">
             <label class="form-label" for="purchase_option">Payment Option</label>
             @php $opt = old('purchase_option', $event->purchase_option ?? 'both'); @endphp
             <select name="purchase_option" id="purchase_option" class="form-input {{ $errors->has('purchase_option') ? 'error' : '' }}">
@@ -228,6 +228,20 @@
               <div class="form-error">{{ $message }}</div>
             @enderror
           </div>
+
+          <div class="form-group">
+            <label class="form-label" for="event_status">Event Status</label>
+            @php $status = old('event_status', $event->event_status ?? 'available'); @endphp
+            <select name="event_status" id="event_status" class="form-input {{ $errors->has('event_status') ? 'error' : '' }}">
+              <option value="available" {{ $status === 'available' ? 'selected' : '' }}>Available</option>
+              <option value="limited_sell" {{ $status === 'limited_sell' ? 'selected' : '' }}>Limited Sell</option>
+              <option value="sold_out" {{ $status === 'sold_out' ? 'selected' : '' }}>Sold Out</option>
+            </select>
+            @error('event_status')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
+          </div>
+        </div>
         </div>
 
         <!-- Media & Visibility Section -->

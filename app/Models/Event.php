@@ -151,6 +151,35 @@ protected $fillable = [
         return '৳' . number_format($min, 2) . ' - ৳' . number_format($max, 2);
     }
 
+    /**
+     * Get the total capacity of the event
+     * If event has ticket types with quantities, sum them up
+     * Otherwise, use the event's capacity field
+     */
+    public function getTotalCapacityAttribute(): ?int
+    {
+        // If event has ticket types with defined quantities, sum them
+        $ticketTypes = $this->ticketTypes;
+        if ($ticketTypes->count() > 0) {
+            $totalFromTicketTypes = $ticketTypes->whereNotNull('quantity_available')->sum('quantity_available');
+            if ($totalFromTicketTypes > 0) {
+                return $totalFromTicketTypes;
+            }
+        }
+
+        // Fallback to event's capacity field
+        return $this->capacity;
+    }
+
+    /**
+     * Get capacity display text
+     */
+    public function getCapacityDisplayAttribute(): string
+    {
+        $totalCapacity = $this->total_capacity;
+        return $totalCapacity ? number_format($totalCapacity) : 'Unlimited';
+    }
+
     // Optional: always get a usable URL for banner
     public function getBannerUrlAttribute(): ?string
     {
