@@ -9,7 +9,7 @@ class Event extends Model
 {
 protected $fillable = [
   'title','description','location','venue','starts_at','ends_at','capacity',
-  'price','banner','banner_path','allow_pay_later','created_by','status','approved_by','approved_at','featured_on_home','visible_on_site','event_type','event_status',
+  'price','banner','banner_path','allow_pay_later','created_by','status','approved_by','approved_at','featured_on_home','visible_on_site','event_type','event_status','purchase_option',
 ];
 
 

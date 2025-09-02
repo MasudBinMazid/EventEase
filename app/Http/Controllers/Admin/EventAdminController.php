@@ -41,11 +41,11 @@ class EventAdminController extends Controller
             'featured_on_home' => 'nullable|boolean',
             'visible_on_site'  => 'nullable|boolean',
             'ticket_types'     => 'nullable|array',
-            'ticket_types.*.name' => 'required_with:ticket_types|string|max:255',
-            'ticket_types.*.price' => 'required_with:ticket_types|numeric|min:0',
+            'ticket_types.*.name' => 'nullable|string|max:255',
+            'ticket_types.*.price' => 'nullable|numeric|min:0',
             'ticket_types.*.description' => 'nullable|string',
             'ticket_types.*.quantity_available' => 'nullable|integer|min:1',
-            'ticket_types.*.status' => 'required_with:ticket_types|in:available,sold_out',
+            'ticket_types.*.status' => 'nullable|in:available,sold_out',
             'ticket_types.*.sort_order' => 'nullable|integer',
         ]);
 
