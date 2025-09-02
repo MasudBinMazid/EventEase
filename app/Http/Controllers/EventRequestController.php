@@ -15,46 +15,63 @@ class EventRequestController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'title'            => 'required|string|max:255',
             'description'      => 'nullable|string',
-            'banner'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
             'location'         => 'nullable|string|max:255',
+            'venue'            => 'nullable|string|max:255',
             'starts_at'        => 'required|date|after:now',
             'ends_at'          => 'nullable|date|after_or_equal:starts_at',
-            'capacity'         => 'nullable|integer|min:1|max:10000',
-            'is_paid'          => 'nullable|boolean',
+            'capacity'         => 'nullable|integer|min:0',
             'price'            => 'nullable|numeric|min:0',
-            'currency'         => 'nullable|string|in:BDT',
-            'allow_pay_later'  => 'nullable|boolean',
+            'event_type'       => 'required|in:free,paid',
+            'event_status'     => 'required|in:available,limited_sell,sold_out',
+            'purchase_option'  => 'required|in:both,pay_now,pay_later',
+            'banner'           => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'featured_on_home' => 'nullable|boolean',
+            'visible_on_site'  => 'nullable|boolean',
         ]);
+
+        // Ensure folder exists
+        $uploadDir = public_path('uploads/events');
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0775, true);
+        }
 
         // Handle banner upload
         $bannerPath = null;
         if ($request->hasFile('banner')) {
-            $banner = $request->file('banner');
-            $filename = time() . '_' . $banner->getClientOriginalName();
-            $bannerPath = $banner->move(public_path('uploads/events'), $filename);
-            $bannerPath = 'uploads/events/' . $filename;
+            $ext = $request->file('banner')->extension();
+            $file = 'ev_' . time() . '_' . mt_rand(1000, 9999) . '.' . $ext;
+            $request->file('banner')->move($uploadDir, $file);
+
+            // Store RELATIVE path (no leading slash)
+            $bannerPath = 'uploads/events/' . $file;
         }
 
-        // Determine pricing
-        $isPaid = $request->boolean('is_paid');
-        $price = $isPaid && $request->filled('price') ? $request->price : 0;
-
-        Event::create([
-            'title'            => $request->title,
-            'description'      => $request->description,
-            'banner_path'      => $bannerPath,
-            'location'         => $request->location,
-            'starts_at'        => $request->starts_at,
-            'ends_at'          => $request->ends_at,
-            'capacity'         => $request->capacity,
-            'price'            => $price,
-            'allow_pay_later'  => $request->boolean('allow_pay_later', true),
+        // Prepare event data for creation
+        $eventData = [
+            'title'            => $data['title'],
+            'description'      => $data['description'],
+            'location'         => $data['location'],
+            'venue'            => $data['venue'],
+            'starts_at'        => $data['starts_at'],
+            'ends_at'          => $data['ends_at'],
+            'capacity'         => $data['capacity'],
+            'price'            => $data['price'] ?? 0,
+            'event_type'       => $data['event_type'],
+            'event_status'     => $data['event_status'],
+            'purchase_option'  => $data['purchase_option'],
+            'banner'           => $bannerPath,
+            'banner_path'      => $bannerPath, // Keep both for compatibility
+            'featured_on_home' => $request->boolean('featured_on_home', false),
+            'visible_on_site'  => $request->boolean('visible_on_site', true),
+            'allow_pay_later'  => $data['purchase_option'] === 'pay_later' || $data['purchase_option'] === 'both',
             'created_by'       => Auth::id(),
             'status'           => 'pending',
-        ]);
+        ];
+
+        Event::create($eventData);
 
         return redirect()
             ->route('dashboard')

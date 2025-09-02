@@ -66,7 +66,8 @@
                 <th style="width: 80px;">ID</th>
                 <th>Event Details</th>
                 <th>Schedule</th>
-                <th>Location & Capacity</th>
+                <th>Location & Venue</th>
+                <th>Pricing & Status</th>
                 <th>Requested By</th>
                 <th>Actions</th>
               </tr>
@@ -81,10 +82,24 @@
                     <div>
                       <div style="font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">{{ $r->title }}</div>
                       @if(!empty($r->description))
-                        <div style="font-size: 0.85rem; color: var(--text-light); line-height: 1.4;">
+                        <div style="font-size: 0.85rem; color: var(--text-light); line-height: 1.4; margin-bottom: 0.5rem;">
                           {{ Str::limit(strip_tags($r->description), 120) }}
                         </div>
                       @endif
+                      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge badge-{{ $r->event_type === 'paid' ? 'warning' : 'success' }}">
+                          {{ ucfirst($r->event_type ?? 'free') }}
+                        </span>
+                        @if($r->capacity)
+                          <span class="badge badge-info">{{ $r->capacity }} max</span>
+                        @endif
+                        @if($r->featured_on_home)
+                          <span class="badge badge-primary">Featured</span>
+                        @endif
+                        @if($r->visible_on_site)
+                          <span class="badge badge-outline">Public</span>
+                        @endif
+                      </div>
                     </div>
                   </td>
                   <td>
@@ -111,27 +126,67 @@
                   </td>
                   <td>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                      @if($r->location)
+                        <div>
+                          <span class="badge badge-outline">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                              <circle cx="12" cy="10" r="3"/>
+                            </svg>
+                            {{ $r->location }}
+                          </span>
+                        </div>
+                      @endif
+                      @if($r->venue)
+                        <div>
+                          <span class="badge badge-info">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M3 21h18l-9-18-9 18zM12 9v4"/>
+                            </svg>
+                            {{ $r->venue }}
+                          </span>
+                        </div>
+                      @endif
+                      @if(!$r->location && !$r->venue)
+                        <span class="badge badge-outline" style="opacity: 0.6;">No location specified</span>
+                      @endif
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                      @if($r->event_type === 'paid')
+                        <div>
+                          <span class="badge badge-warning">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <line x1="12" y1="1" x2="12" y2="23"/>
+                              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                            ৳{{ number_format($r->price ?? 0, 2) }}
+                          </span>
+                        </div>
+                      @else
+                        <div>
+                          <span class="badge badge-success">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M9 12l2 2 4-4"/>
+                              <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                            Free
+                          </span>
+                        </div>
+                      @endif
                       <div>
-                        @php $loc = $r->location ?? 'No location specified'; @endphp
-                        <span class="badge badge-outline">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                          </svg>
-                          {{ $loc }}
+                        <span class="badge badge-{{ $r->event_status === 'available' ? 'success' : ($r->event_status === 'limited_sell' ? 'warning' : 'danger') }}">
+                          {{ ucwords(str_replace('_', ' ', $r->event_status ?? 'available')) }}
                         </span>
                       </div>
-                      <div>
-                        @php $cap = $r->capacity ?? 'Unlimited'; @endphp
-                        <span class="badge badge-info">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="m22 2-5 10-7-3 7-7-5-5z"/>
-                          </svg>
-                          {{ is_numeric($cap) ? $cap . ' attendees' : $cap }}
-                        </span>
-                      </div>
+                      @if($r->purchase_option)
+                        <div>
+                          <span class="badge badge-info" style="font-size: 0.75rem;">
+                            {{ ucwords(str_replace('_', ' + ', $r->purchase_option)) }}
+                          </span>
+                        </div>
+                      @endif
                     </div>
                   </td>
                   <td>

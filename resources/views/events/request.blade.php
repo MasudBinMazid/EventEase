@@ -669,7 +669,7 @@ input:checked + .ee-slider:before {
         <p>When and where will your event take place</p>
       </div>
 
-      <div class="ee-grid">
+      <div class="ee-grid ee-grid-2">
         {{-- Location --}}
         @php($locHasError = $errors->has('location'))
         <div class="ee-field">
@@ -680,123 +680,191 @@ input:checked + .ee-slider:before {
             name="location"
             class="ee-input {{ $locHasError ? 'ee-error' : '' }}"
             value="{{ old('location') }}"
-            placeholder="e.g., Dhaka Conference Hall A, Virtual (Zoom), Dhaka University Auditorium">
-          <div class="ee-help">Include specific venue name, address, or mention if it's virtual.</div>
+            placeholder="City or general area">
+          <div class="ee-help">General location or area where the event takes place.</div>
           @if($locHasError)
             <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('location') }}</div>
           @endif
         </div>
 
-        {{-- Starts / Ends --}}
-        <div class="ee-grid ee-grid-2">
-          @php($startHasError = $errors->has('starts_at'))
-          <div class="ee-field">
-            <label class="ee-label" for="starts_at">Event Starts <span class="ee-required">*</span></label>
-            <input
-              id="starts_at"
-              type="datetime-local"
-              name="starts_at"
-              required
-              class="ee-input {{ $startHasError ? 'ee-error' : '' }}"
-              value="{{ old('starts_at') }}"
-              min="{{ now()->format('Y-m-d\TH:i') }}">
-            <div class="ee-help">Local time zone. Must be a future date and time.</div>
-            @if($startHasError)
-              <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('starts_at') }}</div>
-            @endif
-          </div>
-
-          @php($endHasError = $errors->has('ends_at'))
-          <div class="ee-field">
-            <label class="ee-label" for="ends_at">Event Ends</label>
-            <input
-              id="ends_at"
-              type="datetime-local"
-              name="ends_at"
-              class="ee-input {{ $endHasError ? 'ee-error' : '' }}"
-              value="{{ old('ends_at') }}"
-              min="{{ now()->format('Y-m-d\TH:i') }}">
-            <div class="ee-help">Optional, but helps with scheduling and planning.</div>
-            @if($endHasError)
-              <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('ends_at') }}</div>
-            @endif
-          </div>
-        </div>
-
-        {{-- Capacity --}}
-        @php($capHasError = $errors->has('capacity'))
+        {{-- Venue --}}
+        @php($venueHasError = $errors->has('venue'))
         <div class="ee-field">
-          <label class="ee-label" for="capacity">Expected Capacity</label>
+          <label class="ee-label" for="venue">Venue</label>
           <input
-            id="capacity"
-            type="number"
-            name="capacity"
-            min="1"
-            max="10000"
-            class="ee-input {{ $capHasError ? 'ee-error' : '' }}"
-            value="{{ old('capacity') }}"
-            placeholder="e.g., 150">
-          <div class="ee-help">Maximum number of attendees. Leave blank if unlimited or unknown.</div>
-          @if($capHasError)
-            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('capacity') }}</div>
+            id="venue"
+            type="text"
+            name="venue"
+            class="ee-input {{ $venueHasError ? 'ee-error' : '' }}"
+            value="{{ old('venue') }}"
+            placeholder="Specific venue name or address">
+          <div class="ee-help">Specific venue name, address, or mention if it's virtual.</div>
+          @if($venueHasError)
+            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('venue') }}</div>
           @endif
         </div>
       </div>
 
-      <!-- Pricing Section -->
-      <div class="ee-section">
-        <h3>💰 Ticket Pricing</h3>
-        <p>Configure ticket pricing and payment options</p>
-      </div>
-
-      <div class="ee-price-section">
-        <div class="ee-price-toggle">
-          <label class="ee-toggle">
-            <input type="checkbox" id="is_paid" name="is_paid" value="1" {{ old('is_paid') ? 'checked' : '' }} onchange="togglePriceFields()">
-            <span class="ee-slider"></span>
-          </label>
-          <label for="is_paid" style="font-weight: 600; cursor: pointer;">This is a paid event</label>
+      <div class="ee-grid ee-grid-2">
+        {{-- Starts --}}
+        @php($startHasError = $errors->has('starts_at'))
+        <div class="ee-field">
+          <label class="ee-label" for="starts_at">Start Date & Time <span class="ee-required">*</span></label>
+          <input
+            id="starts_at"
+            type="datetime-local"
+            name="starts_at"
+            required
+            class="ee-input {{ $startHasError ? 'ee-error' : '' }}"
+            value="{{ old('starts_at') }}"
+            min="{{ now()->format('Y-m-d\TH:i') }}">
+          <div class="ee-help">Use your local timezone. Must be a future date.</div>
+          @if($startHasError)
+            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('starts_at') }}</div>
+          @endif
         </div>
 
-        <div id="price-fields" style="display: {{ old('is_paid') ? 'block' : 'none' }};">
-          <div class="ee-grid ee-grid-3">
-            @php($priceHasError = $errors->has('price'))
-            <div class="ee-field">
-              <label class="ee-label" for="price">Ticket Price</label>
-              <div style="position: relative;">
-                <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #6b7280; font-weight: 600;">৳</span>
-                <input
-                  id="price"
-                  type="number"
-                  name="price"
-                  min="0"
-                  step="0.01"
-                  class="ee-input {{ $priceHasError ? 'ee-error' : '' }}"
-                  style="padding-left: 2.5rem;"
-                  value="{{ old('price') }}"
-                  placeholder="0.00">
-              </div>
-              @if($priceHasError)
-                <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('price') }}</div>
-              @endif
-            </div>
+        {{-- Ends --}}
+        @php($endHasError = $errors->has('ends_at'))
+        <div class="ee-field">
+          <label class="ee-label" for="ends_at">End Date & Time</label>
+          <input
+            id="ends_at"
+            type="datetime-local"
+            name="ends_at"
+            class="ee-input {{ $endHasError ? 'ee-error' : '' }}"
+            value="{{ old('ends_at') }}"
+            min="{{ now()->format('Y-m-d\TH:i') }}">
+          <div class="ee-help">Leave empty for single-session events.</div>
+          @if($endHasError)
+            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('ends_at') }}</div>
+          @endif
+        </div>
+      </div>
 
-            <div class="ee-field">
-              <label class="ee-label" for="currency">Currency</label>
-              <select id="currency" name="currency" class="ee-select" readonly>
-                <option value="BDT" selected>BDT (৳ - Bangladeshi Taka)</option>
-              </select>
-              <div class="ee-help">Currently supporting Bangladeshi Taka only</div>
-            </div>
+      <div class="ee-grid ee-grid-2">
+        {{-- Capacity --}}
+        @php($capHasError = $errors->has('capacity'))
+        <div class="ee-field">
+          <label class="ee-label" for="capacity">Capacity</label>
+          <input
+            id="capacity"
+            type="number"
+            name="capacity"
+            min="0"
+            class="ee-input {{ $capHasError ? 'ee-error' : '' }}"
+            value="{{ old('capacity') }}"
+            placeholder="Maximum attendees">
+          <div class="ee-help">Leave empty for unlimited capacity.</div>
+          @if($capHasError)
+            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('capacity') }}</div>
+          @endif
+        </div>
 
-            <div class="ee-field">
-              <label class="ee-toggle" style="margin-top: 1.75rem;">
-                <input type="checkbox" name="allow_pay_later" value="1" {{ old('allow_pay_later', '1') ? 'checked' : '' }}>
-                <span class="ee-slider"></span>
-              </label>
-              <label style="margin-left: 0.5rem; font-weight: 600;">Allow pay later</label>
-              <div class="ee-help">Let attendees register now and pay at the venue</div>
-            </div>
+        {{-- Event Status --}}
+        @php($statusHasError = $errors->has('event_status'))
+        <div class="ee-field">
+          <label class="ee-label" for="event_status">Event Status <span class="ee-required">*</span></label>
+          <select name="event_status" id="event_status" class="ee-select {{ $statusHasError ? 'ee-error' : '' }}" required>
+            <option value="available" {{ old('event_status', 'available') == 'available' ? 'selected' : '' }}>Available</option>
+            <option value="limited_sell" {{ old('event_status') == 'limited_sell' ? 'selected' : '' }}>Limited Sell</option>
+            <option value="sold_out" {{ old('event_status') == 'sold_out' ? 'selected' : '' }}>Sold Out</option>
+          </select>
+          <div class="ee-help">Current availability status of your event.</div>
+          @if($statusHasError)
+            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('event_status') }}</div>
+          @endif
+        </div>
+      </div>
+
+      <!-- Event Type & Pricing Section -->
+      <div class="ee-section">
+        <h3>💰 Event Type & Pricing</h3>
+        <p>Configure your event type and pricing options</p>
+      </div>
+
+      <div class="ee-grid">
+        {{-- Event Type --}}
+        @php($typeHasError = $errors->has('event_type'))
+        <div class="ee-field">
+          <label class="ee-label" for="event_type">Event Type <span class="ee-required">*</span></label>
+          <select name="event_type" id="event_type" class="ee-select {{ $typeHasError ? 'ee-error' : '' }}" onchange="togglePricingSection()" required>
+            <option value="free" {{ old('event_type', 'free') == 'free' ? 'selected' : '' }}>Free Event</option>
+            <option value="paid" {{ old('event_type') == 'paid' ? 'selected' : '' }}>Paid Event</option>
+          </select>
+          <div class="ee-help">Choose whether this event is free or requires payment.</div>
+          @if($typeHasError)
+            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('event_type') }}</div>
+          @endif
+        </div>
+
+        <!-- Legacy Price Field (for paid events) -->
+        <div class="ee-field" id="price-section" style="display: {{ old('event_type') == 'paid' ? 'block' : 'none' }};">
+          @php($priceHasError = $errors->has('price'))
+          <label class="ee-label" for="price">Base Price</label>
+          <div style="position: relative;">
+            <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #6b7280; font-weight: 600;">৳</span>
+            <input
+              id="price"
+              type="number"
+              name="price"
+              min="0"
+              step="0.01"
+              class="ee-input {{ $priceHasError ? 'ee-error' : '' }}"
+              style="padding-left: 2.5rem;"
+              value="{{ old('price', 0) }}"
+              placeholder="0.00">
+          </div>
+          <div class="ee-help">Set the base ticket price for your event.</div>
+          @if($priceHasError)
+            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('price') }}</div>
+          @endif
+        </div>
+
+        {{-- Purchase Option --}}
+        @php($purchaseHasError = $errors->has('purchase_option'))
+        <div class="ee-field">
+          <label class="ee-label" for="purchase_option">Payment Option <span class="ee-required">*</span></label>
+          <select name="purchase_option" id="purchase_option" class="ee-select {{ $purchaseHasError ? 'ee-error' : '' }}" required>
+            <option value="both" {{ old('purchase_option', 'both') == 'both' ? 'selected' : '' }}>Both Pay Now & Pay Later</option>
+            <option value="pay_now" {{ old('purchase_option') == 'pay_now' ? 'selected' : '' }}>Pay Now Only</option>
+            <option value="pay_later" {{ old('purchase_option') == 'pay_later' ? 'selected' : '' }}>Pay Later Only</option>
+          </select>
+          <div class="ee-help">Choose payment flexibility for attendees.</div>
+          @if($purchaseHasError)
+            <div class="ee-help" style="color:#b91c1c;">{{ $errors->first('purchase_option') }}</div>
+          @endif
+        </div>
+      </div>
+
+      <!-- Visibility & Settings Section -->
+      <div class="ee-section">
+        <h3>⚙️ Visibility & Settings</h3>
+        <p>Control how your event appears on the platform</p>
+      </div>
+
+      <div class="ee-grid ee-grid-2">
+        {{-- Featured on Home --}}
+        <div class="ee-field">
+          <label class="ee-toggle">
+            <input type="checkbox" name="featured_on_home" value="1" {{ old('featured_on_home') ? 'checked' : '' }}>
+            <span class="ee-slider"></span>
+          </label>
+          <div style="margin-left: 4rem; margin-top: -1.5rem;">
+            <label style="font-weight: 600;">Feature on Home Page</label>
+            <div class="ee-help">Request to display this event in the "Upcoming Events" section on the home page</div>
+          </div>
+        </div>
+
+        {{-- Visible on Site --}}
+        <div class="ee-field">
+          <label class="ee-toggle">
+            <input type="checkbox" name="visible_on_site" value="1" {{ old('visible_on_site', '1') ? 'checked' : '' }}>
+            <span class="ee-slider"></span>
+          </label>
+          <div style="margin-left: 4rem; margin-top: -1.5rem;">
+            <label style="font-weight: 600;">Show on Public Site</label>
+            <div class="ee-help">Make this event visible to visitors on the public website after approval</div>
           </div>
         </div>
       </div>
@@ -927,27 +995,20 @@ input:checked + .ee-slider:before {
       }
     }
 
-    // Toggle price fields with animation
-    function togglePriceFields() {
-      const checkbox = document.getElementById('is_paid');
-      const priceFields = document.getElementById('price-fields');
-      const priceInput = document.getElementById('price');
+    // Toggle pricing section based on event type
+    function togglePricingSection() {
+      const eventType = document.getElementById('event_type').value;
+      const priceSection = document.getElementById('price-section');
       
-      if (checkbox.checked) {
-        priceFields.style.display = 'block';
-        priceFields.style.animation = 'slideDown 0.3s ease';
-        priceInput.required = true;
-        setTimeout(() => {
-          priceInput.focus();
-        }, 300);
+      if (eventType === 'paid') {
+        priceSection.style.display = 'block';
+        priceSection.style.animation = 'slideDown 0.3s ease';
       } else {
-        priceFields.style.animation = 'slideUp 0.3s ease';
+        priceSection.style.animation = 'slideUp 0.3s ease';
         setTimeout(() => {
-          priceFields.style.display = 'none';
+          priceSection.style.display = 'none';
         }, 300);
-        priceInput.required = false;
-        priceInput.value = '';
-        priceInput.closest('.ee-field').classList.remove('field-valid');
+        document.getElementById('price').value = '0';
       }
       updateProgress();
     }
@@ -957,7 +1018,7 @@ input:checked + .ee-slider:before {
       if (confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
         document.getElementById('eventForm').reset();
         removeImage();
-        togglePriceFields();
+        togglePricingSection();
         updateProgress();
         
         // Reset all field states
@@ -1055,7 +1116,7 @@ input:checked + .ee-slider:before {
         const submitBtn = this.querySelector('button[type="submit"]');
         const startTime = new Date(document.getElementById('starts_at').value);
         const endTime = new Date(document.getElementById('ends_at').value);
-        const isPaid = document.getElementById('is_paid').checked;
+        const eventType = document.getElementById('event_type').value;
         const price = document.getElementById('price').value;
         
         // Validate all fields
@@ -1078,7 +1139,7 @@ input:checked + .ee-slider:before {
           isFormValid = false;
         }
         
-        if (isPaid && (!price || parseFloat(price) <= 0)) {
+        if (eventType === 'paid' && (!price || parseFloat(price) <= 0)) {
           showNotification('Please set a valid price for paid events.', 'error');
           isFormValid = false;
         }
@@ -1134,7 +1195,7 @@ input:checked + .ee-slider:before {
     // Initialize all functionality
     document.addEventListener('DOMContentLoaded', function() {
       updateProgress();
-      togglePriceFields();
+      togglePricingSection();
       setupDragAndDrop();
       setupTimeHelpers();
       setupRealTimeValidation();
