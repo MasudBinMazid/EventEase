@@ -104,16 +104,38 @@
             <div class="purchase-header">
                 <h3>Get Your Ticket</h3>
                 <div class="price-display">
-                    @if($event->price > 0)
-                        <span class="price">৳{{ number_format($event->price, 2) }}</span>
-                        <span class="price-label">per ticket</span>
+                    @if($event->isPaid())
+                        @if($event->ticketTypes->count() > 0)
+                            <span class="price">{{ $event->price_display }}</span>
+                            <span class="price-label">
+                                @if($event->minimum_price != $event->maximum_price)
+                                    multiple options available
+                                @else
+                                    per ticket
+                                @endif
+                            </span>
+                        @else
+                            <span class="price">৳{{ number_format($event->price, 2) }}</span>
+                            <span class="price-label">per ticket</span>
+                        @endif
                     @else
                         <span class="price free">Free</span>
                     @endif
                 </div>
             </div>
 
-            @if($status === 'past')
+            @if($event->isSoldOut())
+                <!-- Sold Out Event -->
+                <div class="past-event-notice">
+                    <div class="notice-icon">
+                        <i class="bi bi-x-circle"></i>
+                    </div>
+                    <div class="notice-content">
+                        <h4>Event Sold Out</h4>
+                        <p>All tickets for this event have been sold. Please check back for any last-minute cancellations.</p>
+                    </div>
+                </div>
+            @elseif($status === 'past')
                 <!-- Past Event - No Purchase Option -->
                 <div class="past-event-notice">
                     <div class="notice-icon">
@@ -126,9 +148,44 @@
                 </div>
             @else
                 <!-- Active Event - Show Purchase Form -->
-                <form action="{{ route('tickets.start', $event) }}" method="POST" class="purchase-form">
-                    @csrf
-                    
+                @if($event->isPaid() && $event->ticketTypes->count() > 0)
+                    <!-- Multiple Ticket Types Available -->
+                    <div class="ticket-types-section">
+                        <h4>Available Ticket Types</h4>
+                        @foreach($event->availableTicketTypes as $ticketType)
+                            <div class="ticket-type-card {{ $ticketType->is_sold_out ? 'sold-out' : '' }}">
+                                <div class="ticket-type-info">
+                                    <h5>{{ $ticketType->name }}</h5>
+                                    @if($ticketType->description)
+                                        <p class="ticket-type-description">{{ $ticketType->description }}</p>
+                                    @endif
+                                    <div class="ticket-type-price">৳{{ number_format($ticketType->price, 2) }}</div>
+                                    @if($ticketType->quantity_available)
+                                        <div class="ticket-type-availability">
+                                            {{ $ticketType->remaining_quantity }} of {{ $ticketType->quantity_available }} remaining
+                                        </div>
+                                    @endif
+                                </div>
+                                @if($ticketType->is_sold_out)
+                                    <button class="btn btn-disabled" disabled>
+                                        <i class="bi bi-x-circle"></i> Sold Out
+                                    </button>
+                                @else
+                                    <form action="{{ route('tickets.start', $event) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <input type="hidden" name="ticket_type_id" value="{{ $ticketType->id }}">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-ticket"></i> Select
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <!-- Single Ticket Type or Free Event -->
+                    <form action="{{ route('tickets.start', $event) }}" method="POST" class="purchase-form">
+                        @csrf
                     <div class="form-group">
                         <label for="quantity">Number of Tickets</label>
                         <div class="quantity-selector">
@@ -141,11 +198,23 @@
                     <div class="total-section">
                         <div class="total-row">
                             <span>Subtotal:</span>
-                            <span id="subtotal">৳{{ number_format($event->price, 2) }}</span>
+                            <span id="subtotal">
+                                @if($event->isPaid())
+                                    ৳{{ number_format($event->price, 2) }}
+                                @else
+                                    Free
+                                @endif
+                            </span>
                         </div>
                         <div class="total-row total-final">
                             <strong>Total:</strong>
-                            <strong id="total">৳{{ number_format($event->price, 2) }}</strong>
+                            <strong id="total">
+                                @if($event->isPaid())
+                                    ৳{{ number_format($event->price, 2) }}
+                                @else
+                                    Free
+                                @endif
+                            </strong>
                         </div>
                     </div>
 
@@ -156,14 +225,15 @@
                     @else
                         <button type="submit" class="btn-purchase">
                             <i class="bi bi-ticket-perforated"></i>
-                            @if($event->price > 0)
+                            @if($event->isPaid())
                                 Buy Tickets
                             @else
                                 Get Free Tickets
                             @endif
                         </button>
                     @endguest
-                </form>
+                    </form>
+                @endif
             @endif
 
             <!-- Event Stats -->

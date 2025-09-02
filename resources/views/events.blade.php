@@ -91,13 +91,24 @@
             <div class="event-detail price">
               <i class="bi bi-tag"></i>
               <span class="price-amount">
-                @if($event->price > 0)
-                  ৳{{ number_format($event->price, 2) }}
-                @else
-                  Free
-                @endif
+                {{ $event->price_display }}
               </span>
+              @if($event->isPaid() && $event->ticketTypes->count() > 1)
+                <small class="price-note">{{ $event->ticketTypes->count() }} ticket types</small>
+              @endif
             </div>
+
+            @if($event->isSoldOut())
+              <div class="event-detail status sold-out">
+                <i class="bi bi-x-circle"></i>
+                <span>Sold Out</span>
+              </div>
+            @elseif($event->hasLimitedSell())
+              <div class="event-detail status limited">
+                <i class="bi bi-clock"></i>
+                <span>Limited Sale</span>
+              </div>
+            @endif
           </div>
           
           @if($event->description)
@@ -112,14 +123,22 @@
               <i class="bi bi-eye"></i> View Details
             </a>
             
-            @if($isUpcoming)
+            @if($isUpcoming && !$event->isSoldOut())
               <form action="{{ route('tickets.start', $event) }}" method="POST" style="display: inline; flex: 1;">
                 @csrf
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                   <i class="bi bi-ticket"></i> 
-                  @if($event->price > 0) Buy Ticket @else Get Ticket @endif
+                  @if($event->isPaid()) Buy Ticket @else Get Ticket @endif
                 </button>
               </form>
+            @elseif($event->isSoldOut())
+              <button class="btn btn-disabled" disabled style="width: 100%;">
+                <i class="bi bi-x-circle"></i> Sold Out
+              </button>
+            @else
+              <button class="btn btn-disabled" disabled style="width: 100%;">
+                <i class="bi bi-clock-history"></i> Event Ended
+              </button>
             @endif
           </div>
         </div>

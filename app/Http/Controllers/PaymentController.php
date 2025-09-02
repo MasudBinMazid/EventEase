@@ -35,13 +35,19 @@ class PaymentController extends Controller
         ]);
 
         $event = \App\Models\Event::findOrFail($checkout['event_id']);
+        
+        // Get ticket type if specified
+        $ticketType = null;
+        if (!empty($checkout['ticket_type_id'])) {
+            $ticketType = $event->ticketTypes()->where('id', $checkout['ticket_type_id'])->first();
+        }
 
         // Store screenshot
         $proofPath = $request->file('proof')->store('payment_proofs', 'public');
 
         // Create ticket as UNPAID (pending admin verification)
         $ticket = app(\App\Http\Controllers\TicketController::class)
-            ->createTicketAndQr($event, (int) $checkout['qty'], 'pay_now', 'unpaid');
+            ->createTicketAndQr($event, (int) $checkout['qty'], 'pay_now', 'unpaid', $ticketType);
 
         // Attach payer info + proof
         $ticket->update([

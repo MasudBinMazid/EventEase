@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Ticket;
+use App\Models\TicketType;
 use App\Services\QrCodeService;
 use App\Notifications\TicketPdfNotification;
 use Illuminate\Http\Request;
@@ -16,14 +17,22 @@ class TicketController extends Controller
     public function start(Request $request, Event $event)
     {
         $qty = max(1, (int)$request->input('quantity', 1));
+        $ticketTypeId = $request->input('ticket_type_id');
 
         if (!auth()->check()) {
             return redirect()->route('login')->with('status', 'Please log in to buy tickets.');
         }
 
+        // Check if event is available for booking
+        if ($event->isSoldOut()) {
+            return redirect()->route('events.show', $event)
+                ->with('error', 'This event is sold out.');
+        }
+
         return redirect()->route('tickets.checkout', [
             'event_id' => $event->id,
             'qty'      => $qty,
+            'ticket_type_id' => $ticketTypeId,
         ]);
     }
 
@@ -31,7 +40,27 @@ class TicketController extends Controller
     {
         $event = Event::findOrFail($request->integer('event_id'));
         $qty   = max(1, (int)$request->integer('qty', 1));
-        $total = $event->price * $qty;
+        $ticketTypeId = $request->input('ticket_type_id');
+        
+        // For free events, go directly to checkout
+        if ($event->isFree()) {
+            $total = 0;
+            $selectedTicketType = null;
+        } else {
+            // For paid events, calculate based on ticket type or event price
+            if ($ticketTypeId) {
+                $selectedTicketType = $event->ticketTypes()->where('id', $ticketTypeId)->first();
+                if (!$selectedTicketType || !$selectedTicketType->hasQuantityAvailable($qty)) {
+                    return redirect()->route('events.show', $event)
+                        ->with('error', 'Selected ticket type is not available or insufficient quantity.');
+                }
+                $total = $selectedTicketType->price * $qty;
+            } else {
+                // Use event base price if no specific ticket type
+                $selectedTicketType = null;
+                $total = $event->price * $qty;
+            }
+        }
 
         $allowed = match($event->purchase_option ?? 'both') {
             'pay_now'   => ['pay_now'],
@@ -39,7 +68,12 @@ class TicketController extends Controller
             default     => ['pay_now','pay_later'],
         };
 
-        return view('tickets.checkout_new', compact('event','qty','total','allowed'));
+        // For free events, only allow "get ticket" (which is like pay_later)
+        if ($event->isFree()) {
+            $allowed = ['pay_later'];
+        }
+
+        return view('tickets.checkout_new', compact('event','qty','total','allowed','selectedTicketType'));
     }
 
     /**
@@ -53,15 +87,37 @@ class TicketController extends Controller
             'event_id' => 'required|exists:events,id',
             'qty'      => 'required|integer|min:1',
             'method'   => 'required|in:pay_now,pay_later',
+            'ticket_type_id' => 'nullable|exists:ticket_types,id',
         ]);
 
         $event  = Event::findOrFail((int)$data['event_id']);
         $qty    = (int)$data['qty'];
         $method = $data['method'];
+        $ticketTypeId = $data['ticket_type_id'] ?? null;
 
-        if ($method === 'pay_later') {
-            // Create the ticket immediately (unpaid)
-            $ticket = $this->createTicketAndQr($event, $qty, 'pay_later', 'unpaid');
+        // Get ticket type and validate availability
+        $ticketType = null;
+        $unitPrice = $event->price; // Default to event price
+        
+        if ($ticketTypeId) {
+            $ticketType = $event->ticketTypes()->where('id', $ticketTypeId)->first();
+            if (!$ticketType || !$ticketType->hasQuantityAvailable($qty)) {
+                return back()->with('error', 'Selected ticket type is not available or insufficient quantity.');
+            }
+            $unitPrice = $ticketType->price;
+        }
+
+        if ($method === 'pay_later' || $event->isFree()) {
+            // Create the ticket immediately (unpaid for paid events, paid for free events)
+            $paymentStatus = $event->isFree() ? 'paid' : 'unpaid';
+            $ticket = $this->createTicketAndQr($event, $qty, 'pay_later', $paymentStatus, $ticketType);
+            
+            // Update ticket type quantity if applicable
+            if ($ticketType && !$event->isFree()) {
+                $ticketType->increment('quantity_sold', $qty);
+                $ticketType->updateStatus();
+            }
+            
             return redirect()->route('tickets.show', $ticket);
         }
 
@@ -70,7 +126,9 @@ class TicketController extends Controller
             'event_id' => $event->id,
             'qty'      => $qty,
             'user_id'  => auth()->id(),
-            'total'    => $event->price * $qty,
+            'total'    => $unitPrice * $qty,
+            'ticket_type_id' => $ticketTypeId,
+            'unit_price' => $unitPrice,
         ]);
 
         return redirect()->route('payments.manual');
@@ -162,15 +220,18 @@ class TicketController extends Controller
      * Helper: creates ticket, generates QR code using pure PHP library
      * (made PUBLIC so PaymentController can reuse it)
      */
-    public function createTicketAndQr(Event $event, int $qty, string $paymentOption, string $paymentStatus): Ticket
+    public function createTicketAndQr(Event $event, int $qty, string $paymentOption, string $paymentStatus, $ticketType = null): Ticket
     {
-        $total = $event->price * $qty;
+        $unitPrice = $ticketType ? $ticketType->price : $event->price;
+        $total = $unitPrice * $qty;
 
         $ticket = Ticket::create([
             'user_id'        => auth()->id(),
             'event_id'       => $event->id,
+            'ticket_type_id' => $ticketType ? $ticketType->id : null,
             'quantity'       => $qty,
             'total_amount'   => $total,
+            'unit_price'     => $unitPrice,
             'payment_option' => $paymentOption, // 'pay_now' | 'pay_later'
             'payment_status' => $paymentStatus, // 'paid' | 'unpaid'
             'ticket_code'    => 'TKT-' . strtoupper(Str::random(8)),
@@ -193,6 +254,16 @@ class TicketController extends Controller
 
         $ticket->qr_path = $path;
         $ticket->save();
+
+        // Update ticket type quantity sold if applicable
+        if ($ticketType) {
+            $ticketType->increment('quantity_sold', $qty);
+            
+            // Update ticket type status if sold out
+            if ($ticketType->quantity_sold >= $ticketType->quantity_available) {
+                $ticketType->update(['status' => 'sold_out']);
+            }
+        }
 
         // Send ticket PDF via email automatically
         try {

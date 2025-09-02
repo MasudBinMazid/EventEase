@@ -1536,3 +1536,123 @@
     display: none;
   }
 }
+
+/* Event Status Indicators */
+.event-detail.status {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-detail.status.sold-out {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: white;
+}
+
+.event-detail.status.limited {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+/* Price note for multiple ticket types */
+.price-note {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+/* Disabled button styles */
+.btn-disabled {
+  background: #6b7280;
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-disabled:hover {
+  background: #6b7280;
+  transform: none;
+}
+
+/* Enhanced event card layouts for new features */
+.event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.event-meta .event-detail {
+  flex-shrink: 0;
+}
+
+/* Ticket Types Section */
+.ticket-types-section {
+  margin-top: 20px;
+}
+
+.ticket-types-section h4 {
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ticket-type-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.ticket-type-card:hover {
+  border-color: var(--accent-blue);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.ticket-type-card.sold-out {
+  opacity: 0.6;
+  background: #f9fafb;
+}
+
+.ticket-type-info {
+  flex: 1;
+}
+
+.ticket-type-info h5 {
+  margin: 0 0 4px 0;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.ticket-type-description {
+  margin: 4px 0 8px 0;
+  font-size: 0.875rem;
+  color: var(--text-light);
+}
+
+.ticket-type-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+  margin-bottom: 4px;
+}
+
+.ticket-type-availability {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+.ticket-type-card .btn {
+  margin-left: 16px;
+  white-space: nowrap;
+}

@@ -36,6 +36,7 @@ class SSLCommerzController extends Controller
             $data = $request->validate([
                 'event_id' => 'required|exists:events,id',
                 'qty' => 'required|integer|min:1',
+                'ticket_type_id' => 'nullable|exists:ticket_types,id',
             ]);
 
             Log::info('SSLCommerz validation passed', ['validated_data' => $data]);
@@ -48,7 +49,21 @@ class SSLCommerzController extends Controller
             // Get event details
             $event = Event::findOrFail($data['event_id']);
             $quantity = (int)$data['qty'];
-            $amount = $event->price * $quantity;
+            
+            // Calculate amount based on ticket type or event price
+            $ticketType = null;
+            $unitPrice = $event->price;
+            
+            if (!empty($data['ticket_type_id'])) {
+                $ticketType = $event->ticketTypes()->where('id', $data['ticket_type_id'])->first();
+                if (!$ticketType || !$ticketType->hasQuantityAvailable($quantity)) {
+                    return redirect()->back()
+                        ->with('error', 'Selected ticket type is not available or insufficient quantity.');
+                }
+                $unitPrice = $ticketType->price;
+            }
+            
+            $amount = $unitPrice * $quantity;
 
             // Create a unique transaction ID
             $transactionId = 'TXN-' . time() . '-' . Str::random(8);
@@ -65,6 +80,9 @@ class SSLCommerzController extends Controller
                     'user_name' => auth()->user()->name,
                     'user_email' => auth()->user()->email,
                     'event_title' => $event->title,
+                    'ticket_type_id' => $ticketType ? $ticketType->id : null,
+                    'ticket_type_name' => $ticketType ? $ticketType->name : null,
+                    'unit_price' => $unitPrice,
                     'created_at' => now()->toISOString()
                 ]
             ]);
@@ -82,14 +100,21 @@ class SSLCommerzController extends Controller
                 'user_id' => auth()->id(),
                 'quantity' => $quantity,
                 'amount' => $amount,
+                'ticket_type_id' => $ticketType ? $ticketType->id : null,
+                'unit_price' => $unitPrice,
                 'created_at' => now(),
             ]);
 
             // Prepare payment data
+            $productName = $event->title . ' - Event Tickets (' . $quantity . ' tickets)';
+            if ($ticketType) {
+                $productName = $event->title . ' - ' . $ticketType->name . ' (' . $quantity . ' tickets)';
+            }
+            
             $paymentData = [
                 'transaction_id' => $transactionId,
                 'amount' => $amount,
-                'product_name' => $event->title . ' - Event Tickets (' . $quantity . ' tickets)',
+                'product_name' => $productName,
                 'quantity' => $quantity,
                 'customer_name' => auth()->user()->name,
                 'customer_email' => auth()->user()->email,
@@ -256,9 +281,14 @@ class SSLCommerzController extends Controller
                     'session_id' => session()->getId()
                 ]);
                 
-                // Create ticket using TicketController method
+                // Create ticket using TicketController method with ticket type
+                $ticketTypeId = isset($tempTransaction->data['ticket_type_id']) ? $tempTransaction->data['ticket_type_id'] : null;
+                $ticketType = null;
+                if ($ticketTypeId) {
+                    $ticketType = \App\Models\TicketType::find($ticketTypeId);
+                }
                 $ticket = app(\App\Http\Controllers\TicketController::class)
-                    ->createTicketAndQr($tempTransaction->event, $tempTransaction->quantity, 'pay_now', 'paid');
+                    ->createTicketAndQr($tempTransaction->event, $tempTransaction->quantity, 'pay_now', 'paid', $ticketType);
 
                 Log::info('Ticket created successfully', [
                     'ticket_id' => $ticket->id,
@@ -340,6 +370,20 @@ class SSLCommerzController extends Controller
             'user_id' => auth()->id()
         ]);
 
+        // Update temp transaction status if found
+        if ($tranId) {
+            $tempTransaction = TempTransaction::where('transaction_id', $tranId)->first();
+            if ($tempTransaction) {
+                $tempTransaction->update([
+                    'status' => 'failed',
+                    'data' => array_merge($tempTransaction->data ?? [], [
+                        'failed_reason' => $failedReason,
+                        'failed_at' => now()->toISOString()
+                    ])
+                ]);
+            }
+        }
+
         // Clear session data
         session()->forget('sslcommerz_transaction');
 
@@ -358,6 +402,19 @@ class SSLCommerzController extends Controller
             'tran_id' => $tranId,
             'user_id' => auth()->id()
         ]);
+
+        // Update temp transaction status if found
+        if ($tranId) {
+            $tempTransaction = TempTransaction::where('transaction_id', $tranId)->first();
+            if ($tempTransaction) {
+                $tempTransaction->update([
+                    'status' => 'cancelled',
+                    'data' => array_merge($tempTransaction->data ?? [], [
+                        'cancelled_at' => now()->toISOString()
+                    ])
+                ]);
+            }
+        }
 
         // Clear session data
         session()->forget('sslcommerz_transaction');
@@ -439,7 +496,7 @@ class SSLCommerzController extends Controller
         }
 
         try {
-            $ticket = Ticket::with('event', 'user')->findOrFail($ticketId);
+            $ticket = Ticket::with(['event', 'user', 'ticketType'])->findOrFail($ticketId);
 
             // Ensure the ticket belongs to the current user
             if ($ticket->user_id !== auth()->id()) {

@@ -253,6 +253,12 @@
           <span class="ticket-label">Quantity</span>
           <span class="ticket-value">{{ $ticket->quantity }} {{ Str::plural('ticket', $ticket->quantity) }}</span>
         </div>
+        @if($ticket->ticketType)
+        <div class="ticket-row">
+          <span class="ticket-label">Ticket Type</span>
+          <span class="ticket-value">{{ $ticket->ticketType->name }}</span>
+        </div>
+        @endif
         <div class="ticket-row">
           <span class="ticket-label">Total Amount</span>
           <span class="ticket-value">৳{{ number_format($ticket->total_amount, 2) }}</span>

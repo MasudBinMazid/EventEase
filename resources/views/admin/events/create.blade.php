@@ -115,11 +115,60 @@
               @enderror
             </div>
             <div class="form-group">
-              <label class="form-label" for="price">Price</label>
-              <input type="number" name="price" id="price" class="form-input" value="{{ old('price', 0) }}" min="0" step="0.01" placeholder="0.00">
-              @error('price')
+              <label class="form-label" for="event_status">Event Status</label>
+              <select name="event_status" id="event_status" class="form-input">
+                <option value="available" {{ old('event_status', 'available') == 'available' ? 'selected' : '' }}>Available</option>
+                <option value="limited_sell" {{ old('event_status') == 'limited_sell' ? 'selected' : '' }}>Limited Sell</option>
+                <option value="sold_out" {{ old('event_status') == 'sold_out' ? 'selected' : '' }}>Sold Out</option>
+              </select>
+              @error('event_status')
                 <div class="form-error">{{ $message }}</div>
               @enderror
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h4 class="section-title">Event Type & Pricing</h4>
+          
+          <div class="form-group">
+            <label class="form-label" for="event_type">Event Type</label>
+            <select name="event_type" id="event_type" class="form-input" onchange="togglePricingSection()">
+              <option value="free" {{ old('event_type', 'free') == 'free' ? 'selected' : '' }}>Free Event</option>
+              <option value="paid" {{ old('event_type') == 'paid' ? 'selected' : '' }}>Paid Event</option>
+            </select>
+            <div class="form-hint">Choose whether this event is free or requires payment</div>
+            @error('event_type')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <!-- Legacy Price Field (for backward compatibility) -->
+          <div class="form-group" id="legacy-price-section" style="display: none;">
+            <label class="form-label" for="price">Base Price (Legacy)</label>
+            <input type="number" name="price" id="price" class="form-input" value="{{ old('price', 0) }}" min="0" step="0.01" placeholder="0.00">
+            <div class="form-hint">This field is kept for compatibility. Use ticket types below for detailed pricing.</div>
+            @error('price')
+              <div class="form-error">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <!-- Ticket Types Section (only for paid events) -->
+          <div id="ticket-types-section" style="display: none;">
+            <div class="form-group">
+              <label class="form-label">Ticket Types</label>
+              <div class="form-hint">Add different ticket types with their own pricing and availability</div>
+              
+              <div id="ticket-types-container">
+                <!-- Ticket type templates will be added here dynamically -->
+              </div>
+              
+              <button type="button" id="add-ticket-type" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Add Ticket Type
+              </button>
             </div>
           </div>
 
@@ -199,4 +248,159 @@
     </div>
   </div>
 </div>
+
+<style>
+.ticket-type-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--surface);
+}
+
+.ticket-type-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.ticket-type-remove {
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.ticket-type-remove:hover {
+  background: #b91c1c;
+}
+
+.ticket-type-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.ticket-type-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-type-field label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.ticket-type-field input,
+.ticket-type-field select,
+.ticket-type-field textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: white;
+}
+
+.ticket-type-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+</style>
+
+<script>
+let ticketTypeCounter = 0;
+
+function togglePricingSection() {
+  const eventType = document.getElementById('event_type').value;
+  const legacyPriceSection = document.getElementById('legacy-price-section');
+  const ticketTypesSection = document.getElementById('ticket-types-section');
+  
+  if (eventType === 'paid') {
+    legacyPriceSection.style.display = 'block';
+    ticketTypesSection.style.display = 'block';
+    
+    // Add a default ticket type if none exist
+    if (ticketTypeCounter === 0) {
+      addTicketType();
+    }
+  } else {
+    legacyPriceSection.style.display = 'none';
+    ticketTypesSection.style.display = 'none';
+  }
+}
+
+function addTicketType() {
+  ticketTypeCounter++;
+  const container = document.getElementById('ticket-types-container');
+  
+  const ticketTypeHtml = `
+    <div class="ticket-type-item" data-index="${ticketTypeCounter}">
+      <div class="ticket-type-header">
+        <span>Ticket Type #${ticketTypeCounter}</span>
+        <button type="button" class="ticket-type-remove" onclick="removeTicketType(${ticketTypeCounter})">
+          Remove
+        </button>
+      </div>
+      
+      <div class="ticket-type-fields">
+        <div class="ticket-type-field">
+          <label>Name <span style="color: red;">*</span></label>
+          <input type="text" name="ticket_types[${ticketTypeCounter}][name]" placeholder="e.g., Early Bird, VIP, General" required>
+        </div>
+        
+        <div class="ticket-type-field">
+          <label>Price (৳) <span style="color: red;">*</span></label>
+          <input type="number" name="ticket_types[${ticketTypeCounter}][price]" min="0" step="0.01" placeholder="0.00" required>
+        </div>
+        
+        <div class="ticket-type-field">
+          <label>Quantity Available</label>
+          <input type="number" name="ticket_types[${ticketTypeCounter}][quantity_available]" min="1" placeholder="Leave empty for unlimited">
+        </div>
+        
+        <div class="ticket-type-field">
+          <label>Status</label>
+          <select name="ticket_types[${ticketTypeCounter}][status]">
+            <option value="available">Available</option>
+            <option value="sold_out">Sold Out</option>
+          </select>
+        </div>
+        
+        <div class="ticket-type-field full-width">
+          <label>Description</label>
+          <textarea name="ticket_types[${ticketTypeCounter}][description]" placeholder="Describe what's included with this ticket type"></textarea>
+        </div>
+        
+        <input type="hidden" name="ticket_types[${ticketTypeCounter}][sort_order]" value="${ticketTypeCounter}">
+      </div>
+    </div>
+  `;
+  
+  container.insertAdjacentHTML('beforeend', ticketTypeHtml);
+}
+
+function removeTicketType(index) {
+  const ticketType = document.querySelector(`[data-index="${index}"]`);
+  if (ticketType) {
+    ticketType.remove();
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  togglePricingSection();
+  
+  document.getElementById('add-ticket-type').addEventListener('click', addTicketType);
+});
+</script>
+
 @endsection

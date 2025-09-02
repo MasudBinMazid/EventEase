@@ -529,8 +529,14 @@
               <!-- Price Display -->
               <div class="form-section">
                 <div class="price-display">
-                  <div class="price-label">💰 Price per Ticket</div>
-                  <div class="price-value">৳{{ number_format($event->price, 2) }}</div>
+                  @if($selectedTicketType)
+                    <div class="price-label">🎫 {{ $selectedTicketType->name }}</div>
+                    <div class="price-value">৳{{ number_format($selectedTicketType->price, 2) }}</div>
+                    <input type="hidden" name="ticket_type_id" value="{{ $selectedTicketType->id }}">
+                  @else
+                    <div class="price-label">💰 Price per Ticket</div>
+                    <div class="price-value">৳{{ number_format($event->price, 2) }}</div>
+                  @endif
                 </div>
               </div>
 
@@ -610,7 +616,7 @@
 @section('extra-js')
 <script>
   (function () {
-    const price = {{ (float) $event->price }};
+    const price = {{ $selectedTicketType ? (float) $selectedTicketType->price : (float) $event->price }};
     const qtyInput = document.getElementById('qty');
     const totalTxt = document.getElementById('totalText');
     const inc = document.getElementById('incQty');
