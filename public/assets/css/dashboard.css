@@ -1,34 +1,64 @@
-/* ===== Professional EventEase Theme ===== */
+/* ===== Professional EventEase Dashboard Theme ===== */
 :root{
-  --bg: #f1f5f9;                    /* --primary-light */
-  --panel: #ffffff;                 /* --white */
-  --muted: #64748b;                 /* --text-light */
-  --text: #0f172a;                  /* --text-dark */
-  --border: var(--border-light);                /* --border-light */
-  --ring: #93c5fd;                  /* blue-300 */
-  --grad-a: #3b82f6;                /* --accent-blue */
-  --grad-b: #f59e0b;                /* --accent-orange */
-  --accent: #1e3a8a;                /* --primary-navy */
-  --success: #16a34a;               /* green-600 */
-  --warn: #f59e0b;                  /* --accent-orange */
-  --danger: #dc2626;                /* red-600 */
-  --radius: 16px;
-  --btn-radius: 12px;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
-  --primary-navy: #1e3a8a;
-  --primary-dark: #1e293b;
-  --primary-light: #f1f5f9;
-  --accent-blue: #3b82f6;
-  --accent-orange: #f59e0b;
-  --text-dark: #0f172a;
-  --text-medium: #374151;
-  --text-light: #64748b;
-  --white: #ffffff;
-  --border-light: var(--border-light);
-  --border-medium: var(--border-medium);
-  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
-  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+  /* Professional Background Colors */
+  --bg: #f9fafb;                    /* Gray 50 - Ultra light background */
+  --panel: #ffffff;                 /* Pure white panels */
+  --card-bg: #ffffff;               /* Card backgrounds */
+  --hover-bg: #f3f4f6;             /* Gray 100 - Hover states */
+  
+  /* Professional Text Colors */
+  --text: #111827;                  /* Gray 900 - Primary text */
+  --text-secondary: #374151;        /* Gray 700 - Secondary text */
+  --muted: #6b7280;                 /* Gray 500 - Muted text */
+  --text-inverse: #ffffff;          /* White text on dark */
+  
+  /* Professional Brand Colors */
+  --primary: #0f172a;               /* Slate 900 - Deep professional navy */
+  --primary-medium: #334155;        /* Slate 700 - Medium blue */
+  --accent: #0891b2;                /* Cyan 600 - Professional accent */
+  --secondary: #0d9488;             /* Teal 600 - Secondary brand */
+  
+  /* Professional Status Colors */
+  --success: #059669;               /* Emerald 600 - Success */
+  --warn: #d97706;                  /* Amber 600 - Warning */
+  --danger: #dc2626;                /* Red 600 - Danger */
+  --info: #0891b2;                  /* Cyan 600 - Info */
+  
+  /* Professional Borders */
+  --border: #e5e7eb;                /* Gray 200 - Default border */
+  --border-light: #f3f4f6;          /* Gray 100 - Light border */
+  --border-medium: #e5e7eb;         /* Gray 200 - Medium border */
+  --border-dark: #d1d5db;           /* Gray 300 - Dark border */
+  
+  /* Professional Interactive States */
+  --ring: rgba(8, 145, 178, 0.5);   /* Focus ring */
+  --hover-overlay: rgba(0, 0, 0, 0.05);
+  --active-overlay: rgba(0, 0, 0, 0.1);
+  
+  /* Professional Gradients */
+  --grad-a: #0891b2;                /* Cyan 600 */
+  --grad-b: #0d9488;                /* Teal 600 */
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-medium) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+  --gradient-success: linear-gradient(135deg, var(--success) 0%, var(--secondary) 100%);
+  
+  /* Professional Spacing & Styling */
+  --radius: 12px;
+  --btn-radius: 8px;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Legacy Support - Map old variables to new professional ones */
+  --primary-navy: var(--primary);
+  --primary-dark: var(--primary-medium);
+  --primary-light: var(--bg);
+  --accent-blue: var(--accent);
+  --accent-orange: var(--warn);
+  --text-dark: var(--text);
+  --text-medium: var(--text-secondary);
+  --text-light: var(--muted);
+  --white: var(--panel);
 }
 
 * { box-sizing: border-box; }

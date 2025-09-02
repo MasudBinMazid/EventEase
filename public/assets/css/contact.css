@@ -1,25 +1,30 @@
-/* ===== Page base ===== */
+/* ===== Professional Dark Theme Contact Page ===== */
 :root{
-  --bg1:#0f172a;           /* slate-900 */
-  --bg2:#111827;           /* gray-900 */
-  --card:rgba(255,255,255,0.06);
-  --border:rgba(255,255,255,0.12);
-  --text:#e5e7eb;          /* gray-200 */
-  --muted:#9ca3af;         /* gray-400 */
-  --accent:#22d3ee;        /* cyan-400 */
-  --accent-2:#a78bfa;      /* violet-400 */
-  --success:#10b981;       /* emerald-500 */
-  --error:#ef4444;         /* red-500 */
-  --shadow: 0 10px 30px rgba(0,0,0,.25);
+  --bg1:#0f172a;           /* slate-900 - Professional dark navy */
+  --bg2:#111827;           /* gray-900 - Rich dark background */
+  --card:rgba(255,255,255,0.08);     /* Slightly more visible cards */
+  --border:rgba(255,255,255,0.15);   /* More defined borders */
+  --text:#f9fafb;          /* gray-50 - High contrast text */
+  --text-secondary:#e5e7eb; /* gray-200 - Secondary text */
+  --muted:#9ca3af;         /* gray-400 - Muted text */
+  --accent:#0891b2;        /* cyan-600 - Professional teal accent */
+  --accent-2:#0d9488;      /* teal-600 - Secondary professional accent */
+  --success:#059669;       /* emerald-600 - Professional success */
+  --error:#dc2626;         /* red-600 - Professional error */
+  --warning:#d97706;       /* amber-600 - Professional warning */
+  --shadow: 0 10px 30px rgba(0,0,0,.3);
+  --shadow-lg: 0 20px 40px rgba(0,0,0,.2);
 }
 
 html, body {
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(167,139,250,.2), transparent 60%),
-    radial-gradient(900px 500px at 90% 10%, rgba(34,211,238,.18), transparent 60%),
+    radial-gradient(1200px 600px at 10% -10%, rgba(8,145,178,.15), transparent 60%),
+    radial-gradient(900px 500px at 90% 10%, rgba(13,148,136,.12), transparent 60%),
     linear-gradient(180deg, var(--bg1), var(--bg2));
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .contact-container{

@@ -1,29 +1,37 @@
 /* EventEase - Event Request Form Enhanced Styles */
 
-/* Root variables for consistent theming */
+/* Professional Commercial Color Scheme */
 :root {
-  --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --secondary-gradient: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  --accent-color: #6366f1;
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
-  --border-color: #e2e8f0;
-  --border-focus: #6366f1;
-  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  --border-radius: 12px;
-  --border-radius-lg: 16px;
+  /* Primary Brand Colors */
+  --primary-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+  --secondary-gradient: linear-gradient(135deg, #f9fafb, #f1f5f9);
+  --accent-color: #0891b2;
+  --success-color: #059669;
+  --warning-color: #d97706;
+  --error-color: #dc2626;
+  
+  /* Professional Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  
+  /* Professional Borders */
+  --border-color: #e5e7eb;
+  --border-focus: #0891b2;
+  
+  /* Professional Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Enhanced container and card styling */
 .event-request-container {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
   min-height: calc(100vh - 80px);
   padding: 2rem 1rem;
   position: relative;

@@ -1,0 +1,243 @@
+/* ====================================
+   EventEase Professional Color Theme
+   Commercial-grade color scheme
+   ==================================== */
+
+:root {
+  /* ==========================================
+     PRIMARY BRAND COLORS - Professional Blues
+     ========================================== */
+  --primary-navy: #0f172a;        /* Slate 900 - Deep professional navy for headers/main elements */
+  --primary-dark: #1e293b;        /* Slate 800 - Rich dark blue for contrast */
+  --primary-medium: #334155;      /* Slate 700 - Medium professional blue for accents */
+  --primary-light: #f8fafc;       /* Slate 50 - Clean light background */
+  --primary-lighter: #f1f5f9;     /* Slate 100 - Subtle background variation */
+  
+  /* =============================================
+     SECONDARY BRAND COLORS - Professional Teals
+     ============================================= */
+  --secondary-teal: #0d9488;      /* Teal 600 - Professional secondary brand */
+  --secondary-emerald: #059669;   /* Emerald 600 - Success/positive actions */
+  --secondary-cyan: #0891b2;      /* Cyan 600 - Primary interactive elements */
+  
+  /* =============================================
+     ACCENT COLORS - Professional CTAs & Highlights
+     ============================================= */
+  --accent-primary: #dc2626;      /* Red 600 - Important actions/alerts */
+  --accent-secondary: #ea580c;    /* Orange 600 - Secondary actions */
+  --accent-tertiary: #d97706;     /* Amber 600 - Highlights/warnings */
+  
+  /* =========================================
+     NEUTRAL GRAYS - Professional Hierarchy
+     ========================================= */
+  --gray-50: #f9fafb;            /* Ultra light backgrounds */
+  --gray-100: #f3f4f6;          /* Light backgrounds/borders */
+  --gray-200: #e5e7eb;          /* Default borders */
+  --gray-300: #d1d5db;          /* Medium borders */
+  --gray-400: #9ca3af;          /* Muted text */
+  --gray-500: #6b7280;          /* Secondary text */
+  --gray-600: #4b5563;          /* Medium text */
+  --gray-700: #374151;          /* Primary text */
+  --gray-800: #1f2937;          /* Dark text */
+  --gray-900: #111827;          /* Darkest text */
+  
+  /* =====================================
+     SEMANTIC COLORS - Status & Feedback
+     ===================================== */
+  --success: var(--secondary-emerald);    /* #059669 - Success states */
+  --warning: var(--accent-tertiary);      /* #d97706 - Warning states */
+  --error: var(--accent-primary);         /* #dc2626 - Error states */
+  --info: var(--secondary-cyan);          /* #0891b2 - Information */
+  
+  /* =======================================
+     BACKGROUND COLORS - Layered Hierarchy
+     ======================================= */
+  --bg-primary: #ffffff;         /* Pure white - main content */
+  --bg-secondary: var(--gray-50); /* Ultra light gray - page background */
+  --bg-tertiary: var(--gray-100); /* Light gray - subtle backgrounds */
+  --bg-dark: var(--primary-navy); /* Dark navy - dark themes */
+  
+  /* ===========================
+     TEXT COLORS - Professional
+     =========================== */
+  --text-primary: var(--gray-900);        /* Main text */
+  --text-secondary: var(--gray-700);      /* Secondary text */
+  --text-tertiary: var(--gray-500);       /* Muted text */
+  --text-quaternary: var(--gray-400);     /* Subtle text */
+  --text-inverse: #ffffff;                /* White text on dark */
+  --text-link: var(--secondary-cyan);     /* Link text */
+  --text-link-hover: var(--secondary-teal); /* Link hover */
+  
+  /* ============================
+     BORDER COLORS - Professional
+     ============================ */
+  --border-light: var(--gray-100);        /* Light borders */
+  --border-medium: var(--gray-200);       /* Default borders */
+  --border-dark: var(--gray-300);         /* Pronounced borders */
+  --border-focus: var(--secondary-cyan);  /* Focus states */
+  
+  /* ===============================
+     SHADOWS - Professional Depth
+     =============================== */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* =================================
+     GRADIENTS - Professional Blends
+     ================================= */
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-medium) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--secondary-teal) 0%, var(--secondary-cyan) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-tertiary) 100%);
+  --gradient-success: linear-gradient(135deg, var(--secondary-emerald) 0%, var(--secondary-teal) 100%);
+  --gradient-subtle: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+  
+  /* ================================
+     INTERACTIVE STATES - Professional
+     ================================ */
+  --hover-overlay: rgba(0, 0, 0, 0.04);
+  --active-overlay: rgba(0, 0, 0, 0.08);
+  --focus-ring: 0 0 0 3px rgba(8, 145, 178, 0.12);
+  --focus-ring-error: 0 0 0 3px rgba(220, 38, 38, 0.12);
+  --focus-ring-success: 0 0 0 3px rgba(5, 150, 105, 0.12);
+  
+  /* ============================
+     SPACING & SIZING - Professional
+     ============================ */
+  --radius-xs: 0.125rem;    /* 2px */
+  --radius-sm: 0.25rem;     /* 4px */
+  --radius-md: 0.375rem;    /* 6px */
+  --radius: 0.5rem;         /* 8px - Default */
+  --radius-lg: 0.75rem;     /* 12px */
+  --radius-xl: 1rem;        /* 16px */
+  --radius-2xl: 1.5rem;     /* 24px */
+  --radius-full: 9999px;    /* Fully rounded */
+  
+  /* =====================================
+     LEGACY SUPPORT - Backward Compatibility
+     ===================================== */
+  --accent-blue: var(--secondary-cyan);
+  --accent-orange: var(--accent-secondary);
+  --accent-green: var(--secondary-emerald);
+  --text-dark: var(--text-primary);
+  --text-medium: var(--text-secondary);
+  --text-light: var(--text-tertiary);
+  --white: var(--bg-primary);
+  --border-light-legacy: var(--border-light);
+  --border-medium-legacy: var(--border-medium);
+  
+  /* ==========================================
+     COMPONENT-SPECIFIC COLORS - Professional UI
+     ========================================== */
+  
+  /* Buttons */
+  --btn-primary-bg: var(--secondary-cyan);
+  --btn-primary-hover: var(--secondary-teal);
+  --btn-primary-text: var(--text-inverse);
+  
+  --btn-secondary-bg: var(--gray-100);
+  --btn-secondary-hover: var(--gray-200);
+  --btn-secondary-text: var(--text-primary);
+  
+  --btn-danger-bg: var(--accent-primary);
+  --btn-danger-hover: #b91c1c;
+  --btn-danger-text: var(--text-inverse);
+  
+  /* Forms */
+  --input-bg: var(--bg-primary);
+  --input-border: var(--border-medium);
+  --input-border-focus: var(--border-focus);
+  --input-text: var(--text-primary);
+  --input-placeholder: var(--text-tertiary);
+  
+  /* Cards */
+  --card-bg: var(--bg-primary);
+  --card-border: var(--border-light);
+  --card-shadow: var(--shadow-sm);
+  --card-hover-shadow: var(--shadow-md);
+  
+  /* Navigation */
+  --nav-bg: var(--gradient-primary);
+  --nav-text: var(--text-inverse);
+  --nav-link-hover: rgba(255, 255, 255, 0.1);
+  
+  /* Tables */
+  --table-header-bg: var(--gray-50);
+  --table-border: var(--border-medium);
+  --table-hover: var(--gray-50);
+  
+  /* Modals */
+  --modal-bg: var(--bg-primary);
+  --modal-backdrop: rgba(0, 0, 0, 0.5);
+  --modal-shadow: var(--shadow-xl);
+}
+
+/* ===================================
+   PROFESSIONAL TYPOGRAPHY SCALE
+   =================================== */
+:root {
+  --font-family-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;       /* 12px */
+  --text-sm: 0.875rem;      /* 14px */
+  --text-base: 1rem;        /* 16px */
+  --text-lg: 1.125rem;      /* 18px */
+  --text-xl: 1.25rem;       /* 20px */
+  --text-2xl: 1.5rem;       /* 24px */
+  --text-3xl: 1.875rem;     /* 30px */
+  --text-4xl: 2.25rem;      /* 36px */
+  --text-5xl: 3rem;         /* 48px */
+  --text-6xl: 3.75rem;      /* 60px */
+}
+
+/* ================================
+   PROFESSIONAL ANIMATION TIMING
+   ================================ */
+:root {
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  --transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Easing curves */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* =================================
+   PROFESSIONAL DARK THEME SUPPORT
+   ================================= */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark theme overrides can be added here */
+    /* Currently maintaining light theme for professional appearance */
+  }
+}
+
+/* ======================================
+   PRINT STYLES - Professional Documents
+   ====================================== */
+@media print {
+  :root {
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    --gradient-primary: var(--primary-navy);
+    --gradient-secondary: var(--secondary-teal);
+  }
+}

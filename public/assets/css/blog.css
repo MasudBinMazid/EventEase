@@ -1,21 +1,43 @@
 :root {
-  --primary-navy: #1e3a8a;
-  --primary-dark: #1e293b;
-  --primary-light: #f1f5f9;
-  --accent-blue: #3b82f6;
-  --accent-orange: #f59e0b;
-  --accent-green: #10b981;
-  --text-dark: #0f172a;
-  --text-medium: #475569;
-  --text-light: #64748b;
-  --border-light: #e2e8f0;
-  --border-medium: #cbd5e1;
+  /* Professional Commercial Color Scheme */
+  
+  /* Primary Brand Colors - Deep Professional Blues */
+  --primary-navy: #0f172a;        /* Slate 900 - Deep professional navy */
+  --primary-dark: #1e293b;        /* Slate 800 - Rich dark blue */
+  --primary-medium: #334155;      /* Slate 700 - Medium professional blue */
+  --primary-light: #f8fafc;       /* Slate 50 - Clean light background */
+  --primary-lighter: #f1f5f9;     /* Slate 100 - Subtle background */
+  
+  /* Secondary Brand Colors - Modern Teals & Professional Greens */
+  --secondary-teal: #0d9488;      /* Teal 600 - Professional teal */
+  --secondary-emerald: #059669;   /* Emerald 600 - Success green */
+  --secondary-cyan: #0891b2;      /* Cyan 600 - Info blue */
+  
+  /* Accent Colors - Professional Orange/Amber for CTAs */
+  --accent-primary: #dc2626;      /* Red 600 - Important actions */
+  --accent-secondary: #ea580c;    /* Orange 600 - Secondary actions */
+  --accent-tertiary: #d97706;     /* Amber 600 - Highlights */
+  
+  /* Legacy Support - Map old variables to new ones */
+  --accent-blue: var(--secondary-cyan);
+  --accent-orange: var(--accent-secondary);
+  --accent-green: var(--secondary-emerald);
+  --text-dark: #111827;
+  --text-medium: #374151;
+  --text-light: #6b7280;
   --white: #ffffff;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
-  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
-  --gradient-accent: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-orange) 100%);
+  --border-light: #f3f4f6;
+  --border-medium: #e5e7eb;
+  
+  /* Professional Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Professional Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-medium) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--secondary-teal) 0%, var(--secondary-cyan) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-tertiary) 100%);
 }
 
 .blog-page {

@@ -9,33 +9,40 @@
   @yield('extra-css')
   <style>
     :root{
-      /* Modern Admin Colors */
-      --bg:#f8fafc;
-      --card:#ffffff;
-      --text:#1f2937;
-      --text-light:#6b7280;
-      --text-muted:#9ca3af;
-      --border:#e5e7eb;
-      --border-light:#f3f4f6;
+      /* Professional Admin Colors */
+      --bg:#f9fafb;                  /* Gray 50 - Ultra light background */
+      --card:#ffffff;                /* Pure white cards */
+      --text:#111827;                /* Gray 900 - Primary text */
+      --text-light:#6b7280;          /* Gray 500 - Secondary text */
+      --text-muted:#9ca3af;          /* Gray 400 - Muted text */
+      --border:#e5e7eb;              /* Gray 200 - Default border */
+      --border-light:#f3f4f6;        /* Gray 100 - Light border */
       
-      /* Brand Colors */
-      --primary:#3b82f6;
-      --primary-dark:#1d4ed8;
-      --success:#10b981;
-      --warning:#f59e0b;
-      --danger:#ef4444;
-      --purple:#8b5cf6;
-      --indigo:#6366f1;
+      /* Professional Brand Colors */
+      --primary:#0891b2;             /* Cyan 600 - Professional primary */
+      --primary-dark:#0e7490;        /* Cyan 700 - Darker primary */
+      --success:#059669;             /* Emerald 600 - Success */
+      --warning:#d97706;             /* Amber 600 - Warning */
+      --danger:#dc2626;              /* Red 600 - Danger */
+      --info:#0891b2;                /* Cyan 600 - Info */
+      --purple:#8b5cf6;              /* Purple 500 - Purple accent */
+      --indigo:#6366f1;              /* Indigo 500 - Indigo accent */
+      --teal:#0d9488;                /* Teal 600 - Teal accent */
       
-      /* Shadows & Effects */
+      /* Professional Shadows & Effects */
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
       --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
       
-      --radius: 0.75rem;
-      --radius-lg: 1rem;
+      /* Professional Radius */
+      --radius: 0.5rem;              /* 8px - More subtle radius */
+      --radius-lg: 0.75rem;          /* 12px - Larger radius */
+      
+      /* Interactive States */
+      --hover-bg:#f3f4f6;            /* Gray 100 - Hover background */
+      --focus-ring: 0 0 0 3px rgba(8, 145, 178, 0.1); /* Professional focus ring */
     }
     
     *{box-sizing:border-box}
@@ -59,15 +66,15 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.90);
       backdrop-filter: blur(20px) saturate(120%);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       transition: all 0.3s ease;
     }
     
     .app-header.scrolled {
-      background: rgba(255, 255, 255, 0.98);
-      box-shadow: var(--shadow-lg);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
     }
     
     .header-inner{

@@ -1,12 +1,25 @@
+/* Professional Gallery Styles */
+:root {
+  --bg-primary: #f9fafb;           /* Gray 50 */
+  --bg-secondary: #ffffff;         /* Pure white */
+  --text-primary: #111827;         /* Gray 900 */
+  --text-secondary: #374151;       /* Gray 700 */
+  --accent-primary: #0891b2;       /* Cyan 600 */
+  --border-light: #e5e7eb;         /* Gray 200 */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 .gallery-container {
   padding: 40px 20px;
-  background: #f8f9fa;
+  background: var(--bg-primary);
   text-align: center;
 }
 
 .gallery-title {
   font-size: 2rem;
   margin-bottom: 30px;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .gallery-grid {

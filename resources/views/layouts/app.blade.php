@@ -27,45 +27,56 @@
     }
   </script>
 
-  {{-- Minimal base in case both CDNs are blocked --}}
+  {{-- Professional fallback styles in case CDNs are blocked --}}
   <style>
     :root {
-      --primary-navy: #1e3a8a;
-      --primary-dark: #1e293b;
-      --primary-light: #f1f5f9;
-      --accent-blue: #3b82f6;
-      --accent-orange: #f59e0b;
-      --text-dark: #0f172a;
-      --text-light: #64748b;
-      --border-light: #e2e8f0;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+      /* Professional Commercial Color Scheme */
+      --primary-navy: #0f172a;        /* Slate 900 - Deep professional navy */
+      --primary-dark: #1e293b;        /* Slate 800 - Rich dark blue */
+      --primary-medium: #334155;      /* Slate 700 - Medium professional blue */
+      --primary-light: #f9fafb;       /* Gray 50 - Ultra light background */
+      --accent-primary: #0891b2;      /* Cyan 600 - Professional accent */
+      --accent-secondary: #0d9488;    /* Teal 600 - Secondary accent */
+      --text-primary: #111827;        /* Gray 900 - Primary text */
+      --text-secondary: #6b7280;      /* Gray 500 - Secondary text */
+      --border-light: #e5e7eb;        /* Gray 200 - Borders */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      
+      /* Legacy support */
+      --accent-blue: var(--accent-primary);
+      --accent-orange: #ea580c;       /* Orange 600 */
+      --text-dark: var(--text-primary);
+      --text-light: var(--text-secondary);
     }
     
     body{
       background: var(--primary-light);
-      color: var(--text-dark);
+      color: var(--text-primary);
       margin: 0;
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
-    /* Fixed header with professional navy */
+    /* Fixed header with professional white transparent */
     header.site-header{
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 50;
-      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-dark) 100%);
-      color: #fff;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: var(--shadow-md);
-      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.90);
+      color: var(--text-primary);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(20px) saturate(120%);
     }
     header.site-header a{
-      color: #fff;
+      color: var(--text-primary);
       text-decoration: none;
       transition: color 0.3s ease;
     }
     header.site-header a:hover{
-      color: var(--accent-orange);
+      color: var(--accent-primary);
     }
     .header-spacer{
       height: 64px;
