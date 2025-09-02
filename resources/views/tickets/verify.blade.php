@@ -136,9 +136,12 @@ function displayResult(data) {
         <div><strong>Venue:</strong> ${data.data.venue}</div>
         <div><strong>Holder:</strong> ${data.data.holder_name}</div>
         <div><strong>Email:</strong> ${data.data.holder_email}</div>
+        ${data.data.ticket_type ? `<div><strong>Ticket Type:</strong> ${data.data.ticket_type}</div>` : ''}
         <div><strong>Quantity:</strong> ${data.data.quantity}</div>
-        <div><strong>Amount:</strong> ৳${data.data.total_amount}</div>
+        <div><strong>Unit Price:</strong> ৳${data.data.unit_price}</div>
+        <div><strong>Total Amount:</strong> ৳${data.data.total_amount}</div>
         <div><strong>Issued:</strong> ${data.data.issued_at}</div>
+        ${data.data.ticket_type_description ? `<div class="md:col-span-2"><strong>Description:</strong> ${data.data.ticket_type_description}</div>` : ''}
       </div>
     `;
   } else {

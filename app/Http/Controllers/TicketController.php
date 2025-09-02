@@ -158,7 +158,7 @@ class TicketController extends Controller
         $parts = explode('|', $ticketCode);
         $actualTicketCode = $parts[0]; // First part is always the ticket code
         
-        $ticket = Ticket::where('ticket_code', $actualTicketCode)->first();
+        $ticket = Ticket::with(['event', 'user', 'ticketType'])->where('ticket_code', $actualTicketCode)->first();
         
         if (!$ticket) {
             return response()->json([
@@ -201,6 +201,9 @@ class TicketController extends Controller
                 'holder_name' => $ticket->user->name,
                 'holder_email' => $ticket->user->email,
                 'quantity' => $ticket->quantity,
+                'ticket_type' => $ticket->ticketType ? $ticket->ticketType->name : null,
+                'ticket_type_description' => $ticket->ticketType ? $ticket->ticketType->description : null,
+                'unit_price' => $ticket->unit_price ?? $ticket->event->price,
                 'total_amount' => $ticket->total_amount,
                 'issued_at' => $ticket->created_at->format('M d, Y g:i A'),
                 'payment_verified_at' => $ticket->payment_verified_at?->format('M d, Y g:i A')

@@ -171,11 +171,15 @@
                                         <i class="bi bi-x-circle"></i> Sold Out
                                     </button>
                                 @else
-                                    <form action="{{ route('tickets.start', $event) }}" method="POST" style="display: inline;">
+                                    <form action="{{ route('tickets.start', $event) }}" method="POST" style="display: inline;" onsubmit="handleTicketSelection(this)">
                                         @csrf
                                         <input type="hidden" name="ticket_type_id" value="{{ $ticketType->id }}">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-ticket"></i> Select
+                                        <button type="submit" class="btn btn-primary ticket-select-btn">
+                                            <i class="bi bi-ticket"></i> 
+                                            <span class="btn-text">Select</span>
+                                            <span class="btn-loading" style="display: none;">
+                                                <i class="bi bi-hourglass-split"></i> Processing...
+                                            </span>
                                         </button>
                                     </form>
                                 @endif
@@ -276,6 +280,25 @@ function updateTotal() {
 document.addEventListener('DOMContentLoaded', function() {
     updateTotal();
 });
+
+function handleTicketSelection(form) {
+    const button = form.querySelector('.ticket-select-btn');
+    const btnText = button.querySelector('.btn-text');
+    const btnLoading = button.querySelector('.btn-loading');
+    
+    // Show loading state
+    btnText.style.display = 'none';
+    btnLoading.style.display = 'inline';
+    button.disabled = true;
+    button.classList.add('loading');
+    
+    // Add a slight delay to show the loading effect
+    setTimeout(() => {
+        form.submit();
+    }, 300);
+    
+    return false; // Prevent immediate form submission
+}
 </script>
 
 @endsection
