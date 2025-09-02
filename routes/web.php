@@ -217,6 +217,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth','admin'])->group(func
     // Users
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.updateRole');
 
     // Blogs (CRUD)
     Route::get('/blogs', [BlogAdminController::class, 'index'])->name('blogs.index');

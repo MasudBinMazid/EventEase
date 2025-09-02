@@ -9,11 +9,43 @@ use Illuminate\Http\Request;
 
 class EventAdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::select('id','title','location','starts_at','ends_at','capacity','featured_on_home','visible_on_site')
-                       ->orderByDesc('starts_at')
-                       ->get();
+        $query = Event::select('id','title','location','starts_at','ends_at','capacity','featured_on_home','visible_on_site');
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%")
+                  ->orWhere('venue', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            if ($request->status === 'featured') {
+                $query->where('featured_on_home', true);
+            } elseif ($request->status === 'visible') {
+                $query->where('visible_on_site', true);
+            } elseif ($request->status === 'hidden') {
+                $query->where('visible_on_site', false);
+            }
+        }
+
+        // Filter by date range
+        if ($request->filled('date_from')) {
+            $query->whereDate('starts_at', '>=', $request->date_from);
+        }
+        
+        if ($request->filled('date_to')) {
+            $query->whereDate('starts_at', '<=', $request->date_to);
+        }
+
+        $events = $query->orderByDesc('starts_at')->get();
 
         return view('admin.events.index', compact('events'));
     }

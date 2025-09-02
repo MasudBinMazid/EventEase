@@ -25,6 +25,70 @@
     </div>
   </div>
 
+  <!-- Search and Filter Section -->
+  <div class="admin-card" style="margin-bottom: 1.5rem;">
+    <div class="card-body">
+      <form method="GET" action="{{ route('admin.events.index') }}" class="search-form">
+        <div style="display: grid; grid-template-columns: 1fr 200px 150px 150px auto auto; gap: 1rem; align-items: end;">
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text);">Search Events</label>
+            <input 
+              type="text" 
+              name="search" 
+              value="{{ request('search') }}" 
+              placeholder="Search by title, location, venue..." 
+              class="form-input"
+              style="width: 100%;"
+            >
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text);">Status</label>
+            <select name="status" class="form-select">
+              <option value="">All Events</option>
+              <option value="featured" {{ request('status') === 'featured' ? 'selected' : '' }}>Featured</option>
+              <option value="visible" {{ request('status') === 'visible' ? 'selected' : '' }}>Visible</option>
+              <option value="hidden" {{ request('status') === 'hidden' ? 'selected' : '' }}>Hidden</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text);">From Date</label>
+            <input 
+              type="date" 
+              name="date_from" 
+              value="{{ request('date_from') }}" 
+              class="form-input"
+            >
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text);">To Date</label>
+            <input 
+              type="date" 
+              name="date_to" 
+              value="{{ request('date_to') }}" 
+              class="form-input"
+            >
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            Search
+          </button>
+          @if(request()->anyFilled(['search', 'status', 'date_from', 'date_to']))
+            <a href="{{ route('admin.events.index') }}" class="btn btn-outline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="1,4 1,10 7,10"/>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+              </svg>
+              Clear
+            </a>
+          @endif
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Stats Cards -->
   <div class="stats-grid">
     <div class="stat-card">
@@ -45,10 +109,24 @@
     </div>
   </div>
 
+  @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+  @endif
+
+  @if(session('error'))
+    <div class="alert alert-error">{{ session('error') }}</div>
+  @endif
+
   <!-- Events Table -->
   <div class="admin-card">
     <div class="card-header">
-      <h3 class="card-title">All Events</h3>
+      <h3 class="card-title">
+        @if(request()->anyFilled(['search', 'status', 'date_from', 'date_to']))
+          Search Results ({{ $events->count() }} events found)
+        @else
+          All Events
+        @endif
+      </h3>
     </div>
     <div class="card-body" style="padding: 0;">
       @if($events->isEmpty())
@@ -56,7 +134,13 @@
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 1rem; opacity: 0.5;">
             <path d="M7 2v4M17 2v4M3 9h18M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5A2 2 0 0 0 3 7v12a2 2 0 0 0 2 2Z"/>
           </svg>
-          <p>No events found. Click <strong>New Event</strong> to create one.</p>
+          <p>
+            @if(request()->anyFilled(['search', 'status', 'date_from', 'date_to']))
+              No events found matching your search criteria.
+            @else
+              No events found. Click <strong>New Event</strong> to create one.
+            @endif
+          </p>
         </div>
       @else
         <div style="overflow-x: auto;">
@@ -423,4 +507,40 @@
     </div>
   </div>
 </div>
+
+<style>
+.form-input, .form-select {
+  background: #fff; 
+  border: 1px solid var(--border); 
+  border-radius: 8px; 
+  padding: 0.75rem; 
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.alert-success {
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+
+.alert-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+</style>
 @endsection
