@@ -22,9 +22,9 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+            <div class="mb-8">
+                <a href="/" class="block transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <x-application-logo class="w-32 h-32 drop-shadow-lg hover:drop-shadow-xl transition-all duration-300" style="filter: brightness(1.1) contrast(1.1);" />
                 </a>
             </div>
 
