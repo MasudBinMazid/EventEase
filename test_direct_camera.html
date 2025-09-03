@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner Direct Camera Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 8px;
+        }
+        
+        button:disabled {
+            background: #9ca3af;
+        }
+        
+        #reader {
+            border: 2px solid #10b981;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            background: #000;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .status.info { background: #dbeafe; color: #1e40af; }
+        .status.success { background: #d1fae5; color: #065f46; }
+        .status.error { background: #fee2e2; color: #dc2626; }
+        
+        .camera-list {
+            background: #f9fafb;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Direct QR Scanner Test</h1>
+        <p>This test directly selects the back camera without showing the selection dialog.</p>
+        
+        <div>
+            <button onclick="listCameras()">📹 List Available Cameras</button>
+            <button onclick="startDirectScanner()">📱 Start Back Camera Scanner</button>
+            <button onclick="stopScanner()" id="stopBtn" disabled>❌ Stop Scanner</button>
+        </div>
+        
+        <div id="status"></div>
+        <div id="cameraList"></div>
+        <div id="reader" style="display: none;"></div>
+        <div id="result"></div>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+        let html5QrcodeScanner = null;
+        let availableCameras = [];
+        
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        async function listCameras() {
+            try {
+                showStatus('🔍 Getting available cameras...', 'info');
+                
+                // Request permission first
+                await navigator.mediaDevices.getUserMedia({ video: true });
+                
+                // Get cameras
+                const cameras = await Html5Qrcode.getCameras();
+                availableCameras = cameras;
+                
+                const cameraListDiv = document.getElementById('cameraList');
+                let cameraHtml = '<div class="camera-list"><h3>📹 Available Cameras:</h3>';
+                
+                cameras.forEach((camera, index) => {
+                    const isLikelyBackCamera = camera.label.toLowerCase().includes('back') || 
+                                             camera.label.toLowerCase().includes('rear') || 
+                                             camera.label.toLowerCase().includes('environment') ||
+                                             camera.label.toLowerCase().includes('camera 2') ||
+                                             camera.label.toLowerCase().includes('camera 0');
+                    
+                    cameraHtml += `<div style="margin: 5px 0;">
+                        <strong>Camera ${index}:</strong> ${camera.label} ${isLikelyBackCamera ? '🎯 (LIKELY BACK)' : ''}
+                        <br><small>ID: ${camera.id}</small>
+                    </div>`;
+                });
+                
+                cameraHtml += '</div>';
+                cameraListDiv.innerHTML = cameraHtml;
+                
+                showStatus(`✅ Found ${cameras.length} cameras. Look for the one marked as "LIKELY BACK".`, 'success');
+                
+            } catch (error) {
+                showStatus(`❌ Error getting cameras: ${error.message}`, 'error');
+                console.error('Camera enumeration error:', error);
+            }
+        }
+        
+        async function startDirectScanner() {
+            try {
+                showStatus('🚀 Starting direct camera scanner...', 'info');
+                
+                // Get cameras if not already done
+                if (availableCameras.length === 0) {
+                    availableCameras = await Html5Qrcode.getCameras();
+                }
+                
+                let selectedCameraId = null;
+                
+                // Strategy to find back camera
+                for (let camera of availableCameras) {
+                    const label = camera.label.toLowerCase();
+                    if (label.includes('back') || 
+                        label.includes('rear') || 
+                        label.includes('environment') ||
+                        label.includes('camera 2') ||
+                        label.includes('camera 0')) {
+                        selectedCameraId = camera.id;
+                        showStatus(`🎯 Selected back camera: ${camera.label}`, 'info');
+                        break;
+                    }
+                }
+                
+                // Fallback: use second camera if available (often back camera)
+                if (!selectedCameraId && availableCameras.length > 1) {
+                    selectedCameraId = availableCameras[1].id;
+                    showStatus(`🎯 Using second camera (likely back): ${availableCameras[1].label}`, 'info');
+                }
+                
+                // Last resort: use first camera
+                if (!selectedCameraId && availableCameras.length > 0) {
+                    selectedCameraId = availableCameras[0].id;
+                    showStatus(`🎯 Using first available camera: ${availableCameras[0].label}`, 'info');
+                }
+                
+                if (!selectedCameraId) {
+                    throw new Error('No cameras available');
+                }
+                
+                // Create Html5Qrcode instance and start with specific camera
+                html5QrcodeScanner = new Html5Qrcode("reader");
+                
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0
+                };
+                
+                document.getElementById('reader').style.display = 'block';
+                document.getElementById('stopBtn').disabled = false;
+                
+                await html5QrcodeScanner.start(
+                    selectedCameraId,
+                    config,
+                    (decodedText, decodedResult) => {
+                        document.getElementById('result').innerHTML = 
+                            `<div class="status success">✅ QR Code Detected!<br><strong>Content:</strong> ${decodedText}</div>`;
+                        stopScanner();
+                    }
+                );
+                
+                showStatus('✅ Scanner started successfully! Point camera at QR code.', 'success');
+                
+            } catch (error) {
+                showStatus(`❌ Failed to start scanner: ${error.message}`, 'error');
+                console.error('Scanner start error:', error);
+            }
+        }
+        
+        async function stopScanner() {
+            try {
+                if (html5QrcodeScanner) {
+                    await html5QrcodeScanner.stop();
+                    html5QrcodeScanner = null;
+                }
+                document.getElementById('reader').style.display = 'none';
+                document.getElementById('stopBtn').disabled = true;
+                showStatus('📱 Scanner stopped', 'info');
+            } catch (error) {
+                console.error('Stop error:', error);
+                showStatus(`⚠️ Error stopping scanner: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-list cameras on load
+        window.addEventListener('load', () => {
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                showStatus('⚠️ Camera requires HTTPS. Please access via HTTPS or localhost.', 'error');
+            } else {
+                listCameras();
+            }
+        });
+    </script>
+</body>
+</html>

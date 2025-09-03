@@ -75,11 +75,16 @@
       <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
         <div class="font-semibold mb-1">📋 Scanner Instructions:</div>
         <ul class="text-left space-y-1">
-          <li>• Allow camera permission when prompted</li>
+          <li>• <strong>Allow camera permission</strong> when prompted</li>
+          <li>• Scanner will automatically select your back camera</li>
+          <li>• If camera selection appears, choose "camera 2" or "back camera"</li>
           <li>• Hold your phone steady and point at the QR code</li>
           <li>• Ensure good lighting for best results</li>
           <li>• The scanner will automatically detect and verify the ticket</li>
         </ul>
+        <div class="mt-2 text-xs text-blue-600">
+          💡 <em>Tip: The scanner tries to use your back camera automatically, but some devices may still show a selection dialog.</em>
+        </div>
       </div>
       
       <!-- Scanner area -->
@@ -134,7 +139,7 @@ async function startScanner() {
       scanBtn.textContent = '🔄 Starting Camera...';
       showScannerStatus('Requesting camera permission...', 'info');
       
-      // Test camera access
+      // Test camera access - important for permission
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: { ideal: "environment" }, // Prefer back camera
@@ -149,13 +154,81 @@ async function startScanner() {
       // Now start the QR scanner
       readerDiv.style.display = 'block';
       scanBtn.textContent = '❌ Stop Scanner';
-      showScannerStatus('Camera ready! Point at QR code to scan', 'success');
+      showScannerStatus('Starting scanner...', 'info');
       
-      // Enhanced scanner configuration
-      const config = {
+      // Method 1: Try to enumerate cameras and pick back camera automatically
+      try {
+        const cameras = await Html5Qrcode.getCameras();
+        console.log('Available cameras:', cameras);
+        
+        let selectedCameraId = null;
+        
+        // Strategy 1: Look for back camera by label keywords
+        for (let i = 0; i < cameras.length; i++) {
+          const camera = cameras[i];
+          const label = camera.label.toLowerCase();
+          
+          if (label.includes('back') || 
+              label.includes('rear') || 
+              label.includes('environment') ||
+              label.includes('facing back') ||
+              label.includes('camera 2') ||
+              label.includes('camera 0')) {
+            selectedCameraId = camera.id;
+            console.log('Selected back camera:', camera);
+            break;
+          }
+        }
+        
+        // Strategy 2: If no back camera found by label, use second camera (common pattern)
+        if (!selectedCameraId && cameras.length > 1) {
+          selectedCameraId = cameras[1].id;
+          console.log('Using second camera (likely back):', cameras[1]);
+        }
+        
+        // Strategy 3: Last resort - use any available camera
+        if (!selectedCameraId && cameras.length > 0) {
+          selectedCameraId = cameras[0].id;
+          console.log('Using first available camera:', cameras[0]);
+        }
+        
+        // Now start with the selected camera directly (no dialog)
+        if (selectedCameraId) {
+          html5QrcodeScanner = new Html5Qrcode("reader");
+          
+          const qrConfig = {
+            fps: 10,
+            qrbox: function(viewfinderWidth, viewfinderHeight) {
+              let minEdgePercentage = 0.7;
+              let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+              let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+              return {
+                width: qrboxSize,
+                height: qrboxSize
+              };
+            },
+            aspectRatio: 1.0
+          };
+          
+          await html5QrcodeScanner.start(
+            selectedCameraId,
+            qrConfig,
+            handleQrSuccess
+          );
+          
+          showScannerStatus('Camera active! Point at QR code to scan', 'success');
+          return; // Exit successfully
+        }
+      } catch (cameraEnumError) {
+        console.warn('Camera enumeration failed:', cameraEnumError);
+      }
+      
+      // Method 2: Fallback - Use Html5QrcodeScanner but try to force back camera
+      console.log('Falling back to Html5QrcodeScanner');
+      
+      const scannerConfig = {
         fps: 10,
         qrbox: function(viewfinderWidth, viewfinderHeight) {
-          // Square QR box that's responsive
           let minEdgePercentage = 0.7;
           let minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
           let qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
@@ -165,52 +238,18 @@ async function startScanner() {
           };
         },
         aspectRatio: 1.0,
-        disableFlip: false, // Allow both cameras
-        // Prefer environment camera (back camera on mobile)
+        disableFlip: false,
+        rememberLastUsedCamera: true,
+        // Try to force environment camera to reduce chances of selection dialog
         videoConstraints: {
-          facingMode: { ideal: "environment" }
+          facingMode: "environment"
         }
       };
       
-      html5QrcodeScanner = new Html5QrcodeScanner("reader", config, false);
+      html5QrcodeScanner = new Html5QrcodeScanner("reader", scannerConfig, false);
+      html5QrcodeScanner.render(handleQrSuccess, handleQrError);
       
-      html5QrcodeScanner.render(
-        (decodedText, decodedResult) => {
-          try {
-            showScannerStatus('QR Code detected! Verifying...', 'info');
-            
-            // Check if it's compact format (ticket_code|user_id|event_id|status)
-            if (decodedText.includes('|')) {
-              const parts = decodedText.split('|');
-              document.getElementById('ticketCode').value = parts[0]; // Use ticket code part
-              verifyTicket();
-              stopScanner();
-            } else if (decodedText.startsWith('TKT-')) {
-              // Simple ticket code format
-              document.getElementById('ticketCode').value = decodedText;
-              verifyTicket();
-              stopScanner();
-            } else {
-              // Try to parse as JSON (legacy format)
-              const qrData = JSON.parse(decodedText);
-              if (qrData.ticket_code) {
-                document.getElementById('ticketCode').value = qrData.ticket_code;
-                verifyTicket();
-                stopScanner();
-              }
-            }
-          } catch (e) {
-            // Fallback: treat as plain text
-            document.getElementById('ticketCode').value = decodedText;
-            verifyTicket();
-            stopScanner();
-          }
-        },
-        (error) => {
-          // Only log errors, don't display them to avoid spam
-          console.log('QR scan error (normal):', error);
-        }
-      );
+      showScannerStatus('Scanner ready! Point camera at QR code', 'success');
       
     } catch (error) {
       console.error('Camera access error:', error);
@@ -232,9 +271,59 @@ async function startScanner() {
   }
 }
 
+// Separate function to handle QR code success
+function handleQrSuccess(decodedText, decodedResult) {
+  try {
+    showScannerStatus('QR Code detected! Verifying...', 'info');
+    
+    // Check if it's compact format (ticket_code|user_id|event_id|status)
+    if (decodedText.includes('|')) {
+      const parts = decodedText.split('|');
+      document.getElementById('ticketCode').value = parts[0]; // Use ticket code part
+      verifyTicket();
+      stopScanner();
+    } else if (decodedText.startsWith('TKT-')) {
+      // Simple ticket code format
+      document.getElementById('ticketCode').value = decodedText;
+      verifyTicket();
+      stopScanner();
+    } else {
+      // Try to parse as JSON (legacy format)
+      const qrData = JSON.parse(decodedText);
+      if (qrData.ticket_code) {
+        document.getElementById('ticketCode').value = qrData.ticket_code;
+        verifyTicket();
+        stopScanner();
+      }
+    }
+  } catch (e) {
+    // Fallback: treat as plain text
+    document.getElementById('ticketCode').value = decodedText;
+    verifyTicket();
+    stopScanner();
+  }
+}
+
+// Function to handle QR scanning errors (mostly ignore)
+function handleQrError(error) {
+  // Only log errors, don't display them to avoid spam
+  console.log('QR scan error (normal):', error);
+}
+
 function stopScanner() {
   if (html5QrcodeScanner) {
-    html5QrcodeScanner.clear();
+    try {
+      // Check if it's Html5Qrcode (direct camera access) or Html5QrcodeScanner
+      if (typeof html5QrcodeScanner.stop === 'function') {
+        // Html5Qrcode instance - call stop()
+        html5QrcodeScanner.stop();
+      } else if (typeof html5QrcodeScanner.clear === 'function') {
+        // Html5QrcodeScanner instance - call clear()
+        html5QrcodeScanner.clear();
+      }
+    } catch (error) {
+      console.log('Error stopping scanner:', error);
+    }
     html5QrcodeScanner = null;
   }
   document.getElementById('reader').style.display = 'none';
