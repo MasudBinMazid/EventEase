@@ -339,10 +339,36 @@ function displayResult(data) {
   
   if (data.valid) {
     contentDiv.className = 'p-4 rounded-lg bg-green-50 border border-green-200';
+    
+    // Determine status icon and message based on entry status
+    let statusIcon = '✅';
+    let statusClass = 'text-green-800';
+    let statusMessage = 'Valid Ticket';
+    let actionButton = '';
+    
+    if (data.entry_status === 'entered') {
+      statusIcon = '🎫';
+      statusMessage = 'Already Entered';
+      statusClass = 'text-orange-800';
+      contentDiv.className = 'p-4 rounded-lg bg-orange-50 border border-orange-200';
+    } else if (data.entry_status === 'not_entered') {
+      statusMessage = 'Valid Ticket - Ready for Entry';
+      // Add "Mark as Entered" button for valid, not-entered tickets
+      actionButton = `
+        <div class="mt-4 pt-3 border-t border-green-200">
+          <button onclick="markAsEntered('${data.data.ticket_code}')" 
+                  class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold transition-colors"
+                  id="markEnteredBtn">
+            🎫 Mark as Entered
+          </button>
+        </div>
+      `;
+    }
+    
     contentDiv.innerHTML = `
       <div class="flex items-center mb-3">
-        <div class="text-green-600 text-xl mr-2">✅</div>
-        <h3 class="text-lg font-semibold text-green-800">Valid Ticket</h3>
+        <div class="text-green-600 text-xl mr-2">${statusIcon}</div>
+        <h3 class="text-lg font-semibold ${statusClass}">${statusMessage}</h3>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
         <div><strong>Event:</strong> ${data.data.event_title}</div>
@@ -355,8 +381,12 @@ function displayResult(data) {
         <div><strong>Unit Price:</strong> ৳${data.data.unit_price}</div>
         <div><strong>Total Amount:</strong> ৳${data.data.total_amount}</div>
         <div><strong>Issued:</strong> ${data.data.issued_at}</div>
+        <div><strong>Entry Status:</strong> <span class="${data.entry_status === 'entered' ? 'text-orange-600 font-semibold' : 'text-green-600'}">${data.entry_status === 'entered' ? 'Already Entered' : 'Not Entered'}</span></div>
+        ${data.data.entry_marked_at ? `<div><strong>Entered At:</strong> ${data.data.entry_marked_at}</div>` : ''}
+        ${data.data.entry_marked_by ? `<div><strong>Entered By:</strong> ${data.data.entry_marked_by}</div>` : ''}
         ${data.data.ticket_type_description ? `<div class="md:col-span-2"><strong>Description:</strong> ${data.data.ticket_type_description}</div>` : ''}
       </div>
+      ${actionButton}
     `;
   } else {
     contentDiv.className = 'p-4 rounded-lg bg-red-50 border border-red-200';
@@ -396,6 +426,94 @@ function displayError(message) {
     statusDiv.innerHTML = `<div class="text-red-600">❌ ${message}</div>`;
     statusDiv.style.display = 'block';
   }
+}
+
+function markAsEntered(ticketCode) {
+  const button = document.getElementById('markEnteredBtn');
+  if (!button) return;
+  
+  // Disable button and show loading state
+  button.disabled = true;
+  button.innerHTML = '🔄 Marking as Entered...';
+  
+  // Get CSRF token
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                   '{{ csrf_token() }}';
+  
+  fetch(`/verify/${ticketCode}/enter`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': csrfToken,
+      'Accept': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Show success message
+      button.innerHTML = '✅ Successfully Entered!';
+      button.className = 'w-full px-4 py-2 bg-green-500 text-white rounded-lg cursor-not-allowed font-semibold';
+      
+      // Update the display to show entry information
+      setTimeout(() => {
+        // Re-verify the ticket to get updated information
+        verifyTicket();
+      }, 1500);
+      
+      // Show success notification
+      showSuccessNotification(`${data.data.holder_name} has been marked as entered for ${data.data.event_title}`);
+    } else {
+      // Show error message
+      button.disabled = false;
+      button.innerHTML = '🎫 Mark as Entered';
+      displayError(data.message);
+      
+      // If already entered, update the display
+      if (data.message.includes('already marked')) {
+        setTimeout(() => {
+          verifyTicket();
+        }, 1000);
+      }
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    button.disabled = false;
+    button.innerHTML = '🎫 Mark as Entered';
+    displayError('Failed to mark ticket as entered. Please try again.');
+  });
+}
+
+function showSuccessNotification(message) {
+  // Create a temporary success notification
+  const notification = document.createElement('div');
+  notification.className = 'fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300';
+  notification.innerHTML = `
+    <div class="flex items-center">
+      <span class="text-xl mr-2">✅</span>
+      <span>${message}</span>
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => {
+    notification.style.transform = 'translateX(0)';
+    notification.style.opacity = '1';
+  }, 100);
+  
+  // Remove after 4 seconds
+  setTimeout(() => {
+    notification.style.transform = 'translateX(100%)';
+    notification.style.opacity = '0';
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 300);
+  }, 4000);
 }
 
 function showScannerStatus(message, type = 'info') {

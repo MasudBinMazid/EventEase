@@ -190,8 +190,9 @@ class TicketController extends Controller
         
         return response()->json([
             'valid' => $isValid,
-            'message' => $isValid ? 'Valid ticket' : 'Ticket payment not confirmed',
+            'message' => $this->getTicketStatusMessage($ticket),
             'status' => $ticket->payment_status,
+            'entry_status' => $ticket->entry_status,
             'data' => [
                 'ticket_code' => $ticket->ticket_code,
                 'ticket_number' => $ticket->ticket_number,
@@ -206,7 +207,10 @@ class TicketController extends Controller
                 'unit_price' => $ticket->unit_price ?? $ticket->event->price,
                 'total_amount' => $ticket->total_amount,
                 'issued_at' => $ticket->created_at->format('M d, Y g:i A'),
-                'payment_verified_at' => $ticket->payment_verified_at?->format('M d, Y g:i A')
+                'payment_verified_at' => $ticket->payment_verified_at?->format('M d, Y g:i A'),
+                'entry_status' => $ticket->entry_status,
+                'entry_marked_at' => $ticket->entry_marked_at?->format('M d, Y g:i A'),
+                'entry_marked_by' => $ticket->entryMarker?->name,
             ]
         ]);
     }
@@ -281,5 +285,79 @@ class TicketController extends Controller
         }
 
         return $ticket;
+    }
+
+    /**
+     * Get appropriate status message for ticket verification
+     */
+    private function getTicketStatusMessage(Ticket $ticket): string
+    {
+        if ($ticket->payment_status !== 'paid') {
+            return 'Ticket payment not confirmed';
+        }
+
+        if ($ticket->entry_status === 'entered') {
+            return 'User already entered the event';
+        }
+
+        return 'Valid ticket - ready for entry';
+    }
+
+    /**
+     * Mark a ticket as entered
+     */
+    public function markAsEntered(string $ticketCode)
+    {
+        // Handle both formats: compact (TKT-XXX|user|event|status) or simple (TKT-XXX)
+        $parts = explode('|', $ticketCode);
+        $actualTicketCode = $parts[0]; // First part is always the ticket code
+        
+        $ticket = Ticket::with(['event', 'user'])->where('ticket_code', $actualTicketCode)->first();
+        
+        if (!$ticket) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket not found'
+            ], 404);
+        }
+
+        // Check if ticket is paid
+        if ($ticket->payment_status !== 'paid') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot mark unpaid ticket as entered'
+            ], 400);
+        }
+
+        // Check if already entered
+        if ($ticket->entry_status === 'entered') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ticket already marked as entered',
+                'data' => [
+                    'entry_marked_at' => $ticket->entry_marked_at?->format('M d, Y g:i A'),
+                    'entry_marked_by' => $ticket->entryMarker?->name
+                ]
+            ], 400);
+        }
+
+        // Mark as entered
+        $ticket->update([
+            'entry_status' => 'entered',
+            'entry_marked_at' => now(),
+            'entry_marked_by' => auth()->id() ?? null, // In case of anonymous verification
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket successfully marked as entered',
+            'data' => [
+                'ticket_code' => $ticket->ticket_code,
+                'holder_name' => $ticket->user->name,
+                'event_title' => $ticket->event->title,
+                'entry_marked_at' => $ticket->entry_marked_at->format('M d, Y g:i A'),
+                'quantity' => $ticket->quantity
+            ]
+        ]);
     }
 }

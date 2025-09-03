@@ -125,6 +125,69 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Ticket verification (public route for QR code scanning)
     Route::get('/verify/{ticketCode}', [TicketController::class, 'verify'])->name('tickets.verify');
     Route::get('/verify', [TicketController::class, 'verifyForm'])->name('tickets.verify.form');
+    Route::post('/verify/{ticketCode}/enter', [TicketController::class, 'markAsEntered'])->name('tickets.mark.entered');
+    
+    /* 
+    // Development/Testing routes - Remove in production
+    Route::get('/test-entry-status', function() {
+        $tickets = \App\Models\Ticket::with(['user', 'event'])->where('payment_status', 'paid')->limit(3)->get();
+        
+        $output = "<h1>Entry Status Test</h1>";
+        $output .= "<p>Found " . count($tickets) . " paid tickets:</p>";
+        
+        foreach ($tickets as $ticket) {
+            $output .= "<div style='border: 1px solid #ccc; padding: 10px; margin: 10px 0;'>";
+            $output .= "<strong>Ticket:</strong> " . $ticket->ticket_code . "<br>";
+            $output .= "<strong>Event:</strong> " . $ticket->event->title . "<br>";
+            $output .= "<strong>Holder:</strong> " . $ticket->user->name . "<br>";
+            $output .= "<strong>Payment Status:</strong> " . $ticket->payment_status . "<br>";
+            $output .= "<strong>Entry Status:</strong> " . $ticket->entry_status . "<br>";
+            if ($ticket->entry_marked_at) {
+                $output .= "<strong>Entered At:</strong> " . $ticket->entry_marked_at . "<br>";
+            }
+            $output .= "<a href='/verify/" . $ticket->ticket_code . "' target='_blank'>Test Verify</a>";
+            $output .= "</div>";
+        }
+        
+        return $output;
+    });
+    
+    Route::get('/test-api/{ticketCode?}', function($ticketCode = null) {
+        if (!$ticketCode) {
+            $ticket = \App\Models\Ticket::where('payment_status', 'paid')->first();
+            $ticketCode = $ticket ? $ticket->ticket_code : 'TKT-NOTFOUND';
+        }
+        
+        $response = (new \App\Http\Controllers\TicketController)->verify($ticketCode);
+        
+        return response()->json([
+            'ticket_code' => $ticketCode,
+            'api_response' => $response->getData()
+        ]);
+    });
+    
+    Route::get('/test-workflow', function() {
+        return view('test-workflow');
+    });
+    */    // Test API route
+    Route::get('/test-api/{ticketCode?}', function($ticketCode = null) {
+        if (!$ticketCode) {
+            $ticket = \App\Models\Ticket::where('payment_status', 'paid')->first();
+            $ticketCode = $ticket ? $ticket->ticket_code : 'TKT-NOTFOUND';
+        }
+        
+        $response = (new \App\Http\Controllers\TicketController)->verify($ticketCode);
+        
+        return response()->json([
+            'ticket_code' => $ticketCode,
+            'api_response' => $response->getData()
+        ]);
+    });
+    
+    // Serve test workflow page
+    Route::get('/test-workflow', function() {
+        return view('test-workflow');
+    });
 });
 
 /*

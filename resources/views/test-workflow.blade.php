@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Entry Status Workflow Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">Entry Status Workflow Test</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Test Verification -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4">1. Test Ticket Verification</h2>
+                <div class="space-y-4">
+                    <input type="text" id="testTicketCode" placeholder="Enter ticket code (e.g., TKT-ABCD1234)" 
+                           class="w-full p-2 border rounded">
+                    <button onclick="verifyTestTicket()" 
+                            class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+                        Verify Ticket
+                    </button>
+                    <div id="verifyResult" class="mt-4"></div>
+                </div>
+            </div>
+
+            <!-- Test Mark as Entered -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold mb-4">2. Test Mark as Entered</h2>
+                <div class="space-y-4">
+                    <input type="text" id="enterTicketCode" placeholder="Enter ticket code to mark as entered" 
+                           class="w-full p-2 border rounded">
+                    <button onclick="markAsEnteredTest()" 
+                            class="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">
+                        Mark as Entered
+                    </button>
+                    <div id="enterResult" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Tickets -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mt-6">
+            <h2 class="text-xl font-semibold mb-4">3. Sample Paid Tickets</h2>
+            <div id="sampleTickets" class="space-y-2">
+                <p class="text-gray-600">Loading tickets...</p>
+            </div>
+        </div>
+
+        <!-- Main Verification Page Link -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mt-6 text-center">
+            <h2 class="text-xl font-semibold mb-4">4. Main Verification Page</h2>
+            <a href="/verify" target="_blank" 
+               class="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700">
+                Open Main Verification Page
+            </a>
+            <p class="text-sm text-gray-600 mt-2">This opens the actual verification page with QR scanner</p>
+        </div>
+    </div>
+
+    <script>
+        // Get CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        // Load sample tickets on page load
+        window.onload = function() {
+            fetch('/test-entry-status')
+                .then(response => response.text())
+                .then(html => {
+                    // Extract ticket codes from the HTML response
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const ticketElements = doc.querySelectorAll('div');
+                    
+                    let ticketList = '<p class="font-semibold">Available tickets for testing:</p>';
+                    
+                    ticketElements.forEach(element => {
+                        const text = element.innerText || element.textContent;
+                        if (text.includes('Ticket: TKT-')) {
+                            const match = text.match(/Ticket: (TKT-[A-Z0-9]+)/);
+                            if (match) {
+                                const ticketCode = match[1];
+                                ticketList += `
+                                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded mb-2">
+                                        <span class="font-mono text-sm">${ticketCode}</span>
+                                        <div class="space-x-2">
+                                            <button onclick="document.getElementById('testTicketCode').value='${ticketCode}'; verifyTestTicket();" 
+                                                    class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
+                                                Verify
+                                            </button>
+                                            <button onclick="document.getElementById('enterTicketCode').value='${ticketCode}'; markAsEnteredTest();" 
+                                                    class="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600">
+                                                Mark Entered
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        }
+                    });
+                    
+                    document.getElementById('sampleTickets').innerHTML = ticketList;
+                })
+                .catch(error => {
+                    document.getElementById('sampleTickets').innerHTML = '<p class="text-red-600">Error loading tickets: ' + error.message + '</p>';
+                });
+        };
+
+        function verifyTestTicket() {
+            const ticketCode = document.getElementById('testTicketCode').value.trim();
+            if (!ticketCode) {
+                alert('Please enter a ticket code');
+                return;
+            }
+
+            document.getElementById('verifyResult').innerHTML = '<p class="text-blue-600">Verifying...</p>';
+
+            fetch(`/verify/${ticketCode}`)
+                .then(response => response.json())
+                .then(data => {
+                    let html = '';
+                    if (data.valid) {
+                        html = `
+                            <div class="p-3 bg-green-50 border border-green-200 rounded">
+                                <p class="font-semibold text-green-800">✅ ${data.message}</p>
+                                <div class="mt-2 text-sm space-y-1">
+                                    <div><strong>Event:</strong> ${data.data.event_title}</div>
+                                    <div><strong>Holder:</strong> ${data.data.holder_name}</div>
+                                    <div><strong>Entry Status:</strong> <span class="${data.entry_status === 'entered' ? 'text-orange-600 font-semibold' : 'text-green-600'}">${data.entry_status === 'entered' ? 'Already Entered' : 'Not Entered'}</span></div>
+                                    ${data.data.entry_marked_at ? `<div><strong>Entered At:</strong> ${data.data.entry_marked_at}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        html = `
+                            <div class="p-3 bg-red-50 border border-red-200 rounded">
+                                <p class="font-semibold text-red-800">❌ ${data.message}</p>
+                            </div>
+                        `;
+                    }
+                    document.getElementById('verifyResult').innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('verifyResult').innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
+                });
+        }
+
+        function markAsEnteredTest() {
+            const ticketCode = document.getElementById('enterTicketCode').value.trim();
+            if (!ticketCode) {
+                alert('Please enter a ticket code');
+                return;
+            }
+
+            document.getElementById('enterResult').innerHTML = '<p class="text-blue-600">Marking as entered...</p>';
+
+            fetch(`/verify/${ticketCode}/enter`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let html = '';
+                if (data.success) {
+                    html = `
+                        <div class="p-3 bg-green-50 border border-green-200 rounded">
+                            <p class="font-semibold text-green-800">✅ ${data.message}</p>
+                            <div class="mt-2 text-sm space-y-1">
+                                <div><strong>Event:</strong> ${data.data.event_title}</div>
+                                <div><strong>Holder:</strong> ${data.data.holder_name}</div>
+                                <div><strong>Quantity:</strong> ${data.data.quantity}</div>
+                                <div><strong>Entered At:</strong> ${data.data.entry_marked_at}</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html = `
+                        <div class="p-3 bg-red-50 border border-red-200 rounded">
+                            <p class="font-semibold text-red-800">❌ ${data.message}</p>
+                            ${data.data ? `
+                                <div class="mt-2 text-sm">
+                                    ${data.data.entry_marked_at ? `<div><strong>Previously Entered At:</strong> ${data.data.entry_marked_at}</div>` : ''}
+                                    ${data.data.entry_marked_by ? `<div><strong>Entered By:</strong> ${data.data.entry_marked_by}</div>` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+                document.getElementById('enterResult').innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('enterResult').innerHTML = `<p class="text-red-600">Error: ${error.message}</p>`;
+            });
+        }
+    </script>
+</body>
+</html>

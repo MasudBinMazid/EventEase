@@ -14,10 +14,13 @@ class Ticket extends Model
         'payment_verified_at','payment_verified_by',
         // SSLCommerz payment fields
         'sslcommerz_val_id','sslcommerz_bank_tran_id','sslcommerz_card_type','payment_method',
+        // entry status fields
+        'entry_status','entry_marked_at','entry_marked_by',
     ];
 
     protected $casts = [
         'payment_verified_at' => 'datetime',
+        'entry_marked_at' => 'datetime',
         'total_amount' => 'decimal:2',
         'unit_price' => 'decimal:2',
     ];
@@ -25,6 +28,7 @@ class Ticket extends Model
     public function user()     { return $this->belongsTo(User::class); }
     public function event()    { return $this->belongsTo(Event::class); }
     public function verifier() { return $this->belongsTo(User::class, 'payment_verified_by'); }
+    public function entryMarker() { return $this->belongsTo(User::class, 'entry_marked_by'); }
     
     /**
      * Get the ticket type for this ticket
