@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('notices', function (Blueprint $table) {
-            $table->string('bg_color', 7)->default('#f59e0b')->after('priority'); // Background color (hex)
-            $table->string('text_color', 7)->default('#ffffff')->after('bg_color'); // Text color (hex)
-            $table->string('font_family')->default('Inter, sans-serif')->after('text_color'); // Font family
-            $table->integer('font_size')->default(16)->after('font_family'); // Font size in pixels
-            $table->string('font_weight')->default('500')->after('font_size'); // Font weight (normal, bold, 100-900)
-            $table->string('text_style')->default('normal')->after('font_weight'); // Text style (normal, italic)
+            // Add styling columns - removed 'after' clauses for better compatibility
+            $table->string('bg_color', 7)->default('#f59e0b'); // Background color (hex)
+            $table->string('text_color', 7)->default('#ffffff'); // Text color (hex)
+            $table->string('font_family')->default('Inter, sans-serif'); // Font family
+            $table->integer('font_size')->default(16); // Font size in pixels
+            $table->string('font_weight')->default('500'); // Font weight (normal, bold, 100-900)
+            $table->string('text_style')->default('normal'); // Text style (normal, italic)
         });
     }
 
