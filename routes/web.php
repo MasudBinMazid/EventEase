@@ -207,17 +207,22 @@ Route::get('/gallery/event-{id}', function ($id) {
 |--------------------------------------------------------------------------
 | Admin Area (inside Laravel)
 |--------------------------------------------------------------------------
-| Make sure you have the 'admin' middleware alias registered (bootstrap/app.php).
+| Manager middleware allows both admin and manager roles to access all admin functions
+| except user deletion and role updates which are admin-only
 */
-Route::prefix('admin')->name('admin.')->middleware(['auth','admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'manager'])->group(function () {
 
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('index');
 
-    // Users
+    // Users (managers can view, only admins can delete/change roles)
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-    Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.updateRole');
+    
+    // Admin-only routes for user management
+    Route::middleware('admin')->group(function () {
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+        Route::patch('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('users.updateRole');
+    });
 
     // Blogs (CRUD)
     Route::get('/blogs', [BlogAdminController::class, 'index'])->name('blogs.index');
@@ -269,6 +274,25 @@ Route::post('/payments-received/{ticket}/verify', [PaymentReceivedController::cl
     Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
     Route::post('/notices/settings', [NoticeController::class, 'toggleSettings'])->name('notices.settings');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Manager Redirect
+|--------------------------------------------------------------------------
+| Redirect managers to admin panel since they have access to all admin functions
+*/
+Route::get('/manager', function () {
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
+    
+    $userRole = strtolower((string)auth()->user()->role);
+    if (!in_array($userRole, ['admin', 'manager'])) {
+        abort(403, 'Manager or Admin access required');
+    }
+    
+    return redirect()->route('admin.index');
+})->middleware(['auth', 'verified']);
 
 /*
 |--------------------------------------------------------------------------

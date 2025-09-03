@@ -634,9 +634,16 @@
       <!-- Tiny logo shape -->
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" fill="white" opacity=".92"/>
-        <path d="M12 6l5 2.8v6.4L12 18l-5-2.8V8.8L12 6z" fill="#4a6cf7"/>
+        <path d="M12 6l5 2.8v6.4L12 18l-5-2.8V8.8L12 6z" fill="{{ auth()->user()->role === 'manager' ? '#8b5cf6' : '#4a6cf7' }}"/>
       </svg>
-      <span class="brand-title">EventEase <span class="brand-sub">Admin</span></span>
+      <span class="brand-title">EventEase 
+        <span class="brand-sub">
+          {{ auth()->user()->role === 'manager' ? 'Manager' : 'Admin' }}
+          @if(auth()->user()->role === 'manager')
+            <small style="font-size: 0.7em; color: var(--purple); font-weight: 600;">(Limited Access)</small>
+          @endif
+        </span>
+      </span>
     </a>
 
     <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav">Menu</button>

@@ -22,6 +22,10 @@ class ProfileController extends Controller
             return redirect()->route('admin.index');
         }
         
+        if ($user->isManager()) {
+            return redirect()->route('admin.index');
+        }
+        
         if ($user->isOrganizer()) {
             return redirect()->route('organizer.dashboard');
         }

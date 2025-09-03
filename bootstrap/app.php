@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
 ->withMiddleware(function (\Illuminate\Foundation\Configuration\Middleware $middleware) {
     $middleware->alias([
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        'manager' => \App\Http\Middleware\ManagerMiddleware::class,
         'organizer' => \App\Http\Middleware\OrganizerMiddleware::class
     ]);
     

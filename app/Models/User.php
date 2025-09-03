@@ -28,7 +28,9 @@ protected $fillable = ['name', 'email', 'password', 'phone', 'profile_picture', 
 public function tickets(){ return $this->hasMany(\App\Models\Ticket::class); }
 public function events(){ return $this->hasMany(\App\Models\Event::class, 'created_by'); }
 public function isAdmin(): bool { return $this->role === 'admin'; }
+public function isManager(): bool { return $this->role === 'manager'; }
 public function isOrganizer(): bool { return $this->role === 'organizer'; }
+public function isAdminOrManager(): bool { return in_array($this->role, ['admin', 'manager']); }
 
 
 

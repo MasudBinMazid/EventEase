@@ -1,4 +1,4 @@
-@extends('admin.layout')
+@extends('manager.layout')
 @section('title','Users Management')
 
 @section('content')
@@ -7,7 +7,7 @@
   <div class="admin-header">
     <div>
       <h1 class="admin-title">Users Management</h1>
-      <p class="admin-subtitle">Manage all registered users and their permissions</p>
+      <p class="admin-subtitle">View and manage registered users (Read-only access)</p>
     </div>
     <div class="admin-actions">
       <div class="badge badge-info">
@@ -25,7 +25,7 @@
   <!-- Search and Filter Section -->
   <div class="admin-card" style="margin-bottom: 1.5rem;">
     <div class="card-body">
-      <form method="GET" action="{{ route('admin.users.index') }}" class="search-form">
+      <form method="GET" action="{{ route('manager.users.index') }}" class="search-form">
         <div style="display: grid; grid-template-columns: 1fr auto auto auto; gap: 1rem; align-items: end;">
           <div>
             <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text);">Search Users</label>
@@ -56,7 +56,7 @@
             Search
           </button>
           @if(request()->anyFilled(['search', 'role']))
-            <a href="{{ route('admin.users.index') }}" class="btn btn-outline">
+            <a href="{{ route('manager.users.index') }}" class="btn btn-outline">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="1,4 1,10 7,10"/>
                 <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
@@ -80,12 +80,12 @@
       <div class="stat-label">Organizers</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">{{ $users->where('role', '!=', 'admin')->count() }}</div>
-      <div class="stat-label">Regular Users</div>
+      <div class="stat-number">{{ $users->where('role', 'manager')->count() }}</div>
+      <div class="stat-label">Managers</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">{{ $users->where('created_at', '>=', now()->subDays(7))->count() }}</div>
-      <div class="stat-label">New This Week</div>
+      <div class="stat-number">{{ $users->where('role', '!=', 'admin')->where('role', '!=', 'manager')->count() }}</div>
+      <div class="stat-label">Regular Users</div>
     </div>
   </div>
 
@@ -96,6 +96,16 @@
   @if(session('error'))
     <div class="alert alert-error">{{ session('error') }}</div>
   @endif
+
+  <!-- Manager Access Notice -->
+  <div class="alert alert-info">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="16" x2="12" y2="12"/>
+      <line x1="12" y1="8" x2="12.01" y2="8"/>
+    </svg>
+    <strong>Manager Access:</strong> You can view all user information but cannot delete users or change user roles. Contact an admin for these actions.
+  </div>
 
   <!-- Users Table -->
   <div class="admin-card">
@@ -190,23 +200,10 @@
                         </span>
                       @endif
                       
-                      @if(auth()->id() !== $user->id)
-                        @if(auth()->user()->isAdmin())
-                          <form method="POST" action="{{ route('admin.users.updateRole', $user) }}" style="display: inline;">
-                            @csrf @method('PATCH')
-                            <select name="role" class="role-select" onchange="this.form.submit()" style="font-size: 0.8rem; padding: 0.25rem;">
-                              <option value="user" {{ ($user->role ?? 'user') === 'user' ? 'selected' : '' }}>User</option>
-                              <option value="organizer" {{ $user->role === 'organizer' ? 'selected' : '' }}>Organizer</option>
-                              <option value="manager" {{ $user->role === 'manager' ? 'selected' : '' }}>Manager</option>
-                              <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
-                            </select>
-                          </form>
-                        @else
-                          <div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">
-                            Role: {{ ucfirst($user->role ?? 'user') }} (Manager cannot change)
-                          </div>
-                        @endif
-                      @endif
+                      <!-- Read-only role display for managers -->
+                      <div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">
+                        Role: {{ ucfirst($user->role ?? 'user') }} (Read-only)
+                      </div>
                     </div>
                   </td>
                   <td>
@@ -216,35 +213,23 @@
                   </td>
                   <td>
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
+                      <button class="btn btn-outline" onclick="viewUser({{ $user->id }})" title="View Details">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                          <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                      </button>
+                      
+                      <!-- Manager restrictions notice -->
                       @if(auth()->id() !== $user->id)
-                        <button class="btn btn-outline" onclick="viewUser({{ $user->id }})" title="View Details">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            <circle cx="12" cy="12" r="3"/>
+                        <span class="badge badge-secondary" title="Manager cannot delete users or change roles">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
                           </svg>
-                        </button>
-                        @if(auth()->user()->isAdmin())
-                          <form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.')" style="display: inline;">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-danger" type="submit" title="Delete User" style="padding: 0.5rem;">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="3,6 5,6 21,6"/>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                <line x1="10" y1="11" x2="10" y2="17"/>
-                                <line x1="14" y1="11" x2="14" y2="17"/>
-                              </svg>
-                            </button>
-                          </form>
-                        @else
-                          <span class="badge badge-secondary" title="Manager cannot delete users">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                              <circle cx="12" cy="12" r="10"/>
-                              <line x1="15" y1="9" x2="9" y2="15"/>
-                              <line x1="9" y1="9" x2="15" y2="15"/>
-                            </svg>
-                            Restricted
-                          </span>
-                        @endif
+                          Restricted
+                        </span>
                       @else
                         <span class="badge badge-warning">
                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -267,7 +252,7 @@
 
   <!-- Action Buttons -->
   <div style="display: flex; gap: 1rem; justify-content: flex-start; margin-top: 2rem;">
-    <a href="{{ route('admin.index') }}" class="btn btn-outline">
+    <a href="{{ route('manager.index') }}" class="btn btn-outline">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="15,18 9,12 15,6"/>
       </svg>
@@ -292,25 +277,13 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.role-select {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 0.25rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-
-.role-select:hover {
-  border-color: var(--primary);
-}
-
 .alert {
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
   font-weight: 500;
+  display: flex;
+  align-items: center;
 }
 
 .alert-success {
@@ -325,6 +298,12 @@
   color: #dc2626;
 }
 
+.alert-info {
+  background: #dbeafe;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+}
+
 .badge-secondary {
   background: #f3f4f6;
   color: #374151;
@@ -335,6 +314,12 @@
   background: #fef3c7;
   color: #92400e;
   border: 1px solid #fde68a;
+}
+
+.badge-info {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
 }
 </style>
 

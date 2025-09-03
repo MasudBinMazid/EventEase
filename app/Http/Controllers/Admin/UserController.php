@@ -34,6 +34,11 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        // Prevent managers from deleting users
+        if (auth()->user()->isManager()) {
+            return back()->with('error', 'Managers cannot delete users. Contact an admin for this action.');
+        }
+
         abort_if(auth()->id() === $user->id, 403);
         $user->delete();
         return back()->with('success', 'User deleted successfully.');
@@ -41,6 +46,11 @@ class UserController extends Controller
 
     public function updateRole(Request $request, User $user)
     {
+        // Prevent managers from changing user roles
+        if (auth()->user()->isManager()) {
+            return back()->with('error', 'Managers cannot change user roles. Contact an admin for this action.');
+        }
+
         $request->validate([
             'role' => 'required|in:user,admin,organizer,manager'
         ]);
