@@ -15,6 +15,7 @@ class Notice extends Model
         'content',
         'is_active',
         'priority',
+        'order',
         'start_date',
         'end_date',
         'bg_color',
@@ -23,10 +24,13 @@ class Notice extends Model
         'font_size',
         'font_weight',
         'text_style',
+        'type',
+        'is_marquee',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_marquee' => 'boolean',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
