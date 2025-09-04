@@ -32,7 +32,16 @@ class SSLCommerzController extends Controller
         ]);
 
         try {
-            // Validate the request
+            // Check if this is a payment completion for existing ticket
+            $checkoutData = session('checkout');
+            $existingTicketId = $checkoutData['existing_ticket_id'] ?? null;
+            
+            if ($existingTicketId) {
+                // Handle payment completion for existing ticket
+                return $this->handleExistingTicketPayment($request, $existingTicketId);
+            }
+
+            // Validate the request for new ticket
             $data = $request->validate([
                 'event_id' => 'required|exists:events,id',
                 'qty' => 'required|integer|min:1',
@@ -166,12 +175,135 @@ class SSLCommerzController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return redirect()->back()
-                ->with('error', 'An error occurred while processing payment. Please try again.');
+                return redirect()->back()
+                    ->with('error', 'An error occurred while processing payment. Please try again.');
         }
     }
 
     /**
+     * Handle payment completion for existing tickets
+     */
+    protected function handleExistingTicketPayment(Request $request, $ticketId)
+    {
+        Log::info('Handling existing ticket payment completion', [
+            'ticket_id' => $ticketId,
+            'user_id' => auth()->id()
+        ]);
+
+        // Get the existing ticket
+        $ticket = Ticket::with(['event', 'ticketType'])->findOrFail($ticketId);
+        
+        // Ensure the ticket belongs to the current user
+        if ($ticket->user_id !== auth()->id()) {
+            Log::warning('Unauthorized ticket payment attempt', [
+                'ticket_id' => $ticketId,
+                'ticket_user_id' => $ticket->user_id,
+                'current_user_id' => auth()->id()
+            ]);
+            abort(403, 'Unauthorized access to ticket.');
+        }
+
+        // Check if ticket is eligible for payment
+        if ($ticket->payment_status === 'paid') {
+            return redirect()->route('tickets.show', $ticket)
+                ->with('info', 'This ticket has already been paid for.');
+        }
+
+        if ($ticket->payment_option !== 'pay_later') {
+            return redirect()->route('tickets.show', $ticket)
+                ->with('error', 'This ticket is not eligible for payment completion.');
+        }
+
+        // Check if SSLCommerz is configured
+        if (!$this->sslcommerz->isConfigured()) {
+            return redirect()->back()
+                ->with('error', 'Payment gateway is not configured. Please contact support.');
+        }
+
+        // Create a unique transaction ID
+        $transactionId = 'TXN-COMPLETE-' . time() . '-' . Str::random(8);
+
+        // Store in database for tracking
+        $tempTransaction = TempTransaction::create([
+            'transaction_id' => $transactionId,
+            'user_id' => $ticket->user_id,
+            'event_id' => $ticket->event_id,
+            'quantity' => $ticket->quantity,
+            'amount' => $ticket->total_amount,
+            'status' => 'pending',
+            'data' => [
+                'existing_ticket_id' => $ticket->id,
+                'ticket_code' => $ticket->ticket_code,
+                'user_name' => $ticket->user->name,
+                'user_email' => $ticket->user->email,
+                'event_title' => $ticket->event->title,
+                'ticket_type_id' => $ticket->ticket_type_id,
+                'ticket_type_name' => $ticket->ticketType ? $ticket->ticketType->name : null,
+                'unit_price' => $ticket->unit_price,
+                'is_payment_completion' => true,
+                'created_at' => now()->toISOString()
+            ]
+        ]);
+
+        Log::info('Payment completion transaction created', [
+            'transaction_id' => $transactionId,
+            'temp_transaction_id' => $tempTransaction->id,
+            'existing_ticket_id' => $ticket->id
+        ]);
+
+        // Prepare payment data
+        $productName = $ticket->event->title . ' - Payment Completion (' . $ticket->quantity . ' tickets)';
+        if ($ticket->ticketType) {
+            $productName = $ticket->event->title . ' - ' . $ticket->ticketType->name . ' (' . $ticket->quantity . ' tickets)';
+        }
+        
+        $paymentData = [
+            'transaction_id' => $transactionId,
+            'amount' => $ticket->total_amount,
+            'product_name' => $productName,
+            'quantity' => $ticket->quantity,
+            'customer_name' => $ticket->user->name,
+            'customer_email' => $ticket->user->email,
+            'customer_phone' => $ticket->user->phone ?? 'N/A',
+            'customer_address' => 'Dhaka, Bangladesh',
+            'customer_city' => 'Dhaka',
+            'success_url' => route('sslcommerz.success'),
+            'fail_url' => route('sslcommerz.fail'),
+            'cancel_url' => route('sslcommerz.cancel'),
+            'ipn_url' => route('sslcommerz.ipn'),
+        ];
+
+        // Initiate payment with SSLCommerz
+        $result = $this->sslcommerz->initiatePayment($paymentData);
+
+        if ($result['success']) {
+            // Update transaction status
+            $tempTransaction->update([
+                'status' => 'processing',
+                'data' => array_merge($tempTransaction->data ?? [], ['gateway_response' => $result])
+            ]);
+            
+            Log::info('Payment completion initiation successful, redirecting to gateway');
+            // Redirect to SSLCommerz payment page
+            return redirect($result['payment_url']);
+        } else {
+            
+            // Mark transaction as failed
+            $tempTransaction->update([
+                'status' => 'failed',
+                'data' => array_merge($tempTransaction->data ?? [], ['error' => $result['message']])
+            ]);
+            
+            Log::error('SSLCommerz Payment Completion Failed', [
+                'temp_transaction_id' => $tempTransaction->id,
+                'ticket_id' => $ticket->id,
+                'error' => $result['message']
+            ]);
+
+            return redirect()->route('ticket.complete-payment', $ticket)
+                ->with('error', 'Failed to initiate payment: ' . $result['message']);
+        }
+    }    /**
      * Handle successful payment
      */
     public function paymentSuccess(Request $request)
@@ -257,81 +389,27 @@ class SSLCommerzController extends Controller
                 'environment' => env('SSLCOMMERZ_ENVIRONMENT')
             ]);
 
-            // Payment is valid, create the ticket
-            Log::info('Creating ticket for validated payment', [
-                'temp_transaction_id' => $tempTransaction->id,
-                'user_id' => $tempTransaction->user_id,
-                'event_id' => $tempTransaction->event_id
-            ]);
+            // Payment is valid, check if this is existing ticket completion or new ticket creation
+            $existingTicketId = isset($tempTransaction->data['existing_ticket_id']) ? $tempTransaction->data['existing_ticket_id'] : null;
             
-            // Use transaction to ensure atomicity
-            DB::transaction(function () use ($tempTransaction, $tranId, $valId, $bankTranId, $cardType) {
-                // Login the user to create the ticket
-                Log::info('Before login attempt', [
-                    'current_auth' => auth()->id(),
-                    'target_user_id' => $tempTransaction->user_id,
-                    'user_exists' => $tempTransaction->user ? true : false
-                ]);
-
-                auth()->login($tempTransaction->user);
-                
-                Log::info('After login attempt', [
-                    'auth_check' => auth()->check(),
-                    'auth_id' => auth()->id(),
-                    'session_id' => session()->getId()
-                ]);
-                
-                // Create ticket using TicketController method with ticket type
-                $ticketTypeId = isset($tempTransaction->data['ticket_type_id']) ? $tempTransaction->data['ticket_type_id'] : null;
-                $ticketType = null;
-                if ($ticketTypeId) {
-                    $ticketType = \App\Models\TicketType::find($ticketTypeId);
-                }
-                $ticket = app(\App\Http\Controllers\TicketController::class)
-                    ->createTicketAndQr($tempTransaction->event, $tempTransaction->quantity, 'pay_now', 'paid', $ticketType);
-
-                Log::info('Ticket created successfully', [
-                    'ticket_id' => $ticket->id,
-                    'ticket_user_id' => $ticket->user_id,
-                    'current_auth' => auth()->id()
-                ]);
-
-                // Update ticket with payment details
-                $ticket->update([
-                    'payment_txn_id' => $tranId,
-                    'sslcommerz_val_id' => $valId,
-                    'sslcommerz_bank_tran_id' => $bankTranId,
-                    'sslcommerz_card_type' => $cardType,
-                    'payment_verified_at' => now(),
-                    'payment_method' => 'sslcommerz',
-                ]);
-
-                // Update transaction as completed
-                $tempTransaction->update([
-                    'status' => 'completed',
-                    'data' => array_merge($tempTransaction->data ?? [], [
-                        'ticket_id' => $ticket->id,
-                        'completed_at' => now()->toISOString(),
-                        'sslcommerz_val_id' => $valId,
-                        'sslcommerz_bank_tran_id' => $bankTranId,
-                        'sslcommerz_card_type' => $cardType
-                    ])
-                ]);
-
-                // Clear session data
-                session()->forget('sslcommerz_transaction');
-                session()->forget('checkout');
-
-                // Store ticket in session for success page
-                session()->put('payment_success_ticket', $ticket->id);
-                
-                Log::info('SSLCommerz Payment Successful - Ticket Created', [
-                    'ticket_id' => $ticket->id,
-                    'tran_id' => $tranId,
-                    'user_id' => $ticket->user_id,
+            if ($existingTicketId) {
+                // Handle existing ticket payment completion
+                Log::info('Processing existing ticket payment completion', [
+                    'existing_ticket_id' => $existingTicketId,
                     'temp_transaction_id' => $tempTransaction->id
                 ]);
-            });
+                
+                $this->completeExistingTicketPayment($tempTransaction, $existingTicketId, $tranId, $valId, $bankTranId, $cardType);
+            } else {
+                // Handle new ticket creation
+                Log::info('Creating new ticket for validated payment', [
+                    'temp_transaction_id' => $tempTransaction->id,
+                    'user_id' => $tempTransaction->user_id,
+                    'event_id' => $tempTransaction->event_id
+                ]);
+                
+                $this->createNewTicketFromPayment($tempTransaction, $tranId, $valId, $bankTranId, $cardType);
+            }
 
             return redirect()->route('sslcommerz.success.page')
                 ->with('success', 'Payment successful! Your tickets have been generated.');
@@ -354,6 +432,149 @@ class SSLCommerzController extends Controller
             return redirect()->route('events.index')
                 ->with('error', 'Payment processing failed. Please contact support.');
         }
+    }
+
+    /**
+     * Complete payment for existing ticket
+     */
+    protected function completeExistingTicketPayment($tempTransaction, $existingTicketId, $tranId, $valId, $bankTranId, $cardType)
+    {
+        DB::transaction(function () use ($tempTransaction, $existingTicketId, $tranId, $valId, $bankTranId, $cardType) {
+            // Get the existing ticket
+            $ticket = Ticket::findOrFail($existingTicketId);
+            
+            // Ensure the ticket belongs to the transaction user
+            if ($ticket->user_id !== $tempTransaction->user_id) {
+                throw new \Exception('Ticket user mismatch during payment completion');
+            }
+
+            // Login the user for session context
+            auth()->login($tempTransaction->user);
+
+            // Update ticket to paid status
+            $ticket->update([
+                'payment_status' => 'paid',
+                'payment_option' => 'pay_now', // Update to pay_now since payment is completed
+                'payment_txn_id' => $tranId,
+                'sslcommerz_val_id' => $valId,
+                'sslcommerz_bank_tran_id' => $bankTranId,
+                'sslcommerz_card_type' => $cardType,
+                'payment_verified_at' => now(),
+                'payment_method' => 'sslcommerz',
+            ]);
+
+            // Send payment completion email notification
+            try {
+                $ticket->user->notify(new \App\Notifications\TicketPdfNotification($ticket));
+            } catch (\Exception $e) {
+                Log::error('Failed to send payment completion email notification', [
+                    'ticket_id' => $ticket->id,
+                    'user_id' => $ticket->user_id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+
+            // Update transaction as completed
+            $tempTransaction->update([
+                'status' => 'completed',
+                'data' => array_merge($tempTransaction->data ?? [], [
+                    'ticket_id' => $ticket->id,
+                    'completed_at' => now()->toISOString(),
+                    'sslcommerz_val_id' => $valId,
+                    'sslcommerz_bank_tran_id' => $bankTranId,
+                    'sslcommerz_card_type' => $cardType,
+                    'payment_completed' => true
+                ])
+            ]);
+
+            // Clear session data
+            session()->forget('sslcommerz_transaction');
+            session()->forget('checkout');
+
+            // Store ticket in session for success page
+            session()->put('payment_success_ticket', $ticket->id);
+            
+            Log::info('SSLCommerz Payment Completion Successful', [
+                'ticket_id' => $ticket->id,
+                'tran_id' => $tranId,
+                'user_id' => $ticket->user_id,
+                'temp_transaction_id' => $tempTransaction->id
+            ]);
+        });
+    }
+
+    /**
+     * Create new ticket from payment
+     */
+    protected function createNewTicketFromPayment($tempTransaction, $tranId, $valId, $bankTranId, $cardType)
+    {
+        DB::transaction(function () use ($tempTransaction, $tranId, $valId, $bankTranId, $cardType) {
+            // Login the user to create the ticket
+            Log::info('Before login attempt', [
+                'current_auth' => auth()->id(),
+                'target_user_id' => $tempTransaction->user_id,
+                'user_exists' => $tempTransaction->user ? true : false
+            ]);
+
+            auth()->login($tempTransaction->user);
+            
+            Log::info('After login attempt', [
+                'auth_check' => auth()->check(),
+                'auth_id' => auth()->id(),
+                'session_id' => session()->getId()
+            ]);
+            
+            // Create ticket using TicketController method with ticket type
+            $ticketTypeId = isset($tempTransaction->data['ticket_type_id']) ? $tempTransaction->data['ticket_type_id'] : null;
+            $ticketType = null;
+            if ($ticketTypeId) {
+                $ticketType = \App\Models\TicketType::find($ticketTypeId);
+            }
+            $ticket = app(\App\Http\Controllers\TicketController::class)
+                ->createTicketAndQr($tempTransaction->event, $tempTransaction->quantity, 'pay_now', 'paid', $ticketType);
+
+            Log::info('Ticket created successfully', [
+                'ticket_id' => $ticket->id,
+                'ticket_user_id' => $ticket->user_id,
+                'current_auth' => auth()->id()
+            ]);
+
+            // Update ticket with payment details
+            $ticket->update([
+                'payment_txn_id' => $tranId,
+                'sslcommerz_val_id' => $valId,
+                'sslcommerz_bank_tran_id' => $bankTranId,
+                'sslcommerz_card_type' => $cardType,
+                'payment_verified_at' => now(),
+                'payment_method' => 'sslcommerz',
+            ]);
+
+            // Update transaction as completed
+            $tempTransaction->update([
+                'status' => 'completed',
+                'data' => array_merge($tempTransaction->data ?? [], [
+                    'ticket_id' => $ticket->id,
+                    'completed_at' => now()->toISOString(),
+                    'sslcommerz_val_id' => $valId,
+                    'sslcommerz_bank_tran_id' => $bankTranId,
+                    'sslcommerz_card_type' => $cardType
+                ])
+            ]);
+
+            // Clear session data
+            session()->forget('sslcommerz_transaction');
+            session()->forget('checkout');
+
+            // Store ticket in session for success page
+            session()->put('payment_success_ticket', $ticket->id);
+            
+            Log::info('SSLCommerz Payment Successful - Ticket Created', [
+                'ticket_id' => $ticket->id,
+                'tran_id' => $tranId,
+                'user_id' => $ticket->user_id,
+                'temp_transaction_id' => $tempTransaction->id
+            ]);
+        });
     }
 
     /**

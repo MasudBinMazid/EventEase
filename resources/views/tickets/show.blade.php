@@ -358,6 +358,12 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
+          @if($ticket->payment_status === 'unpaid' && $ticket->payment_option === 'pay_later')
+            <a href="{{ route('ticket.complete-payment', $ticket) }}" class="btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+              💳 Complete Payment - ৳{{ number_format($ticket->total_amount, 2) }}
+            </a>
+          @endif
+          
           <a href="{{ route('tickets.download', $ticket) }}" class="btn-primary">
             📄 Download PDF Ticket
           </a>

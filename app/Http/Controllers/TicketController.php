@@ -288,6 +288,66 @@ class TicketController extends Controller
     }
 
     /**
+     * Show payment completion page for pay later tickets
+     */
+    public function completePayment(Ticket $ticket)
+    {
+        // Ensure the ticket belongs to the current user
+        if ($ticket->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to ticket.');
+        }
+
+        // Check if ticket is eligible for payment completion
+        if ($ticket->payment_status === 'paid') {
+            return redirect()->route('tickets.show', $ticket)
+                ->with('info', 'This ticket has already been paid for.');
+        }
+
+        if ($ticket->payment_option !== 'pay_later') {
+            return redirect()->route('tickets.show', $ticket)
+                ->with('error', 'This ticket is not eligible for payment completion.');
+        }
+
+        return view('tickets.complete-payment', compact('ticket'));
+    }
+
+    /**
+     * Initiate payment for pay later tickets
+     */
+    public function initiatePayment(Request $request, Ticket $ticket)
+    {
+        // Ensure the ticket belongs to the current user
+        if ($ticket->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to ticket.');
+        }
+
+        // Check if ticket is eligible for payment completion
+        if ($ticket->payment_status === 'paid') {
+            return redirect()->route('tickets.show', $ticket)
+                ->with('info', 'This ticket has already been paid for.');
+        }
+
+        if ($ticket->payment_option !== 'pay_later') {
+            return redirect()->route('tickets.show', $ticket)
+                ->with('error', 'This ticket is not eligible for payment completion.');
+        }
+
+        // Set up session data for SSLCommerz payment
+        session()->put('checkout', [
+            'event_id' => $ticket->event_id,
+            'qty' => $ticket->quantity,
+            'user_id' => $ticket->user_id,
+            'total' => $ticket->total_amount,
+            'ticket_type_id' => $ticket->ticket_type_id,
+            'existing_ticket_id' => $ticket->id, // Mark this as a payment completion for existing ticket
+        ]);
+
+        // Call SSLCommerz payment initiation using Laravel's service container
+        $sslcommerzController = app(\App\Http\Controllers\SSLCommerzController::class);
+        return $sslcommerzController->initiatePayment($request);
+    }
+
+    /**
      * Get appropriate status message for ticket verification
      */
     private function getTicketStatusMessage(Ticket $ticket): string

@@ -73,10 +73,21 @@ class TicketPdfNotification extends Notification
         
         if ($this->ticket->payment_status === 'paid') {
             $contentLines[] = '✅ Your payment has been confirmed and your ticket is valid for entry.';
+            $contentLines[] = 'Present this ticket at the event for entry verification.';
+            $actionText = 'View Ticket Online';
         } else {
-            $contentLines[] = '⏳ Your ticket is generated but payment verification is pending.';
-            $contentLines[] = 'You will receive another confirmation email once your payment is verified.';
-            $actionText = 'Complete Payment';
+            // Handle different cases for unpaid tickets
+            if ($this->ticket->payment_option === 'pay_later') {
+                $contentLines[] = '⏳ Your ticket is generated but payment is pending.';
+                $contentLines[] = 'Click the button below to complete your payment securely through our payment gateway.';
+                $contentLines[] = 'You will receive another confirmation email once your payment is completed.';
+                $actionUrl = route('ticket.complete-payment', $this->ticket);
+                $actionText = 'Complete Payment Now';
+            } else {
+                $contentLines[] = '⏳ Your ticket is generated but payment verification is pending.';
+                $contentLines[] = 'You will receive another confirmation email once your payment is verified.';
+                $actionText = 'View Ticket Details';
+            }
         }
         
         $importantNote = 'Please bring this ticket (printed or on your mobile device) and a valid ID to the event.<br><br>Your PDF ticket is attached to this email for your convenience.';

@@ -79,8 +79,15 @@ require __DIR__ . '/auth.php';
 */
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    Route::get('/tickets/{ticket}/download', [TicketController::class, 'download'])->name('tickets.download');
+    Route::get('/tickets/{ticket}/complete-payment', [TicketController::class, 'completePayment'])->name('ticket.complete-payment');
+    Route::post('/tickets/{ticket}/complete-payment', [TicketController::class, 'initiatePayment'])->name('ticket.initiate-payment');
 });
 
 /*

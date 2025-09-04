@@ -90,6 +90,28 @@
         .action-button:hover {
             transform: translateY(-2px);
         }
+
+        .action-button.payment-button {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .action-button.payment-button:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+        
+        .action-button.view-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .action-button.view-button:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
         
         .important-note {
             background-color: #fff3cd;
@@ -180,7 +202,11 @@
             
             @if(isset($actionUrl) && isset($actionText))
             <div style="text-align: center; margin: 30px 0;">
-                <a href="{{ $actionUrl }}" class="action-button">{{ $actionText }}</a>
+                @if(strpos($actionText, 'Complete Payment') !== false)
+                    <a href="{{ $actionUrl }}" class="action-button payment-button">💳 {{ $actionText }}</a>
+                @else
+                    <a href="{{ $actionUrl }}" class="action-button view-button">🎫 {{ $actionText }}</a>
+                @endif
             </div>
             @endif
             
