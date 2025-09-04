@@ -15,15 +15,13 @@
     {{-- Banner Slider --}}
     <div class="slider-container">
       <div class="slider" id="slider">
-        <a href="https://eventease.com/event1" class="slide-link active" target="_blank">
+        <a href="https://eventease.laravel.cloud/" class="slide-link active" target="_blank">
           <img src="{{ asset('assets/images/banner1.png') }}" class="slide-img" alt="Event 1" />
         </a>
-        <a href="https://eventease.com/event2" class="slide-link" target="_blank">
+        <a href="https://eventease.laravel.cloud/" class="slide-link" target="_blank">
           <img src="{{ asset('assets/images/banner2.png') }}" class="slide-img" alt="Event 2" />
         </a>
-        <a href="https://eventease.com/event3" class="slide-link" target="_blank">
-          <img src="{{ asset('assets/images/banner3.png') }}" class="slide-img" alt="Event 3" />
-        </a>
+
       </div>
       <button class="slider-btn prev" id="prevBtn" aria-label="Previous slide">←</button>
       <button class="slider-btn next" id="nextBtn" aria-label="Next slide">→</button>
@@ -32,14 +30,21 @@
 
     </div>
 
-    {{-- Embedded YouTube Video --}}
-    <div class="video-wrapper">
-      <iframe src=""
-        title="EventEase Promo"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-      </iframe>
+    {{-- Promotional Banner with Background Video --}}
+    <div class="promo-banner">
+      <video class="promo-bg-video" autoplay muted loop playsinline>
+        <source src="{{ asset('assets/videos/promo-bg.mp4') }}" type="video/mp4">
+        <source src="{{ asset('assets/videos/promo-bg.webm') }}" type="video/webm">
+        <!-- Fallback for browsers that don't support video -->
+        Your browser does not support the video tag.
+      </video>
+      <div class="promo-overlay"></div>
+      <div class="promo-content">
+        <h2 class="promo-title">Get Your Desired Event Pass!</h2>
+        <a href="{{ route('events.index') }}" class="promo-btn">
+          Explore <span class="btn-arrow">▶▶</span>
+        </a>
+      </div>
     </div>
   </div>
 </section>

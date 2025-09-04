@@ -69,6 +69,84 @@ document.addEventListener('DOMContentLoaded', () => {
       startAutoSlide();
     });
   }
+
+  // ======= PROMOTIONAL BANNER VIDEO HANDLING =======
+  const promoVideo = document.querySelector('.promo-bg-video');
+  
+  if (promoVideo) {
+    // Optimize video for mobile devices
+    const isMobile = window.innerWidth <= 768;
+    
+    // Handle video loading and playback
+    promoVideo.addEventListener('loadstart', () => {
+      console.log('Video loading started');
+    });
+    
+    promoVideo.addEventListener('canplay', () => {
+      console.log('Video can start playing');
+      // Ensure autoplay works on mobile with muted video
+      promoVideo.muted = true;
+      promoVideo.play().catch(e => {
+        console.log('Video autoplay failed:', e);
+        // Fallback: show static background if video fails
+        showVideoFallback();
+      });
+    });
+    
+    promoVideo.addEventListener('error', (e) => {
+      console.log('Video error:', e);
+      showVideoFallback();
+    });
+    
+    // Pause video when not in viewport (performance optimization)
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.25
+    };
+    
+    const videoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          promoVideo.play().catch(e => console.log('Video play failed:', e));
+        } else {
+          promoVideo.pause();
+        }
+      });
+    }, observerOptions);
+    
+    videoObserver.observe(promoVideo);
+    
+    // Handle window resize for mobile optimization
+    window.addEventListener('resize', () => {
+      const newIsMobile = window.innerWidth <= 768;
+      if (newIsMobile !== isMobile) {
+        // Reload video with appropriate settings
+        promoVideo.load();
+      }
+    });
+    
+    function showVideoFallback() {
+      const promoBanner = document.querySelector('.promo-banner');
+      if (promoBanner) {
+        promoBanner.style.background = 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)';
+        promoVideo.style.display = 'none';
+      }
+    }
+    
+    // Preload optimization
+    if ('IntersectionObserver' in window) {
+      const preloadObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            promoVideo.load();
+            preloadObserver.unobserve(promoVideo);
+          }
+        });
+      });
+      preloadObserver.observe(promoVideo);
+    }
+  }
 });
 
 
