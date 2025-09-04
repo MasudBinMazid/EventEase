@@ -38,7 +38,30 @@ class EmailVerificationTest extends TestCase
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
+        $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_email_can_be_verified_by_guest_user(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        Event::fake();
+
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
+
+        // Test as guest (not logged in)
+        $response = $this->get($verificationUrl);
+
+        Event::assertDispatched(Verified::class);
+        $this->assertTrue($user->fresh()->hasVerifiedEmail());
+        
+        // Should redirect to dashboard and automatically log in the user
+        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertAuthenticatedAs($user);
     }
 
     public function test_email_is_not_verified_with_invalid_hash(): void
@@ -51,8 +74,22 @@ class EmailVerificationTest extends TestCase
             ['id' => $user->id, 'hash' => sha1('wrong-email')]
         );
 
-        $this->actingAs($user)->get($verificationUrl);
+        $response = $this->get($verificationUrl);
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_guest_cannot_verify_email_with_invalid_user_id(): void
+    {
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => 99999, 'hash' => sha1('nonexistent@example.com')]
+        );
+
+        $response = $this->get($verificationUrl);
+
+        $response->assertRedirect(route('login'));
     }
 }
