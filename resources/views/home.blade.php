@@ -34,7 +34,7 @@
 
     {{-- Embedded YouTube Video --}}
     <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/ONYU5hfJQ38?si=yajHRQ1cEXvvLE6H"
+      <iframe src=""
         title="EventEase Promo"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
