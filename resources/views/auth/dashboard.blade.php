@@ -625,10 +625,19 @@
     <!-- Right: Tickets -->
     <main class="tickets-panel" aria-label="Your Tickets">
       <div class="tickets-head">
-        <h3 class="tickets-title">Your Tickets 🎫</h3>
-        @if($tickets->count())
-          <span class="t-status" aria-label="Ticket count">{{ $tickets->count() }} total</span>
-        @endif
+        <h3 class="tickets-title">Valid Tickets 🎫</h3>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          @if($tickets->count())
+            <span class="t-status" aria-label="Ticket count">{{ $tickets->count() }} valid</span>
+          @endif
+          <a href="{{ route('purchase.history') }}" class="btn ghost" style="padding: 8px 12px; font-size: 0.85rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12,6 12,12 16,14"/>
+            </svg>
+            History
+          </a>
+        </div>
       </div>
 
       <ul class="tickets-list">
@@ -663,6 +672,16 @@
                   — <strong class="t-status {{ $statusClass }}">{{ ucfirst($ticket->payment_status) }}</strong>
                 </span>
               </div>
+              @if($ticket->payment_status === 'paid')
+                <div class="t-line">
+                  <span class="t-label">Entry Status</span>
+                  <span class="t-value">
+                    <strong class="t-status" style="background: #10b981; color: white; border-color: rgba(16, 185, 129, 0.4);">
+                      Ready for Entry
+                    </strong>
+                  </span>
+                </div>
+              @endif
             </div>
 
             <div class="ticket-actions">
@@ -680,7 +699,10 @@
           </li>
         @empty
           <li class="tickets-empty">
-            No tickets yet
+            No valid tickets yet<br>
+            <small style="color: var(--muted); font-size: 0.9rem;">
+              Tickets marked as "entered" are moved to <a href="{{ route('purchase.history') }}" style="color: var(--accent); text-decoration: underline;">Purchase History</a>
+            </small>
           </li>
         @endforelse
       </ul>

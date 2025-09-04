@@ -30,9 +30,31 @@ class ProfileController extends Controller
             return redirect()->route('organizer.dashboard');
         }
         
-        // Regular user dashboard
-        $tickets = Ticket::with('event')->where('user_id', $user->id)->latest()->get();
+        // Regular user dashboard - show only valid tickets (not entered)
+        $tickets = Ticket::with('event')
+            ->where('user_id', $user->id)
+            ->where(function($query) {
+                $query->where('entry_status', 'not_entered')
+                      ->orWhereNull('entry_status');
+            })
+            ->latest()
+            ->get();
+            
         return view('auth.dashboard', compact('user', 'tickets'));
+    }
+
+    public function purchaseHistory()
+    {
+        $user = auth()->user();
+        
+        // Get tickets that have been marked as entered
+        $enteredTickets = Ticket::with(['event', 'entryMarker'])
+            ->where('user_id', $user->id)
+            ->where('entry_status', 'entered')
+            ->latest('entry_marked_at')
+            ->get();
+            
+        return view('auth.purchase-history', compact('user', 'enteredTickets'));
     }
 
 
