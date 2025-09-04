@@ -24,6 +24,7 @@
   <div class="profile-form-container">
     <form method="POST" action="{{ route('profile.update') }}" class="modern-edit-form" enctype="multipart/form-data">
       @csrf
+      @method('PATCH')
 
       <!-- Profile Picture Section -->
       <div class="form-section">
