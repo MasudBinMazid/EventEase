@@ -347,6 +347,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'manager'])->group(f
     Route::post('/users/{user}/send-notification', [AdminUserController::class, 'sendNotification'])->name('users.sendNotification');
     Route::post('/users/send-bulk-notification', [AdminUserController::class, 'sendBulkNotification'])->name('users.sendBulkNotification');
     
+    // Debug route for templates
+    Route::get('/debug-templates', function() {
+        $templates = \App\Models\NotificationTemplate::all();
+        return response()->json([
+            'count' => $templates->count(),
+            'templates' => $templates->map(function($t) {
+                return [
+                    'id' => $t->id,
+                    'name' => $t->name,
+                    'category' => $t->category,
+                    'is_active' => $t->is_active
+                ];
+            })
+        ]);
+    });
+    
     // Admin-only routes for user management
     Route::middleware('admin')->group(function () {
         Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');

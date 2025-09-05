@@ -1112,19 +1112,24 @@ function sendNotification() {
           <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text);">Template (Optional):</label>
           <select id="notificationTemplate" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem;" onchange="fillFromTemplate()">
             <option value="">📝 Custom Message</option>
-            @foreach($notificationTemplates->groupBy('category') as $category => $templates)
-              <optgroup label="{{ ucfirst($category) }}">
-                @foreach($templates as $template)
-                  <option value="{{ $template->id }}" 
-                          data-title="{{ $template->title }}" 
-                          data-message="{{ $template->message }}" 
-                          data-type="{{ $template->type }}"
-                          data-variables="{{ json_encode($template->variables) }}">
-                    {{ $template->name }}
-                  </option>
-                @endforeach
-              </optgroup>
-            @endforeach
+            @if(isset($notificationTemplates) && $notificationTemplates->count() > 0)
+              <!-- Debug: Templates count: {{ $notificationTemplates->count() }} -->
+              @foreach($notificationTemplates->groupBy('category') as $category => $templates)
+                <optgroup label="{{ ucfirst($category) }}">
+                  @foreach($templates as $template)
+                    <option value="{{ $template->id }}" 
+                            data-title="{{ $template->title }}" 
+                            data-message="{{ $template->message }}" 
+                            data-type="{{ $template->type }}"
+                            data-variables="{{ json_encode($template->variables) }}">
+                      {{ $template->name }}
+                    </option>
+                  @endforeach
+                </optgroup>
+              @endforeach
+            @else
+              <option value="" disabled>No templates available (Count: {{ isset($notificationTemplates) ? $notificationTemplates->count() : 'undefined' }})</option>
+            @endif
           </select>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Select a pre-made template or create a custom message</div>
         </div>
@@ -1364,19 +1369,23 @@ function openBulkNotification() {
           <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text);">Template (Optional):</label>
           <select id="bulkNotificationTemplate" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem;" onchange="fillFromBulkTemplate()">
             <option value="">📝 Custom Message</option>
-            @foreach($notificationTemplates->groupBy('category') as $category => $templates)
-              <optgroup label="{{ ucfirst($category) }}">
-                @foreach($templates as $template)
-                  <option value="{{ $template->id }}" 
-                          data-title="{{ $template->title }}" 
-                          data-message="{{ $template->message }}" 
-                          data-type="{{ $template->type }}"
-                          data-variables="{{ json_encode($template->variables) }}">
-                    {{ $template->name }}
-                  </option>
-                @endforeach
-              </optgroup>
-            @endforeach
+            @if(isset($notificationTemplates) && $notificationTemplates->count() > 0)
+              @foreach($notificationTemplates->groupBy('category') as $category => $templates)
+                <optgroup label="{{ ucfirst($category) }}">
+                  @foreach($templates as $template)
+                    <option value="{{ $template->id }}" 
+                            data-title="{{ $template->title }}" 
+                            data-message="{{ $template->message }}" 
+                            data-type="{{ $template->type }}"
+                            data-variables="{{ json_encode($template->variables) }}">
+                      {{ $template->name }}
+                    </option>
+                  @endforeach
+                </optgroup>
+              @endforeach
+            @else
+              <option value="" disabled>No templates available</option>
+            @endif
           </select>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Select a pre-made template or create a custom message</div>
         </div>

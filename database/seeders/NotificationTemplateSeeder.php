@@ -12,6 +12,9 @@ class NotificationTemplateSeeder extends Seeder
      */
     public function run(): void
     {
+        // Clear existing templates to avoid duplicates
+        NotificationTemplate::truncate();
+        
         $templates = [
             // Welcome Messages
             [

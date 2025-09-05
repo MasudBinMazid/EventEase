@@ -32,7 +32,28 @@ class UserController extends Controller
         $users = $query->orderByDesc('id')->get(['id','name','email','role','created_at','last_login_at']);
         
         // Get notification templates for template selection
-        $notificationTemplates = NotificationTemplate::active()->orderBy('category')->orderBy('name')->get();
+        try {
+            $notificationTemplates = NotificationTemplate::active()->orderBy('category')->orderBy('name')->get();
+            
+            // If no active templates found, get all templates
+            if ($notificationTemplates->isEmpty()) {
+                $notificationTemplates = NotificationTemplate::orderBy('category')->orderBy('name')->get();
+            }
+            
+            // If still empty, create some basic templates
+            if ($notificationTemplates->isEmpty()) {
+                $this->createBasicTemplates();
+                $notificationTemplates = NotificationTemplate::orderBy('category')->orderBy('name')->get();
+            }
+            
+        } catch (\Exception $e) {
+            // Fallback to empty collection if there's any error
+            $notificationTemplates = collect();
+            \Log::error('Error loading notification templates: ' . $e->getMessage());
+        }
+        
+        // Debug: Log template count
+        \Log::info('Notification templates count: ' . $notificationTemplates->count());
         
         return view('admin.users.index', compact('users', 'notificationTemplates'));
     }
@@ -241,6 +262,46 @@ class UserController extends Controller
                 'success' => false,
                 'message' => 'Failed to send bulk notification: ' . $e->getMessage()
             ], 500);
+        }
+    }
+    
+    private function createBasicTemplates()
+    {
+        $basicTemplates = [
+            [
+                'name' => 'Welcome New User',
+                'title' => 'Welcome to EventEase! 🎉',
+                'message' => 'Hello {{user_name}}! Welcome to EventEase. We\'re excited to have you join our community!',
+                'type' => 'announcement',
+                'category' => 'welcome',
+                'variables' => ['user_name'],
+                'is_active' => true
+            ],
+            [
+                'name' => 'Payment Reminder',
+                'title' => 'Payment Reminder 💳',
+                'message' => 'Hi {{user_name}}, this is a reminder about your pending payment for {{event_name}}.',
+                'type' => 'reminder',
+                'category' => 'payment',
+                'variables' => ['user_name', 'event_name'],
+                'is_active' => true
+            ],
+            [
+                'name' => 'Site Maintenance',
+                'title' => 'Scheduled Maintenance 🔧',
+                'message' => 'We will be performing maintenance on {{maintenance_date}}. The site may be temporarily unavailable.',
+                'type' => 'announcement',
+                'category' => 'maintenance',
+                'variables' => ['maintenance_date'],
+                'is_active' => true
+            ]
+        ];
+        
+        foreach ($basicTemplates as $template) {
+            NotificationTemplate::firstOrCreate(
+                ['name' => $template['name']],
+                $template
+            );
         }
     }
 }
