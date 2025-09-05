@@ -57,17 +57,22 @@ class MaintenanceController extends Controller
 
     public function toggle(Request $request)
     {
-        $settings = MaintenanceSettings::getSettings();
+        $settings = MaintenanceSettings::first();
         
-        if (!$settings->exists) {
-            $settings->updated_by = auth()->id();
-            $settings->save();
+        if (!$settings) {
+            // Create new settings record with default values
+            $settings = MaintenanceSettings::create([
+                'is_enabled' => true, // Toggle means we're enabling it
+                'title' => 'Site Under Maintenance',
+                'message' => 'We are currently performing maintenance on our website. We will be back online shortly!',
+                'updated_by' => auth()->id()
+            ]);
+        } else {
+            $settings->update([
+                'is_enabled' => !$settings->is_enabled,
+                'updated_by' => auth()->id()
+            ]);
         }
-
-        $settings->update([
-            'is_enabled' => !$settings->is_enabled,
-            'updated_by' => auth()->id()
-        ]);
 
         $statusText = $settings->is_enabled ? 'enabled' : 'disabled';
         

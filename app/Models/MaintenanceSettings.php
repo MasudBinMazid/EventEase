@@ -21,6 +21,12 @@ class MaintenanceSettings extends Model
         'estimated_completion' => 'datetime'
     ];
 
+    protected $attributes = [
+        'is_enabled' => false,
+        'title' => 'Site Under Maintenance',
+        'message' => 'We are currently performing maintenance on our website. We will be back online shortly!',
+    ];
+
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
@@ -34,11 +40,22 @@ class MaintenanceSettings extends Model
 
     public static function getSettings()
     {
-        return self::first() ?: new self([
-            'is_enabled' => false,
-            'title' => 'Site Under Maintenance',
-            'message' => 'We are currently performing maintenance on our website. We will be back online shortly!',
-        ]);
+        $settings = self::first();
+        
+        if (!$settings) {
+            $settings = new self([
+                'is_enabled' => false,
+                'title' => 'Site Under Maintenance',
+                'message' => 'We are currently performing maintenance on our website. We will be back online shortly!',
+            ]);
+        }
+        
+        // Ensure message has a default value if it's null
+        if (empty($settings->message)) {
+            $settings->message = 'We are currently performing maintenance on our website. We will be back online shortly!';
+        }
+        
+        return $settings;
     }
 
     public function isIpAllowed($ip)
