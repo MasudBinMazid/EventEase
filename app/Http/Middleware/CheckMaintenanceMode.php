@@ -16,8 +16,18 @@ class CheckMaintenanceMode
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Don't apply maintenance mode to admin routes or API routes
-        if ($request->is('admin/*') || $request->is('api/*') || $request->is('maintenance')) {
+        // Don't apply maintenance mode to admin routes, API routes, or authentication routes
+        if ($request->is('admin/*') || 
+            $request->is('api/*') || 
+            $request->is('maintenance') ||
+            $request->is('login') ||
+            $request->is('register') ||
+            $request->is('forgot-password') ||
+            $request->is('reset-password/*') ||
+            $request->is('verify-email/*') ||
+            $request->is('verify-email') ||
+            $request->is('confirm-password') ||
+            $request->is('email/verification-notification')) {
             return $next($request);
         }
 
