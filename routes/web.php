@@ -45,6 +45,7 @@ use App\Http\Controllers\Admin\MessageAdminController;
 use App\Http\Controllers\Admin\StatsController as AdminStatsController;
 use App\Http\Controllers\Admin\PaymentReceivedController;
 use App\Http\Controllers\Admin\NoticeController;
+use App\Http\Controllers\Admin\MaintenanceController;
 
 // Organizer controllers
 use App\Http\Controllers\Organizer\OrganizerController;
@@ -427,6 +428,13 @@ Route::post('/payments-received/{ticket}/verify', [PaymentReceivedController::cl
     Route::put('/banners/{banner}', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'update'])->name('banners.update');
     Route::delete('/banners/{banner}', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'destroy'])->name('banners.destroy');
     Route::post('/banners/{banner}/toggle', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'toggleStatus'])->name('banners.toggle');
+
+    // Maintenance Mode Management (Admin only)
+    Route::middleware('admin')->group(function () {
+        Route::get('/maintenance', [\App\Http\Controllers\Admin\MaintenanceController::class, 'index'])->name('maintenance.index');
+        Route::put('/maintenance', [\App\Http\Controllers\Admin\MaintenanceController::class, 'update'])->name('maintenance.update');
+        Route::post('/maintenance/toggle', [\App\Http\Controllers\Admin\MaintenanceController::class, 'toggle'])->name('maintenance.toggle');
+    });
 });
 
 /*

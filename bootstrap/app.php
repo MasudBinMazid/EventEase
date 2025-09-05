@@ -15,7 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
     $middleware->alias([
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'manager' => \App\Http\Middleware\ManagerMiddleware::class,
-        'organizer' => \App\Http\Middleware\OrganizerMiddleware::class
+        'organizer' => \App\Http\Middleware\OrganizerMiddleware::class,
+        'maintenance' => \App\Http\Middleware\CheckMaintenanceMode::class
+    ]);
+    
+    // Global middleware - check maintenance mode for all web requests
+    $middleware->web(append: [
+        \App\Http\Middleware\CheckMaintenanceMode::class,
     ]);
     
     // Exclude SSLCommerz callback routes from CSRF verification

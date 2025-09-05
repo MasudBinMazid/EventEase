@@ -661,6 +661,11 @@
   {{-- Notice Management --}}
   <a href="{{ route('admin.notices.index') }}" class="nav-link {{ request()->routeIs('admin.notices.*') ? 'is-active' : '' }}">📢 Notices</a>
 
+  {{-- Maintenance Mode (Admin Only) --}}
+  @if(Auth::user()->isAdmin())
+  <a href="{{ route('admin.maintenance.index') }}" class="nav-link {{ request()->routeIs('admin.maintenance.*') ? 'is-active' : '' }}">⚙️ Maintenance</a>
+  @endif
+
   
 
   <a href="{{ route('admin.sales.index') }}"    class="nav-link {{ request()->routeIs('admin.sales.index') ? 'is-active' : '' }}">Sales</a>
