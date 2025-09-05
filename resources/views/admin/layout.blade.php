@@ -655,11 +655,13 @@
   <a href="{{ route('admin.blogs.index') }}"    class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'is-active' : '' }}">Blogs</a>
   <a href="{{ route('admin.messages.index') }}" class="nav-link {{ request()->routeIs('admin.messages.*') ? 'is-active' : '' }}">Messages</a>
 
+  {{-- Feature Banner Management --}}
+  <a href="{{ route('admin.banners.index') }}" class="nav-link {{ request()->routeIs('admin.banners.*') ? 'is-active' : '' }}">🎯 Feature Banners</a>
+
   {{-- Notice Management --}}
   <a href="{{ route('admin.notices.index') }}" class="nav-link {{ request()->routeIs('admin.notices.*') ? 'is-active' : '' }}">📢 Notices</a>
 
-  {{-- NEW: Payment Received --}}
-  <a href="{{ route('admin.payments.index') }}" class="nav-link {{ request()->routeIs('admin.payments.*') ? 'is-active' : '' }}">Payment Received</a>
+  
 
   <a href="{{ route('admin.sales.index') }}"    class="nav-link {{ request()->routeIs('admin.sales.index') ? 'is-active' : '' }}">Sales</a>
   <a href="{{ route('admin.sales.events') }}"   class="nav-link {{ request()->routeIs('admin.sales.events') ? 'is-active' : '' }}">Sales by Event</a>

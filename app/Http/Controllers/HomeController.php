@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\FeatureBanner;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -12,6 +13,9 @@ class HomeController extends Controller
         // Get events that are featured on home page, approved, and upcoming
         $featuredEvents = Event::featuredOnHome()->limit(6)->get();
         
-        return view('home', compact('featuredEvents'));
+        // Get active banners for the slider
+        $banners = FeatureBanner::getActiveBanners();
+        
+        return view('home', compact('featuredEvents', 'banners'));
     }
 }

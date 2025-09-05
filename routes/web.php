@@ -394,6 +394,15 @@ Route::post('/payments-received/{ticket}/verify', [PaymentReceivedController::cl
     Route::put('/notices/{notice}', [NoticeController::class, 'update'])->name('notices.update');
     Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
     Route::post('/notices/settings', [NoticeController::class, 'toggleSettings'])->name('notices.settings');
+
+    // Feature Banner Management
+    Route::get('/banners', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'index'])->name('banners.index');
+    Route::get('/banners/create', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'create'])->name('banners.create');
+    Route::post('/banners', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'store'])->name('banners.store');
+    Route::get('/banners/{banner}/edit', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'edit'])->name('banners.edit');
+    Route::put('/banners/{banner}', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'update'])->name('banners.update');
+    Route::delete('/banners/{banner}', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'destroy'])->name('banners.destroy');
+    Route::post('/banners/{banner}/toggle', [\App\Http\Controllers\Admin\FeatureBannerController::class, 'toggleStatus'])->name('banners.toggle');
 });
 
 /*

@@ -15,12 +15,25 @@
     {{-- Banner Slider --}}
     <div class="slider-container">
       <div class="slider" id="slider">
-        <a href="https://eventease.laravel.cloud/" class="slide-link active" target="_blank">
-          <img src="{{ asset('assets/images/banner1.png') }}" class="slide-img" alt="Event 1" />
-        </a>
-        <a href="https://eventease.laravel.cloud/" class="slide-link" target="_blank">
-          <img src="{{ asset('assets/images/banner2.png') }}" class="slide-img" alt="Event 2" />
-        </a>
+        @forelse($banners as $banner)
+          @if($banner->link)
+            <a href="{{ $banner->link }}" class="slide-link {{ $loop->first ? 'active' : '' }}" target="_blank">
+              <img src="{{ asset('storage/' . $banner->image) }}" class="slide-img" alt="{{ $banner->title }}" />
+            </a>
+          @else
+            <div class="slide-link {{ $loop->first ? 'active' : '' }}">
+              <img src="{{ asset('storage/' . $banner->image) }}" class="slide-img" alt="{{ $banner->title }}" />
+            </div>
+          @endif
+        @empty
+          {{-- Fallback to default banners if no banners in database --}}
+          <a href="https://eventease.laravel.cloud/" class="slide-link active" target="_blank">
+            <img src="{{ asset('assets/images/banner1.png') }}" class="slide-img" alt="Event 1" />
+          </a>
+          <a href="https://eventease.laravel.cloud/" class="slide-link" target="_blank">
+            <img src="{{ asset('assets/images/banner2.png') }}" class="slide-img" alt="Event 2" />
+          </a>
+        @endforelse
 
       </div>
       <button class="slider-btn prev" id="prevBtn" aria-label="Previous slide">←</button>
