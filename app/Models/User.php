@@ -21,7 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
    
 
-protected $fillable = ['name', 'email', 'password', 'phone', 'profile_picture', 'role'];
+protected $fillable = ['name', 'email', 'password', 'phone', 'profile_picture', 'role', 'last_login_at'];
 
 
 // inside the class User extends Authenticatable
@@ -31,6 +31,27 @@ public function isAdmin(): bool { return $this->role === 'admin'; }
 public function isManager(): bool { return $this->role === 'manager'; }
 public function isOrganizer(): bool { return $this->role === 'organizer'; }
 public function isAdminOrManager(): bool { return in_array($this->role, ['admin', 'manager']); }
+
+// Notification relationships
+public function notifications()
+{
+    return $this->hasMany(UserNotification::class, 'user_id')->orderBy('created_at', 'desc');
+}
+
+public function sentNotifications()
+{
+    return $this->hasMany(UserNotification::class, 'sender_id')->orderBy('created_at', 'desc');
+}
+
+public function unreadNotifications()
+{
+    return $this->hasMany(UserNotification::class, 'user_id')->where('is_read', false)->orderBy('created_at', 'desc');
+}
+
+public function getUnreadNotificationCountAttribute()
+{
+    return $this->unreadNotifications()->count();
+}
 
 
 
@@ -55,6 +76,7 @@ public function isAdminOrManager(): bool { return in_array($this->role, ['admin'
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_login_at' => 'datetime',
         ];
     }
 

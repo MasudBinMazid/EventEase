@@ -37,6 +37,7 @@ class SocialController extends Controller
 
             if ($user) {
                 // User exists, log them in
+                $user->update(['last_login_at' => now()]);
                 Auth::login($user);
                 $message = 'Welcome back! Successfully logged in with Google.';
             } else {
@@ -46,6 +47,7 @@ class SocialController extends Controller
                     'email' => $googleUser->getEmail(),
                     'password' => Hash::make(Str::random(16)), // Random password since they use Google
                     'email_verified_at' => now(), // Mark as verified since Google verified it
+                    'last_login_at' => now(), // Set initial login time
                 ]);
 
                 Auth::login($user);

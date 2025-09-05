@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
- use App\Models\Ticket;
+use App\Models\Ticket;
+use App\Models\UserNotification;
 
 class ProfileController extends Controller
 {
@@ -40,7 +41,11 @@ class ProfileController extends Controller
             ->latest()
             ->get();
             
-        return view('auth.dashboard', compact('user', 'tickets'));
+        // Load user notifications
+        $notifications = $user->notifications()->with('sender')->latest()->limit(10)->get();
+        $unreadCount = $user->unreadNotifications()->count();
+            
+        return view('auth.dashboard', compact('user', 'tickets', 'notifications', 'unreadCount'));
     }
 
     public function purchaseHistory()
@@ -95,5 +100,35 @@ class ProfileController extends Controller
         $user->save();
 
         return redirect()->route('dashboard')->with('success', 'Profile updated successfully.');
+    }
+
+    public function notifications()
+    {
+        $user = auth()->user();
+        $notifications = $user->notifications()->with('sender')->latest()->paginate(20);
+        
+        return view('auth.notifications', compact('user', 'notifications'));
+    }
+
+    public function markNotificationAsRead(UserNotification $notification)
+    {
+        // Ensure the notification belongs to the authenticated user
+        if ($notification->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $notification->markAsRead();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function markAllNotificationsAsRead()
+    {
+        auth()->user()->unreadNotifications()->update([
+            'is_read' => true,
+            'read_at' => now()
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'All notifications marked as read']);
     }
 }

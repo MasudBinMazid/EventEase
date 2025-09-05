@@ -84,6 +84,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/purchase-history', [ProfileController::class, 'purchaseHistory'])->name('purchase.history');
     
+    // Notification routes
+    Route::post('/notifications/{notification}/read', [ProfileController::class, 'markNotificationAsRead'])->name('notifications.read');
+    Route::post('/notifications/mark-all-read', [ProfileController::class, 'markAllNotificationsAsRead'])->name('notifications.markAllRead');
+    Route::get('/notifications', [ProfileController::class, 'notifications'])->name('notifications.index');
+    
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets/{ticket}/download', [TicketController::class, 'download'])->name('tickets.download');
@@ -338,6 +343,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'manager'])->group(f
 
     // Users (managers can view, only admins can delete/change roles)
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/details', [AdminUserController::class, 'getUserDetails'])->name('users.details');
+    Route::post('/users/{user}/send-notification', [AdminUserController::class, 'sendNotification'])->name('users.sendNotification');
+    Route::post('/users/send-bulk-notification', [AdminUserController::class, 'sendBulkNotification'])->name('users.sendBulkNotification');
     
     // Admin-only routes for user management
     Route::middleware('admin')->group(function () {
