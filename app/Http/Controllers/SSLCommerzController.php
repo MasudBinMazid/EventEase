@@ -585,13 +585,18 @@ class SSLCommerzController extends Controller
         $tranId = $request->input('tran_id');
         $failedReason = $request->input('failedreason', 'Payment failed');
 
-        Log::info('SSLCommerz Payment Failed', [
+        // Log initial state
+        Log::info('SSLCommerz Payment Failed - Start', [
             'tran_id' => $tranId,
             'failed_reason' => $failedReason,
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
+            'authenticated' => auth()->check(),
+            'session_id' => session()->getId(),
+            'request_data' => $request->all()
         ]);
 
-        // Update temp transaction status if found
+        // Get event information for the failure page
+        $eventId = null;
         if ($tranId) {
             $tempTransaction = TempTransaction::where('transaction_id', $tranId)->first();
             if ($tempTransaction) {
@@ -602,14 +607,41 @@ class SSLCommerzController extends Controller
                         'failed_at' => now()->toISOString()
                     ])
                 ]);
+                
+                // Extract event ID from transaction data
+                $eventId = $tempTransaction->data['event_id'] ?? null;
+                
+                Log::info('SSLCommerz Payment Failed - Transaction Found', [
+                    'temp_transaction_id' => $tempTransaction->id,
+                    'event_id' => $eventId,
+                    'failed_reason' => $failedReason
+                ]);
+            } else {
+                Log::warning('SSLCommerz Payment Failed - No Transaction Found', [
+                    'tran_id' => $tranId
+                ]);
             }
         }
 
-        // Clear session data
+        // Clear only payment-related session data, preserve user authentication
         session()->forget('sslcommerz_transaction');
+        session()->forget('checkout');
 
-        return redirect()->route('dashboard')
-            ->with('error', 'Payment failed: ' . $failedReason . '. Please try again.');
+        // Store failure information in session for the failure page
+        session()->flash('payment_fail_reason', $failedReason);
+        session()->flash('payment_fail_event_id', $eventId);
+        session()->flash('payment_fail_tran_id', $tranId);
+
+        // Log final state before redirect
+        Log::info('SSLCommerz Payment Failed - Before Redirect', [
+            'user_id' => auth()->id(),
+            'authenticated' => auth()->check(),
+            'session_id' => session()->getId(),
+            'stored_event_id' => $eventId
+        ]);
+
+        // Redirect to the failure page (accessible without authentication)
+        return redirect()->route('payment.failed');
     }
 
     /**
@@ -619,29 +651,70 @@ class SSLCommerzController extends Controller
     {
         $tranId = $request->input('tran_id');
 
-        Log::info('SSLCommerz Payment Cancelled', [
+        // Log initial state
+        Log::info('SSLCommerz Payment Cancelled - Start', [
             'tran_id' => $tranId,
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
+            'authenticated' => auth()->check(),
+            'session_id' => session()->getId(),
+            'request_data' => $request->all()
         ]);
 
-        // Update temp transaction status if found
+        // Get transaction and event information for the cancellation page
+        $eventId = null;
+        $quantity = null;
+        $totalAmount = null;
+        
         if ($tranId) {
             $tempTransaction = TempTransaction::where('transaction_id', $tranId)->first();
             if ($tempTransaction) {
                 $tempTransaction->update([
-                    'status' => 'cancelled',
+                    'status' => 'failed', // Use 'failed' instead of 'cancelled' since enum doesn't include 'cancelled'
                     'data' => array_merge($tempTransaction->data ?? [], [
-                        'cancelled_at' => now()->toISOString()
+                        'cancelled_at' => now()->toISOString(),
+                        'cancellation_reason' => 'Cancelled by user'
                     ])
+                ]);
+                
+                // Extract information from transaction data
+                $transactionData = $tempTransaction->data ?? [];
+                $eventId = $transactionData['event_id'] ?? null;
+                $quantity = $transactionData['quantity'] ?? null;
+                $totalAmount = $transactionData['total_amount'] ?? null;
+                
+                Log::info('SSLCommerz Payment Cancelled - Transaction Found', [
+                    'temp_transaction_id' => $tempTransaction->id,
+                    'event_id' => $eventId,
+                    'quantity' => $quantity,
+                    'total_amount' => $totalAmount
+                ]);
+            } else {
+                Log::warning('SSLCommerz Payment Cancelled - No Transaction Found', [
+                    'tran_id' => $tranId
                 ]);
             }
         }
 
-        // Clear session data
+        // Clear only payment-related session data, preserve user authentication
         session()->forget('sslcommerz_transaction');
+        session()->forget('checkout');
 
-        return redirect()->route('dashboard')
-            ->with('warning', 'Payment was cancelled. You can try again anytime.');
+        // Store cancellation information in session for the cancellation page
+        session()->flash('payment_cancel_event_id', $eventId);
+        session()->flash('payment_cancel_quantity', $quantity);
+        session()->flash('payment_cancel_amount', $totalAmount);
+        session()->flash('payment_cancel_tran_id', $tranId);
+
+        // Log final state before redirect
+        Log::info('SSLCommerz Payment Cancelled - Before Redirect', [
+            'user_id' => auth()->id(),
+            'authenticated' => auth()->check(),
+            'session_id' => session()->getId(),
+            'stored_event_id' => $eventId
+        ]);
+
+        // Redirect to the cancellation page (accessible without authentication)
+        return redirect()->route('payment.cancelled');
     }
 
     /**

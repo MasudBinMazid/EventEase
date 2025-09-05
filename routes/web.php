@@ -229,6 +229,56 @@ Route::post('/payment/fail', [App\Http\Controllers\SSLCommerzController::class, 
 Route::post('/payment/cancel', [App\Http\Controllers\SSLCommerzController::class, 'paymentCancel'])->name('sslcommerz.cancel');
 Route::post('/payment/ipn', [App\Http\Controllers\SSLCommerzController::class, 'paymentIPN'])->name('sslcommerz.ipn');
 
+// Payment status pages (no auth required - accessible even if logged out)
+Route::get('/payment/failed', function() {
+    return view('payments.failed', [
+        'failedReason' => session('payment_fail_reason', 'Unknown error'),
+        'eventId' => session('payment_fail_event_id'),
+        'tranId' => session('payment_fail_tran_id')
+    ]);
+})->name('payment.failed');
+
+Route::get('/payment/cancelled', function() {
+    return view('payments.cancelled', [
+        'eventId' => session('payment_cancel_event_id'),
+        'event' => session('payment_cancel_event_id') ? \App\Models\Event::find(session('payment_cancel_event_id')) : null,
+        'quantity' => session('payment_cancel_quantity'),
+        'totalAmount' => session('payment_cancel_amount'),
+        'tranId' => session('payment_cancel_tran_id')
+    ]);
+})->name('payment.cancelled');
+
+// Test route to simulate the cancel flow
+Route::get('/test-cancel-flow', function() {
+    // Simulate what happens when SSLCommerz sends a cancel request
+    $tranId = 'TEST_' . time();
+    
+    // Store some test data in session like a real transaction would
+    session()->flash('payment_cancel_event_id', 1);
+    session()->flash('payment_cancel_quantity', 2);
+    session()->flash('payment_cancel_amount', 500.00);
+    session()->flash('payment_cancel_tran_id', $tranId);
+    
+    return redirect()->route('payment.cancelled');
+});
+
+// Test route to simulate actual SSLCommerz POST request
+Route::post('/test-sslcommerz-cancel', function(\Illuminate\Http\Request $request) {
+    // This simulates exactly what SSLCommerz would send
+    $controller = new \App\Http\Controllers\SSLCommerzController(new \App\Services\SSLCommerzService());
+    return $controller->paymentCancel($request);
+});
+
+// Test route for authenticated user to verify login status
+Route::middleware(['auth'])->get('/test-auth-status', function() {
+    return response()->json([
+        'authenticated' => true,
+        'user' => auth()->user()->name ?? 'Unknown',
+        'user_id' => auth()->id(),
+        'message' => 'User is logged in successfully'
+    ]);
+});
+
 /*
 |--------------------------------------------------------------------------
 | Username/password auth (custom endpoints in your AuthController)
